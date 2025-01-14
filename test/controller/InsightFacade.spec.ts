@@ -1,4 +1,4 @@
-import { IInsightFacade, InsightDatasetKind, InsightResult } from "../../src/controller/IInsightFacade";
+import { IInsightFacade, InsightDatasetKind, InsightError } from "../../src/controller/IInsightFacade"; //InsightResult
 import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
@@ -28,11 +28,109 @@ describe("InsightFacade", function () {
 		await clearDisk();
 	});
 
+	beforeEach(async function () {
+		await clearDisk();
+		facade = new InsightFacade();
+	});
+
 	describe("AddDataset", function () {
 		it("should reject with  an empty dataset id", async function () {
-			// Read the "Free Mutant Walkthrough" in the spec for tips on how to get started!
+			facade = new InsightFacade();
+			sections = await getContentFromArchives("yourzipfile.zip");
+
+			try {
+				await facade.addDataset("", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
 		});
+
+		it("should successfully add a dataset (first)", async function () {
+			const result = await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+			expect(result).to.have.members(["ubc"]);
+		});
+
+		it("should reject with id that has _", async function () {
+			facade = new InsightFacade();
+			sections = await getContentFromArchives("yourzipfile.zip");
+
+			try {
+				await facade.addDataset("_ubc", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+
+			try {
+				await facade.addDataset("ubc_", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+
+			try {
+				await facade.addDataset("u_bc", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject with id that is only whitespace", async function () {
+			facade = new InsightFacade();
+			sections = await getContentFromArchives("yourzipfile.zip");
+
+			try {
+				await facade.addDataset(" ", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should successfully add a dataset with whitespace and other character", async function () {
+			const result = await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
+			expect(result).to.have.members(["ubc ubc"]);
+		});
+
+		it("should reject with id that is the same as the id of an already added dataset", async function () {
+			facade = new InsightFacade();
+			sections = await getContentFromArchives("yourzipfile.zip");
+
+			try {
+				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+
+
+
+
 	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	describe("PerformQuery", function () {
 		/**
@@ -50,9 +148,9 @@ describe("InsightFacade", function () {
 			}
 			// Destructuring assignment to reduce property accesses
 			const { input, expected, errorExpected } = await loadTestQuery(this.test.title);
-			let result: InsightResult[] = []; // dummy value before being reassigned
+			//let result: InsightResult[] = []; // dummy value before being reassigned
 			try {
-				result = await facade.performQuery(input);
+				await facade.performQuery(input);
 			} catch (err) {
 				if (!errorExpected) {
 					expect.fail(`performQuery threw unexpected error: ${err}`);
