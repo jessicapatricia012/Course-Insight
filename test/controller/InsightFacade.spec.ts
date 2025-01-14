@@ -106,31 +106,7 @@ describe("InsightFacade", function () {
 				expect(err).to.be.an.instanceOf(InsightError);
 			}
 		});
-
-
-
-
-
 	});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	describe("PerformQuery", function () {
 		/**
