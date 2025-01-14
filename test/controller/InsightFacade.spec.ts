@@ -35,9 +35,7 @@ describe("InsightFacade", function () {
 
 	describe("AddDataset", function () {
 		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
-		it("should reject with  an empty dataset id", async function () {
-			facade = new InsightFacade();
-
+		it("should reject adding with  an empty dataset id", async function () {
 			try {
 				await facade.addDataset("", sections, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
@@ -51,9 +49,7 @@ describe("InsightFacade", function () {
 			expect(result).to.have.members(["ubc"]);
 		});
 
-		it("should reject with id that has _", async function () {
-			facade = new InsightFacade();
-
+		it("should reject adding with id that has _", async function () {
 			try {
 				await facade.addDataset("_ubc", sections, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
@@ -76,9 +72,7 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should reject with id that is only whitespace", async function () {
-			facade = new InsightFacade();
-
+		it("should reject adding with id that is only whitespace", async function () {
 			try {
 				await facade.addDataset(" ", sections, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
@@ -93,8 +87,6 @@ describe("InsightFacade", function () {
 		});
 
 		it("should reject with id that is the same as the id of an already added dataset", async function () {
-			facade = new InsightFacade();
-
 			try {
 				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
 				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
@@ -110,9 +102,7 @@ describe("InsightFacade", function () {
 
 	describe("removeDataset", function () {
 		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
-		it("should reject with  an empty dataset id", async function () {
-			facade = new InsightFacade();
-
+		it("should reject removing with  an empty dataset id", async function () {
 			try {
 				await facade.removeDataset("");
 				expect.fail("Should have thrown!");
@@ -124,12 +114,21 @@ describe("InsightFacade", function () {
 		it("should successfully remove a dataset (first)", async function () {
 			await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
 			const result = await facade.removeDataset("ubc");
-			expect(result).to.not.have.members(["ubc"]);
+			expect(result).to.equal("ubc");
 		});
 
-		it("should reject with id that has _", async function () {
-			facade = new InsightFacade();
+		it("should reject removing a dataset id that has been removed", async function () {
+			try {
+				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade.removeDataset("ubc");
+				await facade.removeDataset("ubc");
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
 
+		it("should reject removing with id that has _", async function () {
 			try {
 				await facade.removeDataset("_ubc");
 				expect.fail("Should have thrown!");
@@ -166,7 +165,7 @@ describe("InsightFacade", function () {
 		it("should successfully remove a dataset with whitespace and other character", async function () {
 			await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
 			const result = await facade.removeDataset("ubc ubc");
-			expect(result).to.have.members(["ubc ubc"]);
+			expect(result).to.equal("ubc ubc");
 		});
 
 		it("should reject with id that is not yet added", async function () {
@@ -180,6 +179,45 @@ describe("InsightFacade", function () {
 			}
 		});
 		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
+	});
+
+	describe("listDatasets", function () {
+		it("should successfully list a dataset", async function () {
+			await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+			const result = await facade.listDatasets();
+			const expected = [
+				{
+					id: "ubc",
+					kind: InsightDatasetKind.Sections,
+					numRows: 64612,
+				},
+			];
+			expect(result).to.deep.equal(expected);
+		});
+
+		it("should successfully list two datasets", async function () {
+			await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
+			await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
+			const result = await facade.listDatasets();
+			const expected = [
+				{
+					id: "ubc1",
+					kind: InsightDatasetKind.Sections,
+					numRows: 64612,
+				},
+				{
+					id: "ubc2",
+					kind: InsightDatasetKind.Sections,
+					numRows: 64612,
+				},
+			];
+			expect(result).to.deep.equal(expected);
+		});
+
+		it("should successfully list when no dataset has been added", async function () {
+			const result = await facade.listDatasets();
+			expect(result).to.deep.equal([]);
+		});
 	});
 
 	describe("PerformQuery", function () {
