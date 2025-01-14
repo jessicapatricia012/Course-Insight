@@ -34,9 +34,10 @@ describe("InsightFacade", function () {
 	});
 
 	describe("AddDataset", function () {
+		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
 		it("should reject with  an empty dataset id", async function () {
 			facade = new InsightFacade();
-			sections = await getContentFromArchives("yourzipfile.zip");
+			// sections = await getContentFromArchives("yourzipfile.zip");
 
 			try {
 				await facade.addDataset("", sections, InsightDatasetKind.Sections);
@@ -53,7 +54,7 @@ describe("InsightFacade", function () {
 
 		it("should reject with id that has _", async function () {
 			facade = new InsightFacade();
-			sections = await getContentFromArchives("yourzipfile.zip");
+			// sections = await getContentFromArchives("yourzipfile.zip");
 
 			try {
 				await facade.addDataset("_ubc", sections, InsightDatasetKind.Sections);
@@ -79,7 +80,7 @@ describe("InsightFacade", function () {
 
 		it("should reject with id that is only whitespace", async function () {
 			facade = new InsightFacade();
-			sections = await getContentFromArchives("yourzipfile.zip");
+			// sections = await getContentFromArchives("yourzipfile.zip");
 
 			try {
 				await facade.addDataset(" ", sections, InsightDatasetKind.Sections);
@@ -96,7 +97,7 @@ describe("InsightFacade", function () {
 
 		it("should reject with id that is the same as the id of an already added dataset", async function () {
 			facade = new InsightFacade();
-			sections = await getContentFromArchives("yourzipfile.zip");
+			// sections = await getContentFromArchives("yourzipfile.zip");
 
 			try {
 				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
@@ -106,6 +107,86 @@ describe("InsightFacade", function () {
 				expect(err).to.be.an.instanceOf(InsightError);
 			}
 		});
+		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
+
+		// TESTS AGAINST CONTENT ///////////////////////////////////////////////////////////////////////////
+	});
+
+	describe("removeDataset", function () {
+		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
+		it("should reject with  an empty dataset id", async function () {
+			facade = new InsightFacade();
+			// sections = await getContentFromArchives("yourzipfile.zip");
+
+			try {
+				await facade.removeDataset("");
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should successfully add a dataset (first)", async function () {
+			const result = await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+			expect(result).to.have.members(["ubc"]);
+		});
+
+		it("should reject with id that has _", async function () {
+			facade = new InsightFacade();
+			// sections = await getContentFromArchives("yourzipfile.zip");
+
+			try {
+				await facade.removeDataset("_ubc");
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+
+			try {
+				await facade.removeDataset("ubc_");
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+
+			try {
+				await facade.removeDataset("u_bc");
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject with id that is only whitespace", async function () {
+			facade = new InsightFacade();
+			// sections = await getContentFromArchives("yourzipfile.zip");
+
+			try {
+				await facade.removeDataset(" ");
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should successfully remove a dataset with whitespace and other character", async function () {
+			await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
+			const result = await facade.removeDataset("ubc ubc");
+			expect(result).to.have.members(["ubc ubc"]);
+		});
+
+		it("should reject with id that is not yet added", async function () {
+			facade = new InsightFacade();
+			// sections = await getContentFromArchives("yourzipfile.zip");
+
+			try {
+				await facade.removeDataset("ubc");
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
 	});
 
 	describe("PerformQuery", function () {
