@@ -19,10 +19,12 @@ describe("InsightFacade", function () {
 
 	// Declare datasets used in tests. You should add more datasets like this!
 	let sections: string;
+	let noSection: string;
 
 	before(async function () {
 		// This block runs once and loads the datasets.
 		sections = await getContentFromArchives("pair.zip");
+		noSection = await getContentFromArchives("noSection.zip");
 
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
@@ -47,6 +49,12 @@ describe("InsightFacade", function () {
 		it("should successfully add a dataset (first)", async function () {
 			const result = await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
 			expect(result).to.have.members(["ubc"]);
+		});
+
+		it("should successfully add two datasets", async function () {
+			await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
+			const result = await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
+			expect(result).to.have.members(["ubc1", "ubc2"]);
 		});
 
 		it("should reject adding with id that has _", async function () {
@@ -97,7 +105,15 @@ describe("InsightFacade", function () {
 		});
 		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
 
-		// TESTS AGAINST CONTENT ///////////////////////////////////////////////////////////////////////////
+		// TESTS AGAINST CONTENT ///////////////////////////////////////////////////////////////
+		it("should reject with invalid section", async function () {
+			try {
+				await facade.addDataset("ubc", noSection, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
 	});
 
 	describe("removeDataset", function () {
@@ -124,7 +140,7 @@ describe("InsightFacade", function () {
 				await facade.removeDataset("ubc");
 				expect.fail("Should have thrown!");
 			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
+				expect(err).to.be.an.instanceOf(NotFoundError);
 			}
 		});
 
