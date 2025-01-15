@@ -1,4 +1,11 @@
-import { IInsightFacade, InsightDatasetKind, InsightError, NotFoundError } from "../../src/controller/IInsightFacade"; //InsightResult
+import {
+	IInsightFacade,
+	InsightDatasetKind,
+	InsightError,
+	NotFoundError,
+	InsightResult,
+	ResultTooLargeError,
+} from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
@@ -20,11 +27,17 @@ describe("InsightFacade", function () {
 	// Declare datasets used in tests. You should add more datasets like this!
 	let sections: string;
 	let noSection: string;
+	let notJson: string;
+	let empty: string;
+	let noResult: string;
 
 	before(async function () {
 		// This block runs once and loads the datasets.
 		sections = await getContentFromArchives("pair.zip");
 		noSection = await getContentFromArchives("noSection.zip");
+		notJson = await getContentFromArchives("notJson.zip");
+		empty = await getContentFromArchives("empty.zip");
+		noResult = await getContentFromArchives("noResult.zip");
 
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
@@ -57,21 +70,25 @@ describe("InsightFacade", function () {
 			expect(result).to.have.members(["ubc1", "ubc2"]);
 		});
 
-		it("should reject adding with id that has _", async function () {
+		it("should reject adding with id that starts with _", async function () {
 			try {
 				await facade.addDataset("_ubc", sections, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
 			}
+		});
 
+		it("should reject adding with id that ends with _", async function () {
 			try {
 				await facade.addDataset("ubc_", sections, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
 			}
+		});
 
+		it("should reject adding with id that has _ in between", async function () {
 			try {
 				await facade.addDataset("u_bc", sections, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
@@ -106,9 +123,36 @@ describe("InsightFacade", function () {
 		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
 
 		// TESTS AGAINST CONTENT ///////////////////////////////////////////////////////////////
-		it("should reject with invalid section", async function () {
+		it("should reject adding with invalid section", async function () {
 			try {
 				await facade.addDataset("ubc", noSection, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with invalid course (not json format)", async function () {
+			try {
+				await facade.addDataset("ubc", notJson, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with empty zip (no course/ folder)", async function () {
+			try {
+				await facade.addDataset("ubc", empty, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with no result key", async function () {
+			try {
+				await facade.addDataset("ubc", noResult, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
@@ -252,15 +296,26 @@ describe("InsightFacade", function () {
 			}
 			// Destructuring assignment to reduce property accesses
 			const { input, expected, errorExpected } = await loadTestQuery(this.test.title);
-			//let result: InsightResult[] = []; // dummy value before being reassigned
+			let result: InsightResult[] = []; // dummy value before being reassigned
 			try {
-				await facade.performQuery(input);
+				result = await facade.performQuery(input);
+				//////////
+				if (errorExpected) {
+					// If error was expected but no error occurred, fail the test
+					return expect.fail("Expected an error but no error occured");
+				} else {
+					expect(result).to.deep.equal(expected);
+				}
+				///////////////
 			} catch (err) {
 				if (!errorExpected) {
 					expect.fail(`performQuery threw unexpected error: ${err}`);
 				}
-				// TODO: replace this failing assertion with your assertions. You will need to reason about the code in this function
-				// to determine what to put here :)
+				if (expected === "ResultTooLargeError") {
+					expect(err).to.be.instanceOf(ResultTooLargeError);
+				} else {
+					expect(err).to.be.instanceOf(InsightError);
+				}
 				return expect.fail("Write your assertion(s) here.");
 			}
 			if (errorExpected) {
