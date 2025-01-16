@@ -1,0 +1,36 @@
+{
+    "title": "EBNF 5",
+    "input": {
+        "WHERE": {
+          "AND": [
+            {
+              "OR": [
+                {
+                  "GT": {
+                    "sections_avg": 95
+                  }
+                },
+                {
+                  "LT": {
+                    "sections_avg": 50
+                  }
+                }
+              ]
+            },
+            {
+              "IS": {
+                "sections_dept": "math"
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_dept",
+            "sections_avg"
+          ],
+          "ORDER": "sections_avg"
+        }
+      },
+    "errorExpected": false,
+    "expected":[{"sections_dept":"math","sections_avg":46.52},{"sections_dept":"math","sections_avg":49.95},{"sections_dept":"math","sections_avg":95.56},{"sections_dept":"math","sections_avg":95.56},{"sections_dept":"math","sections_avg":95.67},{"sections_dept":"math","sections_avg":95.67},{"sections_dept":"math","sections_avg":96.25},{"sections_dept":"math","sections_avg":96.25},{"sections_dept":"math","sections_avg":96.33},{"sections_dept":"math","sections_avg":96.44},{"sections_dept":"math","sections_avg":96.44},{"sections_dept":"math","sections_avg":96.83},{"sections_dept":"math","sections_avg":96.83},{"sections_dept":"math","sections_avg":97.09},{"sections_dept":"math","sections_avg":97.09},{"sections_dept":"math","sections_avg":97.25},{"sections_dept":"math","sections_avg":97.25},{"sections_dept":"math","sections_avg":97.48},{"sections_dept":"math","sections_avg":97.48},{"sections_dept":"math","sections_avg":99.78},{"sections_dept":"math","sections_avg":99.78}]}

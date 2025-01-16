@@ -1,0 +1,28 @@
+{
+    "title": "EBNF 10",
+    "input": {
+        "WHERE": {
+          "AND": [
+            {
+              "GT": {
+                "sections_pass": 400
+              }
+            },
+            {
+              "LT": {
+                "sections_fail": 5
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_pass",
+            "sections_fail"
+          ]
+        }
+      }
+    
+    ,
+    "errorExpected": false,
+    "expected":[{"sections_pass":587,"sections_fail":2},{"sections_pass":554,"sections_fail":2},{"sections_pass":568,"sections_fail":1},{"sections_pass":456,"sections_fail":0},{"sections_pass":456,"sections_fail":0},{"sections_pass":412,"sections_fail":0},{"sections_pass":596,"sections_fail":1},{"sections_pass":522,"sections_fail":0},{"sections_pass":718,"sections_fail":0},{"sections_pass":537,"sections_fail":0},{"sections_pass":544,"sections_fail":2},{"sections_pass":833,"sections_fail":2},{"sections_pass":1377,"sections_fail":4},{"sections_pass":423,"sections_fail":2},{"sections_pass":1049,"sections_fail":3},{"sections_pass":549,"sections_fail":1},{"sections_pass":1084,"sections_fail":4},{"sections_pass":1086,"sections_fail":1},{"sections_pass":1042,"sections_fail":1},{"sections_pass":1156,"sections_fail":1},{"sections_pass":1057,"sections_fail":2},{"sections_pass":403,"sections_fail":0},{"sections_pass":436,"sections_fail":1},{"sections_pass":1367,"sections_fail":3},{"sections_pass":577,"sections_fail":4},{"sections_pass":673,"sections_fail":1},{"sections_pass":662,"sections_fail":4},{"sections_pass":697,"sections_fail":0},{"sections_pass":563,"sections_fail":1},{"sections_pass":693,"sections_fail":1},{"sections_pass":832,"sections_fail":1},{"sections_pass":737,"sections_fail":3},{"sections_pass":718,"sections_fail":2},{"sections_pass":788,"sections_fail":0},{"sections_pass":811,"sections_fail":4},{"sections_pass":781,"sections_fail":4},{"sections_pass":630,"sections_fail":1},{"sections_pass":816,"sections_fail":4},{"sections_pass":713,"sections_fail":1},{"sections_pass":771,"sections_fail":4},{"sections_pass":689,"sections_fail":1},{"sections_pass":556,"sections_fail":1},{"sections_pass":617,"sections_fail":1},{"sections_pass":757,"sections_fail":2},{"sections_pass":712,"sections_fail":1},{"sections_pass":637,"sections_fail":0},{"sections_pass":701,"sections_fail":4},{"sections_pass":404,"sections_fail":1},{"sections_pass":479,"sections_fail":4},{"sections_pass":428,"sections_fail":2},{"sections_pass":440,"sections_fail":4},{"sections_pass":443,"sections_fail":2},{"sections_pass":504,"sections_fail":2},{"sections_pass":777,"sections_fail":3},{"sections_pass":450,"sections_fail":4}]}

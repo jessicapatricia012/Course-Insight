@@ -1,0 +1,18 @@
+{
+    "title": "Invalid field",
+    "input": {
+        "WHERE": {
+          "IS": {
+            "sections_year": "*2020*"
+          }
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_year"
+          ]
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

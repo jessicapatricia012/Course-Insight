@@ -1,0 +1,29 @@
+{
+    "title": "Invalid field",
+    "input": {
+        "WHERE": {
+          "XOR": [
+            {
+              "EQ": {
+                "sections_avg": 85
+              }
+            },
+            {
+              "LT": {
+                "sections_pass": 50
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_avg",
+            "sections_pass"
+          ]
+        }
+      }
+      ,
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

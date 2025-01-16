@@ -509,8 +509,8 @@ describe("InsightFacade", function () {
 			// Add the datasets to InsightFacade once.
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
-				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
-				facade.addDataset("sections2", sections, InsightDatasetKind.Sections),
+				//facade.addDataset("sections", sections, InsightDatasetKind.Sections),
+				//facade.addDataset("sections2", sections, InsightDatasetKind.Sections),
 			];
 
 			try {
@@ -585,5 +585,23 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidValueGT.json] Invalid value GT", checkQuery);
 		it("[invalid/invalidValueLT.json] Invalid value LT", checkQuery);
 		it("[invalid/nullQuery.json] null query", checkQuery);
+
+		//it("[invalid/invalid1.json] empty AND", checkQuery);
+		it("[invalid/invalid2.json] Invalid field 2", checkQuery);
+		it("[invalid/invalid3.json] invalid key 2", checkQuery);
+		it("[invalid/invalidAnd2.json] invalid NOT", checkQuery);
+		it("[invalid/invalidFilterKey4.json] Invalid value GT", checkQuery);
+		it("[invalid/invalidFilterKey5.json] Invalid value LT", checkQuery);
+		it("[invalid/invalidIs.json] null query", checkQuery);
+		it("[invalid/invalidIs2.json] invalid NOT", checkQuery);
+		it("[invalid/invalidOrder.json] Invalid value GT", checkQuery);
+		it("[invalid/noUnderscore.json] Invalid value LT", checkQuery);
+
+		it("[valid/EBNF5.json] EBNF 5", checkQuery);
+		it("[valid/EBNF6.json] EBNF 6", checkQuery);
+		it("[valid/EBNF7.json] EBNF 7", checkQuery);
+		it("[valid/EBNF8.json] EBNF 8", checkQuery);
+		it("[valid/EBNF9.json] EBNF 9", checkQuery);
+		it("[valid/EBNF10.json] EBNF 10", checkQuery);
 	});
 });
