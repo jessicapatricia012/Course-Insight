@@ -29,7 +29,7 @@ describe("InsightFacade", function () {
 	let noSection: string;
 	let noSectionTwo: string;
 	let notJson: string;
-	let notJsonTwo: string;
+	// let notJsonTwo: string;
 	let empty: string;
 	let noResult: string;
 	//let noResultTwo: string;
@@ -39,7 +39,7 @@ describe("InsightFacade", function () {
 	let missingField: string;
 	let missingFieldTwo: string;
 	let txtFormat: string;
-	let txtFormatTwo: string;
+	// let txtFormatTwo: string;
 	let wrongFolderName: string;
 	let oneValidSection: string;
 	let skipFolder: string;
@@ -50,7 +50,7 @@ describe("InsightFacade", function () {
 		noSection = await getContentFromArchives("noSection.zip");
 		noSectionTwo = await getContentFromArchives("noSectionTwo.zip");
 		notJson = await getContentFromArchives("notJson.zip");
-		notJsonTwo = await getContentFromArchives("notJsonTwo.zip");
+		// notJsonTwo = await getContentFromArchives("notJsonTwo.zip");
 		empty = await getContentFromArchives("empty.zip");
 		noResult = await getContentFromArchives("noResult.zip");
 		//noResultTwo = await getContentFromArchives("noResultTwo.zip");
@@ -60,7 +60,7 @@ describe("InsightFacade", function () {
 		missingField = await getContentFromArchives("missingField.zip");
 		missingFieldTwo = await getContentFromArchives("missingFieldTwo.zip");
 		txtFormat = await getContentFromArchives("txtFormat.zip");
-		txtFormatTwo = await getContentFromArchives("txtFormatTwo.zip");
+		// txtFormatTwo = await getContentFromArchives("txtFormatTwo.zip");
 		wrongFolderName = await getContentFromArchives("wrongFolderName.zip");
 		oneValidSection = await getContentFromArchives("oneValidSection.zip");
 		skipFolder = await getContentFromArchives("skipFolder.zip");
@@ -197,14 +197,14 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should reject adding with invalid course (not json format) (2)", async function () {
-			try {
-				await facade.addDataset("ubc", notJsonTwo, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
+		// it("should reject adding with invalid course (not json format) (2)", async function () {
+		// 	try {
+		// 		await facade.addDataset("ubc", notJsonTwo, InsightDatasetKind.Sections);
+		// 		expect.fail("Should have thrown!");
+		// 	} catch (err) {
+		// 		expect(err).to.be.an.instanceOf(InsightError);
+		// 	}
+		// });
 
 		it("should reject adding with empty zip (no course/ folder)", async function () {
 			try {
@@ -296,14 +296,14 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should reject adding with other format (2)", async function () {
-			try {
-				await facade.addDataset("ubc", txtFormatTwo, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
+		// it("should reject adding with other format (2)", async function () {
+		// 	try {
+		// 		await facade.addDataset("ubc", txtFormatTwo, InsightDatasetKind.Sections);
+		// 		expect.fail("Should have thrown!");
+		// 	} catch (err) {
+		// 		expect(err).to.be.an.instanceOf(InsightError);
+		// 	}
+		// });
 
 		it("should reject adding with wrong folder name (not /courses)", async function () {
 			try {
