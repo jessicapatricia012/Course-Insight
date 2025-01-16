@@ -566,6 +566,7 @@ describe("InsightFacade", function () {
 		it("[invalid/twoDatasets.json] Query references two datasets", checkQuery);
 		it("[valid/EBNF1.json] EBNF with NOT", checkQuery);
 		it("[valid/EBNF2.json] EBNF with double NOT", checkQuery);
-
+		it("[invalid/invalidFilterKey.json] Invalid filter key after NOT", checkQuery);
+		it("[invalid/invalidEQ.json] Query invalid key type in EQ", checkQuery);
 	});
 });

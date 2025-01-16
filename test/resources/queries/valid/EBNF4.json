@@ -1,0 +1,39 @@
+{
+    "title": "EBNF with AND and OR not empty",
+    "input": {
+        "WHERE": {
+            "AND": [
+                {
+                    "OR": [
+                        {
+                            "GT": {
+                                "sections_avg": 70
+                            }
+                        },
+                        {
+                            "LT": {
+                                "sections_avg": 71
+                            }
+                        }
+                    ]
+                },
+                {
+                    "EQ": {
+                        "sections_year": 2020
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "sections_dept",
+                "sections_year",
+                "sections_avg"
+            ],
+            "ORDER": "sections_avg"
+        }
+    }
+    
+    ,
+    "errorExpected": false,
+    "expected":[]}
