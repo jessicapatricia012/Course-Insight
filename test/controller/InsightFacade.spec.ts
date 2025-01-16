@@ -39,6 +39,7 @@ describe("InsightFacade", function () {
 	let missingField: string;
 	let missingFieldTwo: string;
 	let txtFormat: string;
+	let txtFormatTwo: string;
 	let wrongFolderName: string;
 	let oneValidSection: string;
 	let skipFolder: string;
@@ -59,6 +60,7 @@ describe("InsightFacade", function () {
 		missingField = await getContentFromArchives("missingField.zip");
 		missingFieldTwo = await getContentFromArchives("missingFieldTwo.zip");
 		txtFormat = await getContentFromArchives("txtFormat.zip");
+		txtFormatTwo = await getContentFromArchives("txtFormatTwo.zip");
 		wrongFolderName = await getContentFromArchives("wrongFolderName.zip");
 		oneValidSection = await getContentFromArchives("oneValidSection.zip");
 		skipFolder = await getContentFromArchives("skipFolder.zip");
@@ -288,6 +290,15 @@ describe("InsightFacade", function () {
 		it("should reject adding with other format", async function () {
 			try {
 				await facade.addDataset("ubc", txtFormat, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with other format (2)", async function () {
+			try {
+				await facade.addDataset("ubc", txtFormatTwo, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
