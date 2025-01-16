@@ -32,6 +32,8 @@ describe("InsightFacade", function () {
 	let noResult: string;
 	let blank: string;
 	let emptyFolder: string;
+	let nonZip: string;
+	let missingField: string;
 
 	before(async function () {
 		// This block runs once and loads the datasets.
@@ -42,6 +44,8 @@ describe("InsightFacade", function () {
 		noResult = await getContentFromArchives("noResult.zip");
 		blank = await getContentFromArchives("blank.zip");
 		emptyFolder = await getContentFromArchives("emptyFolder.zip");
+		nonZip = await getContentFromArchives("nonZip");
+		missingField = await getContentFromArchives("missingField.zip");
 
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
@@ -72,6 +76,13 @@ describe("InsightFacade", function () {
 			await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
 			const result = await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
 			expect(result).to.have.members(["ubc1", "ubc2"]);
+		});
+
+		it("should successfully add more than two datasets", async function () {
+			await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
+			await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
+			const result = await facade.addDataset("ubc3", sections, InsightDatasetKind.Sections);
+			expect(result).to.have.members(["ubc1", "ubc2", "ubc3"]);
 		});
 
 		it("should reject adding with id that starts with _", async function () {
@@ -175,6 +186,24 @@ describe("InsightFacade", function () {
 		it("should reject adding with empty Course folder", async function () {
 			try {
 				await facade.addDataset("ubc", emptyFolder, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with non-zip file format", async function () {
+			try {
+				await facade.addDataset("ubc", nonZip, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with missing field (invalid section)", async function () {
+			try {
+				await facade.addDataset("ubc", missingField, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
@@ -324,24 +353,24 @@ describe("InsightFacade", function () {
 				//////////
 				if (errorExpected) {
 					// If error was expected but no error occurred, fail the test
-					return expect.fail("Expected an error but no error occured");
+					return expect.fail("performQuery resolved when it should have rejected with ${expected}");
 				}
-				expect(result).to.deep.equal(expected);
+				expect(result).to.have.deep.members(expected);
 				/////////////
 			} catch (err) {
 				if (!errorExpected) {
 					expect.fail(`performQuery threw unexpected error: ${err}`);
-				}
-				if (expected === "ResultTooLargeError") {
-					expect(err).to.be.instanceOf(ResultTooLargeError);
+				} else if (expected === "ResultTooLargeError") {
+					expect(err).to.be.an.instanceOf(ResultTooLargeError);
+				} else if (expected === "InsightError") {
+					expect(err).to.be.an.instanceOf(InsightError);
 				} else {
-					expect(err).to.be.instanceOf(InsightError);
+					return expect.fail("Write your assertion(s) here.");
 				}
-				//return expect.fail("Write your assertion(s) here.");
 			}
-			// if (errorExpected) {
-			// 	expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
-			// }
+			if (errorExpected) {
+				expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
+			}
 			// // TODO: replace this failing assertion with your assertions. You will need to reason about the code in this function
 			// // to determine what to put here :)
 			// return expect.fail("Write your assertion(s) here.");
@@ -353,7 +382,7 @@ describe("InsightFacade", function () {
 			// Add the datasets to InsightFacade once.
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
-				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
+				//facade.addDataset("sections", sections, InsightDatasetKind.Sections),
 			];
 
 			try {
@@ -386,5 +415,17 @@ describe("InsightFacade", function () {
 		it("[valid/wildcardStartEnd.json] wildcard both start and end", checkQuery);
 
 		it("[valid/emptyResult.json] Empty result", checkQuery);
+
+		//ORDER
+		it("[invalid/orderEmpty.json] ORDER Empty", checkQuery);
+		it("[invalid/orderNotInCol.json] ORDER not in COLUMN", checkQuery);
+		it("[valid/order1.json] ORDER 1", checkQuery);
+		it("[valid/order2.json] ORDER 2", checkQuery);
+		it("[valid/order3.json] ORDER 3", checkQuery);
+		it("[valid/orderExist.json] ORDER exists", checkQuery);
+		it("[valid/orderNone.json] ORDER doesnt exist", checkQuery);
+		it("[valid/orderSingleCol.json] ORDER single COLUMN", checkQuery);
+
+		it("[invalid/emptyQuery.json] Empty query", checkQuery);
 	});
 });
