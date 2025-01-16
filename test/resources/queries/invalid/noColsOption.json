@@ -1,0 +1,16 @@
+{
+    "title": "Query with no columns in OPTIONS",
+    "input": {
+      "WHERE": {
+        "GT": {
+          "sections_avg": 50
+        }
+      },
+      "OPTIONS": {
+        "COLUMNS": []
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

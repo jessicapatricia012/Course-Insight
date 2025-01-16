@@ -1,0 +1,17 @@
+{
+    "title": "Wildcard at both ends",
+    "input": {
+      "WHERE": {
+        "IS": {
+          "sections_title": "*atabase des*"
+        }
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "sections_title"
+        ]
+      }
+    },
+    "errorExpected": false,
+    "expected":[{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"},{"sections_title":"database design"}]}
+  

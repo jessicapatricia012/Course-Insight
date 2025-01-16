@@ -1,0 +1,18 @@
+{
+    "title": "Invalid wildcard position: Multiple asterisks '**bio**'",
+    "input": {
+      "WHERE": {
+        "IS": {
+          "sections_dept": "**bio**"
+        }
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "sections_dept"
+        ]
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

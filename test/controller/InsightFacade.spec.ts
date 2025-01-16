@@ -30,6 +30,8 @@ describe("InsightFacade", function () {
 	let notJson: string;
 	let empty: string;
 	let noResult: string;
+	let blank: string;
+	let emptyFolder: string;
 
 	before(async function () {
 		// This block runs once and loads the datasets.
@@ -38,6 +40,8 @@ describe("InsightFacade", function () {
 		notJson = await getContentFromArchives("notJson.zip");
 		empty = await getContentFromArchives("empty.zip");
 		noResult = await getContentFromArchives("noResult.zip");
+		blank = await getContentFromArchives("blank.zip");
+		emptyFolder = await getContentFromArchives("emptyFolder.zip");
 
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
@@ -153,6 +157,24 @@ describe("InsightFacade", function () {
 		it("should reject adding with no result key", async function () {
 			try {
 				await facade.addDataset("ubc", noResult, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with blank file", async function () {
+			try {
+				await facade.addDataset("ubc", blank, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with empty Course folder", async function () {
+			try {
+				await facade.addDataset("ubc", emptyFolder, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
@@ -303,10 +325,9 @@ describe("InsightFacade", function () {
 				if (errorExpected) {
 					// If error was expected but no error occurred, fail the test
 					return expect.fail("Expected an error but no error occured");
-				} else {
-					expect(result).to.deep.equal(expected);
 				}
-				///////////////
+				expect(result).to.deep.equal(expected);
+				/////////////
 			} catch (err) {
 				if (!errorExpected) {
 					expect.fail(`performQuery threw unexpected error: ${err}`);
@@ -316,14 +337,14 @@ describe("InsightFacade", function () {
 				} else {
 					expect(err).to.be.instanceOf(InsightError);
 				}
-				return expect.fail("Write your assertion(s) here.");
+				//return expect.fail("Write your assertion(s) here.");
 			}
-			if (errorExpected) {
-				expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
-			}
-			// TODO: replace this failing assertion with your assertions. You will need to reason about the code in this function
-			// to determine what to put here :)
-			return expect.fail("Write your assertion(s) here.");
+			// if (errorExpected) {
+			// 	expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
+			// }
+			// // TODO: replace this failing assertion with your assertions. You will need to reason about the code in this function
+			// // to determine what to put here :)
+			// return expect.fail("Write your assertion(s) here.");
 		}
 
 		before(async function () {
@@ -350,5 +371,20 @@ describe("InsightFacade", function () {
 		// The relative path to the query file must be given in square brackets.
 		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery);
 		it("[invalid/invalid.json] Query missing WHERE", checkQuery);
+
+		it("[invalid/invalidKey.json] Query invalid key", checkQuery);
+		it("[invalid/exceedResultLimit.json] Query exceeding result limit", checkQuery);
+		it("[invalid/invalidOrderKey.json] Query with invalid ORDER key", checkQuery);
+		it("[invalid/noColsOption.json] Query with no columns in OPTIONS", checkQuery);
+
+		//wildcards
+		it("[invalid/wildcardMiddle.json] Wildcard Middle", checkQuery);
+		it("[invalid/invalidWildcard.json] Invalid Wildcard", checkQuery);
+		it("[valid/noWildcard.json] No wildcard", checkQuery);
+		it("[valid/wildcardEnd.json] wildcard at the end", checkQuery);
+		it("[valid/wildcardStart.json] wildcard at the start", checkQuery);
+		it("[valid/wildcardStartEnd.json] wildcard both start and end", checkQuery);
+
+		it("[valid/emptyResult.json] Empty result", checkQuery);
 	});
 });

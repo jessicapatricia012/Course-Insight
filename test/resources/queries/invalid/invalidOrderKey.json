@@ -1,0 +1,20 @@
+{
+    "title": "Query with invalid ORDER key",
+    "input": {
+      "WHERE": {
+        "LT": {
+          "sections_avg": 60
+        }
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "sections_dept",
+          "sections_avg"
+        ],
+        "ORDER": "sections_invalid"
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

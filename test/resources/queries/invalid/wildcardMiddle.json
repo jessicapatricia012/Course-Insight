@@ -1,0 +1,18 @@
+{
+    "title": "Wildcard in the middle",
+    "input": {
+      "WHERE": {
+        "IS": {
+          "sections_dept": "bio*tech"
+        }
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "sections_dept"
+        ]
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  
