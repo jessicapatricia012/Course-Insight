@@ -1,0 +1,17 @@
+{
+	"title": "AND must be a non-empty array",
+	"input":   {
+		"WHERE": {
+			"AND": {
+				"sections_dept": "adhe"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_avg"],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

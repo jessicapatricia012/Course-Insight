@@ -571,5 +571,10 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidEQ.json] Query invalid key type in EQ", checkQuery);
 		it("[valid/EBNF3.json] EBNF 3", checkQuery);
 		it("[valid/EBNF4.json] EBNF 4", checkQuery);
+		it("[invalid/invalidCols.json] Invalid cols", checkQuery);
+		it("[invalid/invalidFilterKey2.json]Invalid filter key after WHERE", checkQuery);
+		it("[invalid/invalidFilterKey3.json] Invalid filter key 3", checkQuery);
+		it("[invalid/noColsOption2.json] No cols in OPTION 2", checkQuery);
+		it("[invalid/invalidAND.json] invalid AND", checkQuery);
 	});
 });
