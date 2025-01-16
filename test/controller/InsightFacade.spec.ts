@@ -44,7 +44,7 @@ describe("InsightFacade", function () {
 		noResult = await getContentFromArchives("noResult.zip");
 		blank = await getContentFromArchives("blank.zip");
 		emptyFolder = await getContentFromArchives("emptyFolder.zip");
-		nonZip = await getContentFromArchives("nonZip");
+		nonZip = await getContentFromArchives("nonzip");
 		missingField = await getContentFromArchives("missingField.zip");
 
 		// Just in case there is anything hanging around from a previous run of the test suite
