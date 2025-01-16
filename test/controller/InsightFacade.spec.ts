@@ -565,5 +565,7 @@ describe("InsightFacade", function () {
 		it("[valid/validComplex.json] Complex valid", checkQuery);
 		it("[invalid/twoDatasets.json] Query references two datasets", checkQuery);
 		it("[valid/EBNF1.json] EBNF with NOT", checkQuery);
+		it("[valid/EBNF2.json] EBNF with double NOT", checkQuery);
+
 	});
 });
