@@ -530,6 +530,7 @@ describe("InsightFacade", function () {
 		it("[invalid/invalid.json] Query missing WHERE", checkQuery);
 
 		it("[invalid/exceedResultLimit.json] Query exceeding result limit", checkQuery);
+		it("[invalid/emptyWhere.json] Query exceeding result limit empty WHERE", checkQuery);
 
 		//wildcards
 		it("[invalid/wildcardMiddle.json] Wildcard Middle", checkQuery);
@@ -568,5 +569,7 @@ describe("InsightFacade", function () {
 		it("[valid/EBNF2.json] EBNF with double NOT", checkQuery);
 		it("[invalid/invalidFilterKey.json] Invalid filter key after NOT", checkQuery);
 		it("[invalid/invalidEQ.json] Query invalid key type in EQ", checkQuery);
+		it("[valid/EBNF3.json] EBNF 3", checkQuery);
+		it("[valid/EBNF4.json] EBNF 4", checkQuery);
 	});
 });
