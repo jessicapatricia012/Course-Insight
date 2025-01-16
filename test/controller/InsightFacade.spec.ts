@@ -27,27 +27,41 @@ describe("InsightFacade", function () {
 	// Declare datasets used in tests. You should add more datasets like this!
 	let sections: string;
 	let noSection: string;
+	let noSectionTwo: string;
 	let notJson: string;
+	let notJsonTwo: string;
 	let empty: string;
 	let noResult: string;
+	let noResultTwo: string;
 	let blank: string;
 	let emptyFolder: string;
 	let nonZip: string;
 	let missingField: string;
+	let missingFieldTwo: string;
 	let txtFormat: string;
+	let wrongFolderName: string;
+	let oneValidSection: string;
+	let skipFolder: string;
 
 	before(async function () {
 		// This block runs once and loads the datasets.
 		sections = await getContentFromArchives("pair.zip");
 		noSection = await getContentFromArchives("noSection.zip");
+		noSectionTwo = await getContentFromArchives("noSectionTwo.zip");
 		notJson = await getContentFromArchives("notJson.zip");
+		notJsonTwo = await getContentFromArchives("notJsonTwo.zip");
 		empty = await getContentFromArchives("empty.zip");
 		noResult = await getContentFromArchives("noResult.zip");
+		noResultTwo = await getContentFromArchives("noResultTwo.zip");
 		blank = await getContentFromArchives("blank.zip");
 		emptyFolder = await getContentFromArchives("emptyFolder.zip");
 		nonZip = await getContentFromArchives("nonzip");
 		missingField = await getContentFromArchives("missingField.zip");
+		missingFieldTwo = await getContentFromArchives("missingFieldTwo.zip");
 		txtFormat = await getContentFromArchives("txtFormat.zip");
+		wrongFolderName = await getContentFromArchives("wrongFolderName.zip");
+		oneValidSection = await getContentFromArchives("oneValidSection.zip");
+		skipFolder = await getContentFromArchives("skipFolder.zip");
 
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
@@ -123,9 +137,23 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject adding with id that is only whitespace (second)", async function () {
+			try {
+				await facade.addDataset("            ", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
 		it("should successfully add a dataset with whitespace and other character", async function () {
 			const result = await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
 			expect(result).to.have.members(["ubc ubc"]);
+		});
+
+		it("should successfully add a dataset with whitespace and other character (second)", async function () {
+			const result = await facade.addDataset(" ubc ubc ", sections, InsightDatasetKind.Sections);
+			expect(result).to.have.members([" ubc ubc "]);
 		});
 
 		it("should reject with id that is the same as the id of an already added dataset", async function () {
@@ -140,9 +168,18 @@ describe("InsightFacade", function () {
 		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
 
 		// TESTS FOR CONTENT ///////////////////////////////////////////////////////////////
-		it("should reject adding with invalid section", async function () {
+		it("should reject adding with no valid section", async function () {
 			try {
 				await facade.addDataset("ubc", noSection, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with no valid section (2)", async function () {
+			try {
+				await facade.addDataset("ubc", noSectionTwo, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
@@ -152,6 +189,15 @@ describe("InsightFacade", function () {
 		it("should reject adding with invalid course (not json format)", async function () {
 			try {
 				await facade.addDataset("ubc", notJson, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with invalid course (not json format) (2)", async function () {
+			try {
+				await facade.addDataset("ubc", notJsonTwo, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
@@ -170,6 +216,15 @@ describe("InsightFacade", function () {
 		it("should reject adding with no result key", async function () {
 			try {
 				await facade.addDataset("ubc", noResult, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with no result key (two)", async function () {
+			try {
+				await facade.addDataset("ubc", noResultTwo, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
@@ -212,6 +267,15 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject adding with missing field (invalid section) 2", async function () {
+			try {
+				await facade.addDataset("ubc", missingFieldTwo, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
 		it("should reject adding with no content", async function () {
 			try {
 				await facade.addDataset("ubc", "", InsightDatasetKind.Sections);
@@ -224,6 +288,29 @@ describe("InsightFacade", function () {
 		it("should reject adding with other format", async function () {
 			try {
 				await facade.addDataset("ubc", txtFormat, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with wrong folder name (not /courses)", async function () {
+			try {
+				await facade.addDataset("ubc", wrongFolderName, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should successfully add a dataset with one valid section", async function () {
+			const result = await facade.addDataset("ubc", oneValidSection, InsightDatasetKind.Sections);
+			expect(result).to.have.members(["ubc"]);
+		});
+
+		it("should reject adding with no folder (straight to jsons)", async function () {
+			try {
+				await facade.addDataset("ubc", skipFolder, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown!");
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
