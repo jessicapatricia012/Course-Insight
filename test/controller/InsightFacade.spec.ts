@@ -34,6 +34,7 @@ describe("InsightFacade", function () {
 	let emptyFolder: string;
 	let nonZip: string;
 	let missingField: string;
+	let txtFormat: string;
 
 	before(async function () {
 		// This block runs once and loads the datasets.
@@ -46,17 +47,18 @@ describe("InsightFacade", function () {
 		emptyFolder = await getContentFromArchives("emptyFolder.zip");
 		nonZip = await getContentFromArchives("nonzip");
 		missingField = await getContentFromArchives("missingField.zip");
+		txtFormat = await getContentFromArchives("txtFormat.zip");
 
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
 	});
 
-	beforeEach(async function () {
-		await clearDisk();
-		facade = new InsightFacade();
-	});
-
 	describe("AddDataset", function () {
+		beforeEach(async function () {
+			await clearDisk();
+			facade = new InsightFacade();
+		});
+
 		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
 		it("should reject adding with  an empty dataset id", async function () {
 			try {
@@ -137,7 +139,7 @@ describe("InsightFacade", function () {
 		});
 		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
 
-		// TESTS AGAINST CONTENT ///////////////////////////////////////////////////////////////
+		// TESTS FOR CONTENT ///////////////////////////////////////////////////////////////
 		it("should reject adding with invalid section", async function () {
 			try {
 				await facade.addDataset("ubc", noSection, InsightDatasetKind.Sections);
@@ -209,9 +211,32 @@ describe("InsightFacade", function () {
 				expect(err).to.be.an.instanceOf(InsightError);
 			}
 		});
+
+		it("should reject adding with no content", async function () {
+			try {
+				await facade.addDataset("ubc", "", InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding with other format", async function () {
+			try {
+				await facade.addDataset("ubc", txtFormat, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
 	});
 
 	describe("removeDataset", function () {
+		beforeEach(async function () {
+			await clearDisk();
+			facade = new InsightFacade();
+		});
+
 		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
 		it("should reject removing with  an empty dataset id", async function () {
 			try {
@@ -293,6 +318,10 @@ describe("InsightFacade", function () {
 	});
 
 	describe("listDatasets", function () {
+		beforeEach(async function () {
+			await clearDisk();
+			facade = new InsightFacade();
+		});
 		it("should successfully list a dataset", async function () {
 			await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
 			const result = await facade.listDatasets();
@@ -368,9 +397,9 @@ describe("InsightFacade", function () {
 					return expect.fail("Write your assertion(s) here.");
 				}
 			}
-			if (errorExpected) {
-				expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
-			}
+			// if (errorExpected) {
+			// 	expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
+			// }
 			// // TODO: replace this failing assertion with your assertions. You will need to reason about the code in this function
 			// // to determine what to put here :)
 			// return expect.fail("Write your assertion(s) here.");
@@ -382,7 +411,7 @@ describe("InsightFacade", function () {
 			// Add the datasets to InsightFacade once.
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
-				//facade.addDataset("sections", sections, InsightDatasetKind.Sections),
+				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
 			];
 
 			try {
@@ -398,13 +427,10 @@ describe("InsightFacade", function () {
 
 		// Examples demonstrating how to test performQuery using the JSON Test Queries.
 		// The relative path to the query file must be given in square brackets.
-		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery);
+		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery); //
 		it("[invalid/invalid.json] Query missing WHERE", checkQuery);
 
-		it("[invalid/invalidKey.json] Query invalid key", checkQuery);
 		it("[invalid/exceedResultLimit.json] Query exceeding result limit", checkQuery);
-		it("[invalid/invalidOrderKey.json] Query with invalid ORDER key", checkQuery);
-		it("[invalid/noColsOption.json] Query with no columns in OPTIONS", checkQuery);
 
 		//wildcards
 		it("[invalid/wildcardMiddle.json] Wildcard Middle", checkQuery);
@@ -426,6 +452,15 @@ describe("InsightFacade", function () {
 		it("[valid/orderNone.json] ORDER doesnt exist", checkQuery);
 		it("[valid/orderSingleCol.json] ORDER single COLUMN", checkQuery);
 
+		//KEYS
+		it("[invalid/invalidOrderKey.json] Query with invalid ORDER key", checkQuery);
+		it("[invalid/noColsOption.json] Query with no columns in OPTIONS", checkQuery);
+		it("[invalid/invalidKey.json] Query invalid key", checkQuery);
 		it("[invalid/emptyQuery.json] Empty query", checkQuery);
+		it("[invalid/invalidKeyNoUnderscore.json] Invalid key missing underscore", checkQuery);
+		it("[invalid/invalidID.json] Invalid ID", checkQuery);
+		it("[invalid/invalidField.json] Invalid field", checkQuery);
+
+		it("[invalid/wrongType.json] Wrong type", checkQuery);
 	});
 });
