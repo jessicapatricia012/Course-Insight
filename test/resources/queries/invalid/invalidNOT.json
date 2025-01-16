@@ -1,0 +1,18 @@
+{
+    "title": "NOT should only have 1 key, has 0",
+    "input": {
+        "WHERE": {
+          "NOT": {}
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_avg",
+            "sections_dept"
+          ],
+          "ORDER": "sections_avg"
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  
