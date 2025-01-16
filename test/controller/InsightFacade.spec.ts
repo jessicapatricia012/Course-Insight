@@ -510,6 +510,7 @@ describe("InsightFacade", function () {
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
 				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
+				facade.addDataset("sections2", sections, InsightDatasetKind.Sections),
 			];
 
 			try {
@@ -560,5 +561,9 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidField.json] Invalid field", checkQuery);
 
 		it("[invalid/wrongType.json] Wrong type", checkQuery);
+
+		it("[valid/validComplex.json] Complex valid", checkQuery);
+		it("[invalid/twoDatasets.json] Query references two datasets", checkQuery);
+		it("[valid/EBNF1.json] EBNF with NOT", checkQuery);
 	});
 });
