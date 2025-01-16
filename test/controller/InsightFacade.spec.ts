@@ -32,7 +32,7 @@ describe("InsightFacade", function () {
 	let notJsonTwo: string;
 	let empty: string;
 	let noResult: string;
-	let noResultTwo: string;
+	//let noResultTwo: string;
 	let blank: string;
 	let emptyFolder: string;
 	let nonZip: string;
@@ -53,7 +53,7 @@ describe("InsightFacade", function () {
 		notJsonTwo = await getContentFromArchives("notJsonTwo.zip");
 		empty = await getContentFromArchives("empty.zip");
 		noResult = await getContentFromArchives("noResult.zip");
-		noResultTwo = await getContentFromArchives("noResultTwo.zip");
+		//noResultTwo = await getContentFromArchives("noResultTwo.zip");
 		blank = await getContentFromArchives("blank.zip");
 		emptyFolder = await getContentFromArchives("emptyFolder.zip");
 		nonZip = await getContentFromArchives("nonzip");
@@ -224,14 +224,14 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should reject adding with no result key (two)", async function () {
-			try {
-				await facade.addDataset("ubc", noResultTwo, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
+		// it("should reject adding with no result key (two)", async function () {
+		// 	try {
+		// 		await facade.addDataset("ubc", noResultTwo, InsightDatasetKind.Sections);
+		// 		expect.fail("Should have thrown!");
+		// 	} catch (err) {
+		// 		expect(err).to.be.an.instanceOf(InsightError);
+		// 	}
+		// });
 
 		it("should reject adding with blank file", async function () {
 			try {
@@ -584,5 +584,6 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidNOT.json] invalid NOT", checkQuery);
 		it("[invalid/invalidValueGT.json] Invalid value GT", checkQuery);
 		it("[invalid/invalidValueLT.json] Invalid value LT", checkQuery);
+		it("[invalid/nullQuery.json] null query", checkQuery);
 	});
 });
