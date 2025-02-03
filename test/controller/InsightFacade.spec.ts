@@ -30,6 +30,7 @@ describe("InsightFacade", function () {
 
 	// Declare datasets used in tests. You should add more datasets like this!
 	let sections: string;
+	let smallPair: string;
 	let noSection: string;
 	let noSectionTwo: string;
 	let notJson: string;
@@ -48,6 +49,7 @@ describe("InsightFacade", function () {
 	before(async function () {
 		// This block runs once and loads the datasets.
 		sections = await getContentFromArchives("pair.zip");
+		smallPair = await getContentFromArchives("smallPair.zip");
 		noSection = await getContentFromArchives("noSection.zip");
 		noSectionTwo = await getContentFromArchives("noSectionTwo.zip");
 		notJson = await getContentFromArchives("notJson.zip");
@@ -90,7 +92,7 @@ describe("InsightFacade", function () {
 
 		it("should successfully add two datasets", async function () {
 			await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
-			const result = await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
+			const result = await facade.addDataset("ubc2", smallPair, InsightDatasetKind.Sections);
 			expect(result).to.have.members(["ubc1", "ubc2"]);
 		});
 

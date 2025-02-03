@@ -37,24 +37,24 @@ export class DatasetProcessor {
 			if (!coursesFolder) {
 				throw new InsightError("Dataset must contain a 'courses' folder");
 			}
-			// Step 3: Get the files in the 'courses' folder and check if there are any files
+			// Get the files in the 'courses' folder and check if there are any files
 			const courseFiles = coursesFolder.files;
 			if (Object.keys(courseFiles).length === 0) {
 				throw new InsightError("No course files found in the 'courses' folder");
 			}
 
-			// Step 4: Collect promises to validate the course files
+			// Collect promises to validate the course files
 			const validationPromises = Object.keys(courseFiles).map(async (fileName) => {
 				const file = courseFiles[fileName];
 
-				// Step 5: Read the content of the file as a string
+				// Read the content of the file as a string
 				const fileContent = await file.async("string");
 
 				try {
 					// Try to parse the content as JSON
 					const parsedData = JSON.parse(fileContent);
 
-					// Step 6: Check if the file contains a 'result' array
+					// Check if the file contains a 'result' array
 					if (parsedData.result && Array.isArray(parsedData.result)) {
 						return true; // Valid course found
 					} else {
@@ -66,7 +66,7 @@ export class DatasetProcessor {
 				}
 			});
 
-			// Step 7: Wait for all validation promises and check if at least one valid course exists
+			// Wait for all validation promises and check if at least one valid course exists
 			const results = await Promise.all(validationPromises);
 			if (!results.includes(true)) {
 				throw new InsightError("No valid course files found in the 'courses' folder");
@@ -101,6 +101,7 @@ export class DatasetProcessor {
 		// Create a new Dataset and assign the sections to it
 		const dataset = new Dataset(id, InsightDatasetKind.Sections);
 		dataset.sections = sections;
+		dataset.numRows = sections.length;
 
 		return dataset;
 	}
@@ -110,15 +111,13 @@ export class DatasetProcessor {
 		const hasCoursesFolder = Object.keys(files).some((key) => key.startsWith("courses/"));
 
 		if (!hasCoursesFolder) {
-			console.log("aa");
 			throw new InsightError("Dataset must contain a 'courses' folder");
 		}
 		const coursesFolder = zip.folder("courses");
 		if (!coursesFolder) {
-			console.log("bb");
-			throw new InsightError("Dataset must contain a 'courses' folder");
+			throw new InsightError("Some error");
 		}
-		//console.log(coursesFolder);
+
 		const courseFiles = coursesFolder.files;
 		if (Object.keys(courseFiles).length === 0) {
 			throw new InsightError("No course files found in the 'courses' folder");
