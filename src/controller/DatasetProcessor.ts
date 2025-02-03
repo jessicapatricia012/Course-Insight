@@ -18,12 +18,12 @@ export class DatasetProcessor {
 	}
 
 	public async isInDisk(id: string): Promise<boolean> {
-		const datasetPath = path.join(this.DATA_DIR, id);
+		const datasetPath = path.join(this.DATA_DIR, `${id}.json`); // Assume datasets are saved as JSON
 		try {
-			const stats = await fs.stat(datasetPath);
-			return stats.isDirectory();
+			await fs.access(datasetPath); // Check if the file exists
+			return true;
 		} catch {
-			return false; // Directory doesn't exist
+			return false; // File doesn't exist
 		}
 	}
 
@@ -77,37 +77,26 @@ export class DatasetProcessor {
 	}
 
 	private isValidSection(section: any): boolean {
-		const validQueryKeys = [
-			{ key: "id", type: "number" },
-			{ key: "course", type: "string" },
-			{ key: "title", type: "string" },
-			{ key: "professor", type: "string" },
-			{ key: "subject", type: "string" },
-			{ key: "year", type: "number" },
-			{ key: "avg", type: "number" },
-			{ key: "pass", type: "number" },
-			{ key: "fail", type: "number" },
-			{ key: "audit", type: "number" },
-		];
-
-		return validQueryKeys.every(({ key, type }) => key in section && typeof section[key] === type);
+		const requiredFields = ["id", "course", "title", "professor", "subject", "year", "avg", "pass", "fail", "audit"];
+		const sectionFields = Object.keys(section).map((field) => field.toLowerCase());
+		// Check if all required fields are present in the section
+		return requiredFields.every((field) => sectionFields.includes(field.toLowerCase()));
 	}
 
 	public async parseContent(id: string, content: string): Promise<Dataset> {
-		// Unzip the content (base64 string)
-		const zip = await JSZip.loadAsync(Buffer.from(content, "base64"));
-
-		// Step 1: Validate courses folder and files
+		let zip = null;
+		try {
+			zip = await JSZip.loadAsync(content, { base64: true });
+		} catch {
+			throw new InsightError("Invalid ZIP format");
+		}
+		// Validate courses folder and files
 		const coursesFolder = await this.checkCoursesFolder(zip);
 
 		const sections: Section[] = [];
 
-		// Step 2: Parse and validate course files
+		// Parse and validate course files
 		await this.processCourseFiles(coursesFolder.files, sections);
-
-		// if (sections.length === 0) {
-		// 	throw new InsightError("No valid sections found in dataset");
-		// }
 
 		// Create a new Dataset and assign the sections to it
 		const dataset = new Dataset(id, InsightDatasetKind.Sections);
@@ -117,11 +106,19 @@ export class DatasetProcessor {
 	}
 
 	private async checkCoursesFolder(zip: JSZip): Promise<JSZip> {
-		const coursesFolder = zip.folder("courses");
-		if (!coursesFolder) {
+		const files = zip.files;
+		const hasCoursesFolder = Object.keys(files).some((key) => key.startsWith("courses/"));
+
+		if (!hasCoursesFolder) {
+			console.log("aa");
 			throw new InsightError("Dataset must contain a 'courses' folder");
 		}
-
+		const coursesFolder = zip.folder("courses");
+		if (!coursesFolder) {
+			console.log("bb");
+			throw new InsightError("Dataset must contain a 'courses' folder");
+		}
+		//console.log(coursesFolder);
 		const courseFiles = coursesFolder.files;
 		if (Object.keys(courseFiles).length === 0) {
 			throw new InsightError("No course files found in the 'courses' folder");
@@ -138,13 +135,8 @@ export class DatasetProcessor {
 			const fileContent = await file.async("string");
 
 			const parsedData = JSON.parse(fileContent);
-
 			if (parsedData.result && Array.isArray(parsedData.result)) {
-				// console.log(`Valid file: ${fileName}, contains ${parsedData.result.length} sections`);
-				// console.log(parsedData.result);
 				allSections.push(...Object.values(parsedData.result));
-				// console.log(Array.isArray(parsedData.result));
-				// console.log(allSections.length);
 			} else {
 				throw new InsightError(`Invalid 'result' key in file: ${fileName}`);
 			}
@@ -152,22 +144,21 @@ export class DatasetProcessor {
 
 		await Promise.allSettled(parsePromises);
 
-		if (allSections.length === 0) {
-			throw new InsightError("No valid sections found in dataset");
-		}
-
 		allSections.forEach((sectionData: any) => {
 			if (this.isValidSection(sectionData)) {
-				//console.warn("valid section:", sectionData);
 				sections.push(new Section(sectionData));
 			} else {
 				//console.warn("Invalid section:", sectionData);
 			}
 		});
+
+		if (sections.length === 0) {
+			throw new InsightError("No valid sections found in dataset");
+		}
 	}
 
 	public async addToDisk(id: string, dataset: Dataset): Promise<string[]> {
-		const datasetPath = path.join(this.DATA_DIR, id);
+		const datasetPath = path.join(this.DATA_DIR, `${id}.json`);
 		try {
 			await fs.ensureDir(this.DATA_DIR);
 			await fs.writeJson(datasetPath, dataset);

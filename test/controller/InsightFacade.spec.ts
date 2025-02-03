@@ -3,11 +3,15 @@ import {
 	InsightDatasetKind,
 	InsightError,
 	// NotFoundError,
-	InsightResult,
-	ResultTooLargeError,
+	// InsightResult,
+	// ResultTooLargeError,
 } from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
-import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
+import {
+	clearDisk,
+	getContentFromArchives,
+	// loadTestQuery
+} from "../TestUtil";
 
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
@@ -296,277 +300,279 @@ describe("InsightFacade", function () {
 		});
 	});
 
-	describe("removeDataset", function () {
-		beforeEach(async function () {
-			await clearDisk();
-			facade = new InsightFacade();
-		});
+	// describe("removeDataset", function () {
+	// 	beforeEach(async function () {
+	// 		await clearDisk();
+	// 		facade = new InsightFacade();
+	// 	});
 
-		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
-		// it("should reject removing with  an empty dataset id", async function () {
-		// 	try {
-		// 		await facade.removeDataset("");
-		// 		expect.fail("Should have thrown!");
-		// 	} catch (err) {
-		// 		expect(err).to.be.an.instanceOf(InsightError);
-		// 	}
-		// });
+	// 	// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
+	// 	it("should reject removing with  an empty dataset id", async function () {
+	// 		try {
+	// 			await facade.removeDataset("");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
 
-		// it("should successfully remove a dataset (first)", async function () {
-		// 	await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
-		// 	const result = await facade.removeDataset("ubc");
-		// 	expect(result).to.equal("ubc");
-		// });
+	// 	it("should successfully remove a dataset (first)", async function () {
+	// 		await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.removeDataset("ubc");
+	// 		expect(result).to.equal("ubc");
+	// 	});
 
-		// it("should reject removing a dataset id that has been removed", async function () {
-		// 	try {
-		// 		await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
-		// 		await facade.removeDataset("ubc");
-		// 		await facade.removeDataset("ubc");
-		// 		expect.fail("Should have thrown!");
-		// 	} catch (err) {
-		// 		expect(err).to.be.an.instanceOf(NotFoundError);
-		// 	}
-		// });
+	// 	it("should reject removing a dataset id that has been removed", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+	// 			await facade.removeDataset("ubc");
+	// 			await facade.removeDataset("ubc");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(NotFoundError);
+	// 		}
+	// 	});
 
-		// it("should reject removing with id that has _", async function () {
-		// 	try {
-		// 		await facade.removeDataset("_ubc");
-		// 		expect.fail("Should have thrown!");
-		// 	} catch (err) {
-		// 		expect(err).to.be.an.instanceOf(InsightError);
-		// 	}
+	// 	it("should reject removing with id that has _", async function () {
+	// 		try {
+	// 			await facade.removeDataset("_ubc");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
 
-		// 	try {
-		// 		await facade.removeDataset("ubc_");
-		// 		expect.fail("Should have thrown!");
-		// 	} catch (err) {
-		// 		expect(err).to.be.an.instanceOf(InsightError);
-		// 	}
+	// 		try {
+	// 			await facade.removeDataset("ubc_");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
 
-		// 	try {
-		// 		await facade.removeDataset("u_bc");
-		// 		expect.fail("Should have thrown!");
-		// 	} catch (err) {
-		// 		expect(err).to.be.an.instanceOf(InsightError);
-		// 	}
-		// });
+	// 		try {
+	// 			await facade.removeDataset("u_bc");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
 
-		// it("should reject with id that is only whitespace", async function () {
-		// 	facade = new InsightFacade();
+	// 	it("should reject with id that is only whitespace", async function () {
+	// 		facade = new InsightFacade();
 
-		// 	try {
-		// 		await facade.removeDataset(" ");
-		// 		expect.fail("Should have thrown!");
-		// 	} catch (err) {
-		// 		expect(err).to.be.an.instanceOf(InsightError);
-		// 	}
-		// });
+	// 		try {
+	// 			await facade.removeDataset(" ");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
 
-		// it("should successfully remove a dataset with whitespace and other character", async function () {
-		// 	await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
-		// 	const result = await facade.removeDataset("ubc ubc");
-		// 	expect(result).to.equal("ubc ubc");
-		// });
+	// 	it("should successfully remove a dataset with whitespace and other character", async function () {
+	// 		await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.removeDataset("ubc ubc");
+	// 		expect(result).to.equal("ubc ubc");
+	// 	});
 
-		// it("should reject with id that is not yet added", async function () {
-		// 	facade = new InsightFacade();
+	// 	it("should reject with id that is not yet added", async function () {
+	// 		facade = new InsightFacade();
 
-		// 	try {
-		// 		await facade.removeDataset("notyetadded");
-		// 		expect.fail("Should have thrown!");
-		// 	} catch (err) {
-		// 		expect(err).to.be.an.instanceOf(NotFoundError);
-		// 	}
-		// });
-		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
-	});
+	// 		try {
+	// 			await facade.removeDataset("notyetadded");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(NotFoundError);
+	// 		}
+	// 	});
+	// 	// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
+	// });
 
-	describe("listDatasets", function () {
-		// beforeEach(async function () {
-		// 	await clearDisk();
-		// 	facade = new InsightFacade();
-		// });
-		// it("should successfully list a dataset", async function () {
-		// 	await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
-		// 	const result = await facade.listDatasets();
-		// 	const expected = [
-		// 		{
-		// 			id: "ubc",
-		// 			kind: InsightDatasetKind.Sections,
-		// 			numRows: 64612,
-		// 		},
-		// 	];
-		// 	expect(result).to.deep.equal(expected);
-		// });
-		// it("should successfully list two datasets", async function () {
-		// 	await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
-		// 	await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
-		// 	const result = await facade.listDatasets();
-		// 	const expected = [
-		// 		{
-		// 			id: "ubc1",
-		// 			kind: InsightDatasetKind.Sections,
-		// 			numRows: 64612,
-		// 		},
-		// 		{
-		// 			id: "ubc2",
-		// 			kind: InsightDatasetKind.Sections,
-		// 			numRows: 64612,
-		// 		},
-		// 	];
-		// 	expect(result).to.deep.equal(expected);
-		// });
-		// it("should successfully list when no dataset has been added", async function () {
-		// 	const result = await facade.listDatasets();
-		// 	expect(result).to.deep.equal([]);
-		// });
-	});
+	// describe("listDatasets", function () {
+	// 	beforeEach(async function () {
+	// 		await clearDisk();
+	// 		facade = new InsightFacade();
+	// 	});
+	// 	it("should successfully list a dataset", async function () {
+	// 		await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.listDatasets();
+	// 		const expected = [
+	// 			{
+	// 				id: "ubc",
+	// 				kind: InsightDatasetKind.Sections,
+	// 				numRows: 64612,
+	// 			},
+	// 		];
+	// 		expect(result).to.deep.equal(expected);
+	// 	});
 
-	describe("PerformQuery", function () {
-		/**
-		 * Loads the TestQuery specified in the test name and asserts the behaviour of performQuery.
-		 *
-		 * Note: the 'this' parameter is automatically set by Mocha and contains information about the test.
-		 */
-		async function checkQuery(this: Mocha.Context): Promise<void> {
-			if (!this.test) {
-				throw new Error(
-					"Invalid call to checkQuery." +
-						"Usage: 'checkQuery' must be passed as the second parameter of Mocha's it(..) function." +
-						"Do not invoke the function directly."
-				);
-			}
-			// Destructuring assignment to reduce property accesses
-			const { input, expected, errorExpected } = await loadTestQuery(this.test.title);
-			let result: InsightResult[] = []; // dummy value before being reassigned
-			try {
-				result = await facade.performQuery(input);
-				//////////
-				if (errorExpected) {
-					// If error was expected but no error occurred, fail the test
-					return expect.fail("performQuery resolved when it should have rejected with ${expected}");
-				}
-				expect(result).to.have.deep.members(expected);
-				/////////////
-			} catch (err) {
-				if (!errorExpected) {
-					expect.fail(`performQuery threw unexpected error: ${err}`);
-				} else if (expected === "ResultTooLargeError") {
-					expect(err).to.be.an.instanceOf(ResultTooLargeError);
-				} else if (expected === "InsightError") {
-					expect(err).to.be.an.instanceOf(InsightError);
-				} else {
-					return expect.fail("Write your assertion(s) here.");
-				}
-			}
-			// if (errorExpected) {
-			// 	expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
-			// }
-			// // TODO: replace this failing assertion with your assertions. You will need to reason about the code in this function
-			// // to determine what to put here :)
-			// return expect.fail("Write your assertion(s) here.");
-		}
+	// 	it("should successfully list two datasets", async function () {
+	// 		await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
+	// 		await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.listDatasets();
+	// 		const expected = [
+	// 			{
+	// 				id: "ubc1",
+	// 				kind: InsightDatasetKind.Sections,
+	// 				numRows: 64612,
+	// 			},
+	// 			{
+	// 				id: "ubc2",
+	// 				kind: InsightDatasetKind.Sections,
+	// 				numRows: 64612,
+	// 			},
+	// 		];
+	// 		expect(result).to.deep.equal(expected);
+	// 	});
 
-		before(async function () {
-			facade = new InsightFacade();
+	// 	it("should successfully list when no dataset has been added", async function () {
+	// 		const result = await facade.listDatasets();
+	// 		expect(result).to.deep.equal([]);
+	// 	});
+	// });
 
-			// Add the datasets to InsightFacade once.
-			// Will *fail* if there is a problem reading ANY dataset.
-			const loadDatasetPromises: Promise<string[]>[] = [
-				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
-				facade.addDataset("sections2", sections, InsightDatasetKind.Sections),
-			];
+	// describe("PerformQuery", function () {
+	// 	/**
+	// 	 * Loads the TestQuery specified in the test name and asserts the behaviour of performQuery.
+	// 	 *
+	// 	 * Note: the 'this' parameter is automatically set by Mocha and contains information about the test.
+	// 	 */
+	// 	async function checkQuery(this: Mocha.Context): Promise<void> {
+	// 		if (!this.test) {
+	// 			throw new Error(
+	// 				"Invalid call to checkQuery." +
+	// 					"Usage: 'checkQuery' must be passed as the second parameter of Mocha's it(..) function." +
+	// 					"Do not invoke the function directly."
+	// 			);
+	// 		}
+	// 		// Destructuring assignment to reduce property accesses
+	// 		const { input, expected, errorExpected } = await loadTestQuery(this.test.title);
+	// 		let result: InsightResult[] = []; // dummy value before being reassigned
+	// 		try {
+	// 			result = await facade.performQuery(input);
+	// 			//////////
+	// 			if (errorExpected) {
+	// 				// If error was expected but no error occurred, fail the test
+	// 				return expect.fail("performQuery resolved when it should have rejected with ${expected}");
+	// 			}
+	// 			expect(result).to.have.deep.members(expected);
+	// 			/////////////
+	// 		} catch (err) {
+	// 			if (!errorExpected) {
+	// 				expect.fail(`performQuery threw unexpected error: ${err}`);
+	// 			} else if (expected === "ResultTooLargeError") {
+	// 				expect(err).to.be.an.instanceOf(ResultTooLargeError);
+	// 			} else if (expected === "InsightError") {
+	// 				expect(err).to.be.an.instanceOf(InsightError);
+	// 			} else {
+	// 				return expect.fail("Write your assertion(s) here.");
+	// 			}
+	// 		}
+	// 		// if (errorExpected) {
+	// 		// 	expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
+	// 		// }
+	// 		// // TODO: replace this failing assertion with your assertions. You will need to reason about the code in this function
+	// 		// // to determine what to put here :)
+	// 		// return expect.fail("Write your assertion(s) here.");
+	// 	}
 
-			try {
-				await Promise.all(loadDatasetPromises);
-			} catch (err) {
-				throw new Error(`In PerformQuery Before hook, dataset(s) failed to be added. \n${err}`);
-			}
-		});
+	// 	before(async function () {
+	// 		facade = new InsightFacade();
 
-		after(async function () {
-			await clearDisk();
-		});
+	// 		// Add the datasets to InsightFacade once.
+	// 		// Will *fail* if there is a problem reading ANY dataset.
+	// 		const loadDatasetPromises: Promise<string[]>[] = [
+	// 			facade.addDataset("sections", sections, InsightDatasetKind.Sections),
+	// 			facade.addDataset("sections2", sections, InsightDatasetKind.Sections),
+	// 		];
 
-		// Examples demonstrating how to test performQuery using the JSON Test Queries.
-		// The relative path to the query file must be given in square brackets.
-		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery); //
-		it("[invalid/invalid.json] Query missing WHERE", checkQuery);
+	// 		try {
+	// 			await Promise.all(loadDatasetPromises);
+	// 		} catch (err) {
+	// 			throw new Error(`In PerformQuery Before hook, dataset(s) failed to be added. \n${err}`);
+	// 		}
+	// 	});
 
-		// it("[invalid/exceedResultLimit.json] Query exceeding result limit", checkQuery);
-		// it("[invalid/emptyWhere.json] Query exceeding result limit empty WHERE", checkQuery);
+	// 	after(async function () {
+	// 		await clearDisk();
+	// 	});
 
-		// //wildcards
-		// it("[invalid/wildcardMiddle.json] Wildcard Middle", checkQuery);
-		// it("[invalid/invalidWildcard.json] Invalid Wildcard", checkQuery);
-		// it("[valid/noWildcard.json] No wildcard", checkQuery);
-		// it("[valid/wildcardEnd.json] wildcard at the end", checkQuery);
-		// it("[valid/wildcardStart.json] wildcard at the start", checkQuery);
-		// it("[valid/wildcardStartEnd.json] wildcard both start and end", checkQuery);
+	// 	// Examples demonstrating how to test performQuery using the JSON Test Queries.
+	// 	// The relative path to the query file must be given in square brackets.
+	// 	it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery); //
+	// 	it("[invalid/invalid.json] Query missing WHERE", checkQuery);
 
-		// it("[valid/emptyResult.json] Empty result", checkQuery);
+	// 	it("[invalid/exceedResultLimit.json] Query exceeding result limit", checkQuery);
+	// 	it("[invalid/emptyWhere.json] Query exceeding result limit empty WHERE", checkQuery);
 
-		// //ORDER
-		// it("[invalid/orderEmpty.json] ORDER Empty", checkQuery);
-		// it("[invalid/orderNotInCol.json] ORDER not in COLUMN", checkQuery);
-		// it("[valid/order1.json] ORDER 1", checkQuery);
-		// it("[valid/order2.json] ORDER 2", checkQuery);
-		// it("[valid/order3.json] ORDER 3", checkQuery);
-		// it("[valid/orderExist.json] ORDER exists", checkQuery);
-		// it("[valid/orderNone.json] ORDER doesnt exist", checkQuery);
-		// it("[valid/orderSingleCol.json] ORDER single COLUMN", checkQuery);
+	// 	//wildcards
+	// 	it("[invalid/wildcardMiddle.json] Wildcard Middle", checkQuery);
+	// 	it("[invalid/invalidWildcard.json] Invalid Wildcard", checkQuery);
+	// 	it("[valid/noWildcard.json] No wildcard", checkQuery);
+	// 	it("[valid/wildcardEnd.json] wildcard at the end", checkQuery);
+	// 	it("[valid/wildcardStart.json] wildcard at the start", checkQuery);
+	// 	it("[valid/wildcardStartEnd.json] wildcard both start and end", checkQuery);
 
-		// //KEYS
-		// it("[invalid/invalidOrderKey.json] Query with invalid ORDER key", checkQuery);
-		// it("[invalid/noColsOption.json] Query with no columns in OPTIONS", checkQuery);
-		// it("[invalid/invalidKey.json] Query invalid key", checkQuery);
-		// it("[invalid/emptyQuery.json] Empty query", checkQuery);
-		// it("[invalid/invalidKeyNoUnderscore.json] Invalid key missing underscore", checkQuery);
-		// it("[invalid/invalidID.json] Invalid ID", checkQuery);
-		// it("[invalid/invalidField.json] Invalid field", checkQuery);
+	// 	it("[valid/emptyResult.json] Empty result", checkQuery);
 
-		// it("[invalid/wrongType.json] Wrong type", checkQuery);
+	// 	//ORDER
+	// 	it("[invalid/orderEmpty.json] ORDER Empty", checkQuery);
+	// 	it("[invalid/orderNotInCol.json] ORDER not in COLUMN", checkQuery);
+	// 	it("[valid/order1.json] ORDER 1", checkQuery);
+	// 	it("[valid/order2.json] ORDER 2", checkQuery);
+	// 	it("[valid/order3.json] ORDER 3", checkQuery);
+	// 	it("[valid/orderExist.json] ORDER exists", checkQuery);
+	// 	it("[valid/orderNone.json] ORDER doesnt exist", checkQuery);
+	// 	it("[valid/orderSingleCol.json] ORDER single COLUMN", checkQuery);
 
-		// it("[valid/validComplex.json] Complex valid", checkQuery);
-		// it("[invalid/twoDatasets.json] Query references two datasets", checkQuery);
-		// it("[valid/EBNF1.json] EBNF with NOT", checkQuery);
-		// it("[valid/EBNF2.json] EBNF with double NOT", checkQuery);
-		// it("[invalid/invalidFilterKey.json] Invalid filter key after NOT", checkQuery);
-		// it("[invalid/invalidEQ.json] Query invalid key type in EQ", checkQuery);
-		// it("[valid/EBNF3.json] EBNF 3", checkQuery);
-		// it("[valid/EBNF4.json] EBNF 4", checkQuery);
-		// it("[invalid/invalidCols.json] Invalid cols", checkQuery);
-		// it("[invalid/invalidFilterKey2.json]Invalid filter key after WHERE", checkQuery);
-		// it("[invalid/invalidFilterKey3.json] Invalid filter key 3", checkQuery);
-		// it("[invalid/noColsOption2.json] No cols in OPTION 2", checkQuery);
-		// it("[invalid/invalidAnd.json] invalid AND", checkQuery);
-		// it("[invalid/invalidKeyGT.json] invalid key in GT", checkQuery);
+	// 	//KEYS
+	// 	it("[invalid/invalidOrderKey.json] Query with invalid ORDER key", checkQuery);
+	// 	it("[invalid/noColsOption.json] Query with no columns in OPTIONS", checkQuery);
+	// 	it("[invalid/invalidKey.json] Query invalid key", checkQuery);
+	// 	it("[invalid/emptyQuery.json] Empty query", checkQuery);
+	// 	it("[invalid/invalidKeyNoUnderscore.json] Invalid key missing underscore", checkQuery);
+	// 	it("[invalid/invalidID.json] Invalid ID", checkQuery);
+	// 	it("[invalid/invalidField.json] Invalid field", checkQuery);
 
-		// it("[invalid/emptyAND.json] empty AND", checkQuery);
-		// it("[invalid/invalidField2.json] Invalid field 2", checkQuery);
-		// it("[invalid/invalidKey2.json] invalid key 2", checkQuery);
-		// it("[invalid/invalidNOT.json] invalid NOT", checkQuery);
-		// it("[invalid/invalidValueGT.json] Invalid value GT", checkQuery);
-		// it("[invalid/invalidValueLT.json] Invalid value LT", checkQuery);
-		// it("[invalid/nullQuery.json] null query", checkQuery);
+	// 	it("[invalid/wrongType.json] Wrong type", checkQuery);
 
-		// //it("[invalid/invalid1.json] empty AND", checkQuery);
-		// it("[invalid/invalid2.json] Invalid field 2", checkQuery);
-		// it("[invalid/invalid3.json] invalid key 2", checkQuery);
-		// it("[invalid/invalidAnd2.json] invalid NOT", checkQuery);
-		// it("[invalid/invalidFilterKey4.json] Invalid value GT", checkQuery);
-		// it("[invalid/invalidFilterKey5.json] Invalid value LT", checkQuery);
-		// it("[invalid/invalidIs.json] null query", checkQuery);
-		// it("[invalid/invalidIs2.json] invalid NOT", checkQuery);
-		// it("[invalid/invalidOrder.json] Invalid value GT", checkQuery);
-		// it("[invalid/noUnderscore.json] Invalid value LT", checkQuery);
+	// 	it("[valid/validComplex.json] Complex valid", checkQuery);
+	// 	it("[invalid/twoDatasets.json] Query references two datasets", checkQuery);
+	// 	it("[valid/EBNF1.json] EBNF with NOT", checkQuery);
+	// 	it("[valid/EBNF2.json] EBNF with double NOT", checkQuery);
+	// 	it("[invalid/invalidFilterKey.json] Invalid filter key after NOT", checkQuery);
+	// 	it("[invalid/invalidEQ.json] Query invalid key type in EQ", checkQuery);
+	// 	it("[valid/EBNF3.json] EBNF 3", checkQuery);
+	// 	it("[valid/EBNF4.json] EBNF 4", checkQuery);
+	// 	it("[invalid/invalidCols.json] Invalid cols", checkQuery);
+	// 	it("[invalid/invalidFilterKey2.json]Invalid filter key after WHERE", checkQuery);
+	// 	it("[invalid/invalidFilterKey3.json] Invalid filter key 3", checkQuery);
+	// 	it("[invalid/noColsOption2.json] No cols in OPTION 2", checkQuery);
+	// 	it("[invalid/invalidAnd.json] invalid AND", checkQuery);
+	// 	it("[invalid/invalidKeyGT.json] invalid key in GT", checkQuery);
 
-		// it("[valid/EBNF5.json] EBNF 5", checkQuery);
-		// it("[valid/EBNF6.json] EBNF 6", checkQuery);
-		// it("[valid/EBNF7.json] EBNF 7", checkQuery);
-		// it("[valid/EBNF8.json] EBNF 8", checkQuery);
-		// it("[valid/EBNF9.json] EBNF 9", checkQuery);
-		// it("[valid/EBNF10.json] EBNF 10", checkQuery);
-	});
+	// 	it("[invalid/emptyAND.json] empty AND", checkQuery);
+	// 	it("[invalid/invalidField2.json] Invalid field 2", checkQuery);
+	// 	it("[invalid/invalidKey2.json] invalid key 2", checkQuery);
+	// 	it("[invalid/invalidNOT.json] invalid NOT", checkQuery);
+	// 	it("[invalid/invalidValueGT.json] Invalid value GT", checkQuery);
+	// 	it("[invalid/invalidValueLT.json] Invalid value LT", checkQuery);
+	// 	it("[invalid/nullQuery.json] null query", checkQuery);
+
+	// 	//it("[invalid/invalid1.json] empty AND", checkQuery);
+	// 	it("[invalid/invalid2.json] Invalid field 2", checkQuery);
+	// 	it("[invalid/invalid3.json] invalid key 2", checkQuery);
+	// 	it("[invalid/invalidAnd2.json] invalid NOT", checkQuery);
+	// 	it("[invalid/invalidFilterKey4.json] Invalid value GT", checkQuery);
+	// 	it("[invalid/invalidFilterKey5.json] Invalid value LT", checkQuery);
+	// 	it("[invalid/invalidIs.json] null query", checkQuery);
+	// 	it("[invalid/invalidIs2.json] invalid NOT", checkQuery);
+	// 	it("[invalid/invalidOrder.json] Invalid value GT", checkQuery);
+	// 	it("[invalid/noUnderscore.json] Invalid value LT", checkQuery);
+
+	// 	it("[valid/EBNF5.json] EBNF 5", checkQuery);
+	// 	it("[valid/EBNF6.json] EBNF 6", checkQuery);
+	// 	it("[valid/EBNF7.json] EBNF 7", checkQuery);
+	// 	it("[valid/EBNF8.json] EBNF 8", checkQuery);
+	// 	it("[valid/EBNF9.json] EBNF 9", checkQuery);
+	// 	it("[valid/EBNF10.json] EBNF 10", checkQuery);
+	// });
 });
