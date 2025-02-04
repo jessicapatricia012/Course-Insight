@@ -1,24 +1,27 @@
 import { JSZipObject } from "jszip";
 import JSZip from "jszip";
-import { InsightError, InsightDatasetKind } from "./IInsightFacade";
+import { InsightError, InsightDatasetKind, InsightDataset } from "./IInsightFacade";
 import { Dataset } from "./Dataset";
 import { Section } from "./Section";
 import fs from "fs-extra";
 import path from "path";
 
-export class DatasetProcessor {
-	private readonly DATA_DIR = "./data";
+const DATA_DIR = "./data";
 
-	public validId(id: string): boolean {
+export class DatasetProcessor {
+	/* returns true if id is validationPromises, 
+    false otherwise (has underscore or whitespace only)*/
+	public static validId(id: string): boolean {
 		if (!id.trim() || id.includes("_")) {
-			// empty or whitesoace
 			return false;
 		}
 		return true;
 	}
 
-	public async isInDisk(id: string): Promise<boolean> {
-		const datasetPath = path.join(this.DATA_DIR, `${id}.json`); // Assume datasets are saved as JSON
+	/* returns true if dataset with id <id> is in disk, 
+    false otherwise */
+	public static async isInDisk(id: string): Promise<boolean> {
+		const datasetPath = path.join(DATA_DIR, `${id}.json`);
 		try {
 			await fs.access(datasetPath); // Check if the file exists
 			return true;
@@ -27,7 +30,7 @@ export class DatasetProcessor {
 		}
 	}
 
-	public async validateDataset(content: string): Promise<void> {
+	public static async validateDataset(content: string): Promise<void> {
 		try {
 			// Unzip the content (base64 string)
 			const zip = await JSZip.loadAsync(Buffer.from(content, "base64"));
@@ -76,14 +79,14 @@ export class DatasetProcessor {
 		}
 	}
 
-	private isValidSection(section: any): boolean {
+	private static isValidSection(section: any): boolean {
 		const requiredFields = ["id", "course", "title", "professor", "subject", "year", "avg", "pass", "fail", "audit"];
 		const sectionFields = Object.keys(section).map((field) => field.toLowerCase());
 		// Check if all required fields are present in the section
 		return requiredFields.every((field) => sectionFields.includes(field.toLowerCase()));
 	}
 
-	public async parseContent(id: string, content: string): Promise<Dataset> {
+	public static async parseContent(id: string, content: string): Promise<Dataset> {
 		let zip = null;
 		try {
 			zip = await JSZip.loadAsync(content, { base64: true });
@@ -91,22 +94,21 @@ export class DatasetProcessor {
 			throw new InsightError("Invalid ZIP format");
 		}
 		// Validate courses folder and files
-		const coursesFolder = await this.checkCoursesFolder(zip);
+		const coursesFolder = await DatasetProcessor.checkCoursesFolder(zip);
 
 		const sections: Section[] = [];
 
 		// Parse and validate course files
-		await this.processCourseFiles(coursesFolder.files, sections);
+		await DatasetProcessor.processFiles(coursesFolder.files, sections);
 
 		// Create a new Dataset and assign the sections to it
-		const dataset = new Dataset(id, InsightDatasetKind.Sections);
+		const dataset = new Dataset(id, InsightDatasetKind.Sections, sections.length);
 		dataset.sections = sections;
-		dataset.numRows = sections.length;
 
 		return dataset;
 	}
 
-	private async checkCoursesFolder(zip: JSZip): Promise<JSZip> {
+	private static async checkCoursesFolder(zip: JSZip): Promise<JSZip> {
 		const files = zip.files;
 		const hasCoursesFolder = Object.keys(files).some((key) => key.startsWith("courses/"));
 
@@ -126,7 +128,7 @@ export class DatasetProcessor {
 		return coursesFolder;
 	}
 
-	private async processCourseFiles(courseFiles: Record<string, JSZipObject>, sections: Section[]): Promise<void> {
+	private static async processFiles(courseFiles: Record<string, JSZipObject>, sections: Section[]): Promise<void> {
 		const allSections: any[] = [];
 
 		const parsePromises = Object.keys(courseFiles).map(async (fileName) => {
@@ -156,15 +158,48 @@ export class DatasetProcessor {
 		}
 	}
 
-	public async addToDisk(id: string, dataset: Dataset): Promise<string[]> {
-		const datasetPath = path.join(this.DATA_DIR, `${id}.json`);
+	public static async addToDisk(id: string, dataset: Dataset): Promise<void> {
+		const datasetPath = path.join(DATA_DIR, `${id}.json`);
 		try {
-			await fs.ensureDir(this.DATA_DIR);
+			await fs.ensureDir(DATA_DIR);
 			await fs.writeJson(datasetPath, dataset);
-			return [id]; // Or return any relevant data if needed
 		} catch (error) {
 			// Handle any errors that might occur during file system operations
 			throw new InsightError("Failed to save dataset to disk: " + error);
+		}
+	}
+
+	public static async deleteFromDisk(id: string): Promise<void> {
+		const datasetPath = path.join(DATA_DIR, `${id}.json`);
+		try {
+			await fs.remove(datasetPath);
+		} catch (error) {
+			// Handle any errors that might occur during file system operations
+			throw new InsightError("Failed to save dataset to disk: " + error);
+		}
+	}
+
+	public static async readFromDisk(): Promise<InsightDataset[]> {
+		try {
+			// Get all files in the /data directory
+			const files = await fs.readdir(DATA_DIR);
+
+			// Read each JSON file and extract the required data
+			const datasets = await Promise.all(
+				files.map(async (file) => {
+					const filePath = path.join(DATA_DIR, file);
+					const fileContent = await fs.readJson(filePath);
+					const { id, kind, numRows } = fileContent;
+
+					return new Dataset(id, kind, numRows);
+				})
+			);
+
+			return datasets;
+		} catch (error) {
+			// Return an empty array if there's any error
+			console.error("Failed to read datasets from disk:", error);
+			return [];
 		}
 	}
 }
