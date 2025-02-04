@@ -13,6 +13,9 @@ dist/
 # Persist Dir
 data/
 
+# Coverage Reports
+.nyc_output/
+
 # Normal Things
 .DS_Store
 .env
