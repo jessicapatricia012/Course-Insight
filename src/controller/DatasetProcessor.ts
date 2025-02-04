@@ -21,8 +21,9 @@ export class DatasetProcessor {
 	/* returns true if dataset with id <id> is in disk, 
     false otherwise */
 	public static async isInDisk(id: string): Promise<boolean> {
-		const datasetPath = path.join(DATA_DIR, `${id}.json`);
 		try {
+			await fs.ensureDir(DATA_DIR);
+			const datasetPath = path.join(DATA_DIR, `${id}.json`);
 			await fs.access(datasetPath); // Check if the file exists
 			return true;
 		} catch {
@@ -159,9 +160,9 @@ export class DatasetProcessor {
 	}
 
 	public static async addToDisk(id: string, dataset: Dataset): Promise<void> {
-		const datasetPath = path.join(DATA_DIR, `${id}.json`);
 		try {
 			await fs.ensureDir(DATA_DIR);
+			const datasetPath = path.join(DATA_DIR, `${id}.json`);
 			await fs.writeJson(datasetPath, dataset);
 		} catch (error) {
 			// Handle any errors that might occur during file system operations
@@ -170,8 +171,9 @@ export class DatasetProcessor {
 	}
 
 	public static async deleteFromDisk(id: string): Promise<void> {
-		const datasetPath = path.join(DATA_DIR, `${id}.json`);
 		try {
+			await fs.ensureDir(DATA_DIR);
+			const datasetPath = path.join(DATA_DIR, `${id}.json`);
 			await fs.remove(datasetPath);
 		} catch (error) {
 			// Handle any errors that might occur during file system operations
@@ -181,6 +183,7 @@ export class DatasetProcessor {
 
 	public static async readFromDisk(): Promise<InsightDataset[]> {
 		try {
+			await fs.ensureDir(DATA_DIR);
 			// Get all files in the /data directory
 			const files = await fs.readdir(DATA_DIR);
 
