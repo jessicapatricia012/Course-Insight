@@ -28,7 +28,13 @@
 	 //REQUIRES: toFilter is an array of Sections (most likely from dataset field above)
 	 //EFFECTS: a filtered array of sections with WHERE clause applied
 	 public handleWhere(toFilter: Section[]): Section[] {// Takes an array of Sections
-		 return [];
+		 const result: Section[] = [];
+		 for (const section of toFilter){
+			 if (this.filter.performFilter(section)){
+				 result.push(section);
+			 }
+		 }
+		 return result;
 	 }
 
 	 constructor(filter: Filter) {
@@ -128,7 +134,16 @@
 	 //EFFECTS: Returns an array of InsightResult with filtred fields and ordered accordingly
 	 // (NOTE: This is the final result returned by performQuery)
 	 public handleOptions(sections: Section[]): InsightResult[]{
-		 return[];
+		 const result: InsightResult[] = [];
+
+		 for (const section of sections){
+			 const toPush: InsightResult = {};
+			 for (const key of this.keys) {
+				toPush[key] = section[key];
+			 }
+			 result.push(toPush);
+		 }
+		 return result;
 	 }
 
 	 constructor(keys: Array<MField | SField>, order: MField | SField) {
