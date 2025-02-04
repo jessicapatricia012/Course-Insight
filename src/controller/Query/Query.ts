@@ -1,5 +1,4 @@
  import {SField, MField, MComparator, Logic} from "./enums"
- import {Dataset} from "../Dataset";
  import {InsightResult} from "../IInsightFacade";
  import {Section} from "../Section";
 
@@ -11,14 +10,20 @@
  // 3. Call handleOptions() on Section[] to get only wanted fields and order the array, and get InsightResult[]
  // 4. return this InsightResult[] and done!!! :)
  export class Query{
-	private dataset: Dataset | null;//Dataset to query
-	private where :Where | null; // WHERE Clause
-	private options: Options | null; // OPTIONS Clause
+	private where :Where; // WHERE Clause
+	private options: Options; // OPTIONS Clause
 
 	 constructor(where: Where, options: Options) {
-		 this.dataset = null
-		 this.where = null;
-		 this.options = null;
+		 this.where = where;
+		 this.options = options;
+	 }
+
+	 //This is the main function called by the UI to do the query
+	 //REQUIRES: sections is an array of section from a  dataset
+	 //EFFECTS: Returns the result of the query
+	 public query(sections: Section[]):InsightResult[] {
+		 const filteredSections: Section[] = this.where.handleWhere(sections);
+		 return this.options.handleOptions(filteredSections);
 	 }
  }
 
