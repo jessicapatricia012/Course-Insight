@@ -191,7 +191,7 @@ export class DatasetProcessor {
 					const fileContent = await fs.readJson(filePath);
 					const { id, kind, numRows } = fileContent;
 
-					return new Dataset(id, kind, numRows);
+					return { id, kind, numRows };
 				})
 			);
 
