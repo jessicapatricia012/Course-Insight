@@ -1,0 +1,18 @@
+{
+    "title": "Invalid ",
+    "input": {
+        "WHERE": {
+          "GT": {
+            "sectionsavg": 85
+          }
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sectionsavg"
+          ]
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

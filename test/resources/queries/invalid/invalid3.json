@@ -1,0 +1,20 @@
+{
+    "title": "Invalid field",
+    "input": {
+        "WHERE": {
+          "AND": {
+            "LT": {
+              "sections_pass": 50
+            }
+          }
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_pass"
+          ]
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

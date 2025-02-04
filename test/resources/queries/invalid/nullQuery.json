@@ -1,0 +1,10 @@
+{
+    "title": "Null",
+    "input": {
+        "WHERE": null,
+        "OPTIONS": null
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

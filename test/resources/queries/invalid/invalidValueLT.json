@@ -1,0 +1,23 @@
+{
+    "title": "Invalid value type in LT, should be number",
+    "input": {
+        "WHERE": {
+          "LT": {
+            "sections_avg": [
+              90,
+              80
+            ]
+          }
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_avg",
+            "sections_dept"
+          ],
+          "ORDER": "sections_avg"
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

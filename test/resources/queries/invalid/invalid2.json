@@ -1,0 +1,18 @@
+{
+    "title": "Invalid field",
+    "input": {
+        "WHERE": {
+          "GT": {
+            "_sections_avg": 85
+          }
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "_sections_avg"
+          ]
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

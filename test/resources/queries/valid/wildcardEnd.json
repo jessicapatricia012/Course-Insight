@@ -1,0 +1,17 @@
+{
+    "title": "Wildcard at end",
+    "input": {
+      "WHERE": {
+        "IS": {
+          "sections_dept": "aan*"
+        }
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "sections_dept"
+        ]
+      }
+    },
+    "errorExpected": false,
+    "expected":[{"sections_dept":"aanb"},{"sections_dept":"aanb"},{"sections_dept":"aanb"},{"sections_dept":"aanb"}]}
+  

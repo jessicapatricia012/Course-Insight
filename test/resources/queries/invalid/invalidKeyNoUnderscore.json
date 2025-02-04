@@ -1,0 +1,20 @@
+{
+    "title": "Invalid key missing underscore",
+    "input": {
+      "WHERE": {
+        "GT": {
+          "sectionsavg": 90
+        }
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "sectionsdept",
+          "sectionsavg"
+        ],
+        "ORDER": "sectionsavg"
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

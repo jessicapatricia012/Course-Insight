@@ -1,0 +1,20 @@
+{
+    "title": "Invalid ID",
+    "input": {
+      "WHERE": {
+        "GT": {
+          "invalidid_avg": 85
+        }
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "invalidid_dept",
+          "invalidid_avg"
+        ],
+        "ORDER": "invalidid_avg"
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

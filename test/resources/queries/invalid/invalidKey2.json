@@ -1,0 +1,20 @@
+{
+    "title": "Query invalid key in IS",
+    "input": {
+        "WHERE": {
+          "IS": {
+            "sections_avg": "90"
+          }
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_avg",
+            "sections_dept"
+          ],
+          "ORDER": "sections_avg"
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  
