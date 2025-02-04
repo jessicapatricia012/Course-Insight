@@ -1,0 +1,138 @@
+ import {SField, MField, MComparator, Logic} from "./enums"
+ import {Dataset} from "../Dataset";
+ import {InsightResult} from "../IInsightFacade";
+ import {Section} from "../Section";
+
+
+ // Query class representing a query
+ // General process of query:
+ // 1. Extract Section[] from a dataset
+ // 2. Call handleWhere() on Section[] to filter and get another Section[]
+ // 3. Call handleOptions() on Section[] to get only wanted fields and order the array, and get InsightResult[]
+ // 4. return this InsightResult[] and done!!! :)
+ export class Query{
+	private dataset: Dataset | null;//Dataset to query
+	private where :Where | null; // WHERE Clause
+	private options: Options | null; // OPTIONS Clause
+
+	 constructor(where: Where, options: Options) {
+		 this.dataset = null
+		 this.where = null;
+		 this.options = null;
+	 }
+ }
+
+ class Where {
+	 private filter: Filter;
+
+	 //REQUIRES: toFilter is an array of Sections (most likely from dataset field above)
+	 //EFFECTS: a filtered array of sections with WHERE clause applied
+	 public handleWhere(toFilter: Section[]): Section[] {// Takes an array of Sections
+		 return [];
+	 }
+
+	 constructor(filter: Filter) {
+		 this.filter = filter;
+	 }
+ }
+
+ abstract class Filter {
+	 //This is an abstract function implemented by all comparator classes
+	 //REQUIRES: section is a one valid section to check
+	 //EFFECTS: returns true if section passes Comparator check
+	 public abstract performFilter(section: Section): boolean;
+ }
+
+ class SComparison extends Filter {
+	 private skey: SField; //SField to compare
+	 private val: string; //value to compare with
+
+	 constructor(skey: SField, val: string) {
+		 super();
+		 this.skey = skey;
+		 this.val = val;
+	 }
+	 public performFilter(section:Section): boolean {
+		 return section[this.skey] === this.val;
+	 }
+ }
+
+ class MComparison extends Filter {
+	 private mkey: MField;
+	 private val: number;
+	 private comp: MComparator;
+
+	 constructor(mkey: MField, val: number, comp: MComparator) {
+		 super();
+		 this.mkey = mkey;
+		 this.val = val;
+		 this.comp = comp;
+	 }
+
+	 public performFilter(section:Section): boolean {
+		 if(this.comp === "LT"){
+			 return (section[this.mkey] < this.val);
+		 }else if (this.comp === "GT"){
+			 return (section[this.mkey] > this.val);
+		 } else if (this.comp === "EQ"){
+			 return (section[this.mkey] === this.val);
+		 }
+		 return false;
+	 }
+ }
+
+ class LComparison extends Filter {
+	 private filterList: Filter[];
+	 private logic: Logic;
+
+	 constructor(filterList: Filter[], logic: Logic) {
+		 super();
+		 this.filterList = filterList;
+		 this.logic = logic;
+	 }
+	 public performFilter(section: Section): boolean {
+		 if (this.logic === "AND"){// AND
+			 let result: boolean = this.filterList[0].performFilter(section);// perform first filter because result needs to be initialized
+			 for (const filter of this.filterList){ //Loops through all filters in List
+				result = filter.performFilter(section) && result;
+			 }
+			 return result;
+		 } else {// OR
+			 let result: boolean = this.filterList[0].performFilter(section);
+			 for (const filter of this.filterList){
+				result = filter.performFilter(section) || result;
+			 }
+			 return result;
+		 }
+	 }
+ }
+
+ class Negation extends Filter{
+	 private filter: Filter;
+
+	 constructor(filter:Filter) {
+		 super();
+		 this.filter = filter;
+	 }
+
+	 public performFilter(section: Section): boolean {
+		 return (!this.filter.performFilter(section));
+	 }
+ }
+
+ class Options {
+	 private keys: Array<MField | SField>;
+	 private order: MField | SField;
+
+	 //REQUIRES: sections is an array of valid sections
+	 //EFFECTS: Returns an array of InsightResult with filtred fields and ordered accordingly
+	 // (NOTE: This is the final result returned by performQuery)
+	 public handleOptions(sections: Section[]): InsightResult[]{
+		 return[];
+	 }
+
+	 constructor(keys: Array<MField | SField>, order: MField | SField) {
+		 this.keys = keys;
+		 this.order = order;
+	 }
+ }
