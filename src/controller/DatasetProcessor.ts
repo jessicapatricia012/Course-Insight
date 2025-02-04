@@ -31,54 +31,54 @@ export class DatasetProcessor {
 		}
 	}
 
-	public static async validateDataset(content: string): Promise<void> {
-		try {
-			// Unzip the content (base64 string)
-			const zip = await JSZip.loadAsync(Buffer.from(content, "base64"));
+	// public static async validateDataset(content: string): Promise<void> {
+	// 	try {
+	// 		// Unzip the content (base64 string)
+	// 		const zip = await JSZip.loadAsync(Buffer.from(content, "base64"));
 
-			// Check if "courses" folder exists
-			const coursesFolder = zip.folder("courses");
-			if (!coursesFolder) {
-				throw new InsightError("Dataset must contain a 'courses' folder");
-			}
-			// Get the files in the 'courses' folder and check if there are any files
-			const courseFiles = coursesFolder.files;
-			if (Object.keys(courseFiles).length === 0) {
-				throw new InsightError("No course files found in the 'courses' folder");
-			}
+	// 		// Check if "courses" folder exists
+	// 		const coursesFolder = zip.folder("courses");
+	// 		if (!coursesFolder) {
+	// 			throw new InsightError("Dataset must contain a 'courses' folder");
+	// 		}
+	// 		// Get the files in the 'courses' folder and check if there are any files
+	// 		const courseFiles = coursesFolder.files;
+	// 		if (Object.keys(courseFiles).length === 0) {
+	// 			throw new InsightError("No course files found in the 'courses' folder");
+	// 		}
 
-			// Collect promises to validate the course files
-			const validationPromises = Object.keys(courseFiles).map(async (fileName) => {
-				const file = courseFiles[fileName];
+	// 		// Collect promises to validate the course files
+	// 		const validationPromises = Object.keys(courseFiles).map(async (fileName) => {
+	// 			const file = courseFiles[fileName];
 
-				// Read the content of the file as a string
-				const fileContent = await file.async("string");
+	// 			// Read the content of the file as a string
+	// 			const fileContent = await file.async("string");
 
-				try {
-					// Try to parse the content as JSON
-					const parsedData = JSON.parse(fileContent);
+	// 			try {
+	// 				// Try to parse the content as JSON
+	// 				const parsedData = JSON.parse(fileContent);
 
-					// Check if the file contains a 'result' array
-					if (parsedData.result && Array.isArray(parsedData.result)) {
-						return true; // Valid course found
-					} else {
-						throw new InsightError(`Course file must contain a 'result' array: ${fileName}`);
-					}
-				} catch {
-					// If parsing fails, treat it as an invalid file
-					throw new InsightError(`Invalid JSON format in course file: ${fileName}`);
-				}
-			});
+	// 				// Check if the file contains a 'result' array
+	// 				if (parsedData.result && Array.isArray(parsedData.result)) {
+	// 					return true; // Valid course found
+	// 				} else {
+	// 					throw new InsightError(`Course file must contain a 'result' array: ${fileName}`);
+	// 				}
+	// 			} catch {
+	// 				// If parsing fails, treat it as an invalid file
+	// 				throw new InsightError(`Invalid JSON format in course file: ${fileName}`);
+	// 			}
+	// 		});
 
-			// Wait for all validation promises and check if at least one valid course exists
-			const results = await Promise.all(validationPromises);
-			if (!results.includes(true)) {
-				throw new InsightError("No valid course files found in the 'courses' folder");
-			}
-		} catch {
-			throw new InsightError("Invalid dataset content");
-		}
-	}
+	// 		// Wait for all validation promises and check if at least one valid course exists
+	// 		const results = await Promise.all(validationPromises);
+	// 		if (!results.includes(true)) {
+	// 			throw new InsightError("No valid course files found in the 'courses' folder");
+	// 		}
+	// 	} catch {
+	// 		throw new InsightError("Invalid dataset content");
+	// 	}
+	// }
 
 	private static isValidSection(section: any): boolean {
 		const requiredFields = ["id", "course", "title", "professor", "subject", "year", "avg", "pass", "fail", "audit"];
@@ -118,14 +118,8 @@ export class DatasetProcessor {
 		}
 		const coursesFolder = zip.folder("courses");
 		if (!coursesFolder) {
-			throw new InsightError("Some error");
+			throw new InsightError("coursesFolder null");
 		}
-
-		const courseFiles = coursesFolder.files;
-		if (Object.keys(courseFiles).length === 0) {
-			throw new InsightError("No course files found in the 'courses' folder");
-		}
-
 		return coursesFolder;
 	}
 
@@ -160,49 +154,32 @@ export class DatasetProcessor {
 	}
 
 	public static async addToDisk(id: string, dataset: Dataset): Promise<void> {
-		try {
-			await fs.ensureDir(DATA_DIR);
-			const datasetPath = path.join(DATA_DIR, `${id}.json`);
-			await fs.writeJson(datasetPath, dataset);
-		} catch (error) {
-			// Handle any errors that might occur during file system operations
-			throw new InsightError("Failed to save dataset to disk: " + error);
-		}
+		await fs.ensureDir(DATA_DIR);
+		const datasetPath = path.join(DATA_DIR, `${id}.json`);
+		await fs.writeJson(datasetPath, dataset);
 	}
 
 	public static async deleteFromDisk(id: string): Promise<void> {
-		try {
-			await fs.ensureDir(DATA_DIR);
-			const datasetPath = path.join(DATA_DIR, `${id}.json`);
-			await fs.remove(datasetPath);
-		} catch (error) {
-			// Handle any errors that might occur during file system operations
-			throw new InsightError("Failed to save dataset to disk: " + error);
-		}
+		await fs.ensureDir(DATA_DIR);
+		const datasetPath = path.join(DATA_DIR, `${id}.json`);
+		await fs.remove(datasetPath);
 	}
 
 	public static async readFromDisk(): Promise<InsightDataset[]> {
-		try {
-			await fs.ensureDir(DATA_DIR);
-			// Get all files in the /data directory
-			const files = await fs.readdir(DATA_DIR);
+		await fs.ensureDir(DATA_DIR);
+		// Get all files in the /data directory
+		const files = await fs.readdir(DATA_DIR);
 
-			// Read each JSON file and extract the required data
-			const datasets = await Promise.all(
-				files.map(async (file) => {
-					const filePath = path.join(DATA_DIR, file);
-					const fileContent = await fs.readJson(filePath);
-					const { id, kind, numRows } = fileContent;
+		// Read each JSON file and extract the required data
+		const datasets = await Promise.all(
+			files.map(async (file) => {
+				const filePath = path.join(DATA_DIR, file);
+				const fileContent = await fs.readJson(filePath);
+				const { id, kind, numRows } = fileContent;
 
-					return { id, kind, numRows };
-				})
-			);
-
-			return datasets;
-		} catch (error) {
-			// Return an empty array if there's any error
-			console.error("Failed to read datasets from disk:", error);
-			return [];
-		}
+				return { id, kind, numRows };
+			})
+		);
+		return datasets;
 	}
 }

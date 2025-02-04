@@ -8,6 +8,7 @@ import {
 } from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
+import { Dataset } from "../../src/controller/Dataset";
 
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
@@ -572,5 +573,24 @@ describe("InsightFacade", function () {
 		it("[valid/EBNF8.json] EBNF 8", checkQuery);
 		it("[valid/EBNF9.json] EBNF 9", checkQuery);
 		it("[valid/EBNF10.json] EBNF 10", checkQuery);
+	});
+});
+
+// tests for coverage
+describe("Dataset", function () {
+	let datasets: Dataset[];
+
+	describe("getDatasetWithId", async function () {
+		beforeEach(async function () {
+			datasets = [];
+		});
+
+		it("should throws an error when id not found", function () {
+			try {
+				Dataset.getDatasetWithId("ashgb", datasets);
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(Error);
+			}
+		});
 	});
 });
