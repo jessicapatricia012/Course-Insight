@@ -7,10 +7,10 @@ import {
 	NotFoundError,
 	// ResultTooLargeError
 } from "./IInsightFacade";
-import { Dataset} from "./Dataset";
+import { Dataset } from "./Dataset";
 import { DatasetProcessor } from "./DatasetProcessor";
-import {QueryParser} from "./Query/QueryParser";
-import {Query} from "./Query/Query";
+import { QueryParser } from "./Query/QueryParser";
+import { Query } from "./Query/Query";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -68,7 +68,7 @@ export default class InsightFacade implements IInsightFacade {
 		const queryObj: Query = parser.parseQuery(query);
 
 		//Fetch dataset to query
-		const dataset: Dataset =  Dataset.getDatasetWithId(parser.getDatasetId(), this.datasets);
+		const dataset: Dataset = Dataset.getDatasetWithId(parser.getDatasetId(), this.datasets);
 		return queryObj.query(dataset.sections);
 	}
 
