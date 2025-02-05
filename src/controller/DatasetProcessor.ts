@@ -103,7 +103,11 @@ export class DatasetProcessor {
 		await DatasetProcessor.processFiles(coursesFolder.files, sections);
 
 		// Create a new Dataset and assign the sections to it
-		const dataset = new Dataset(id, InsightDatasetKind.Sections, sections.length);
+		const dataset = new Dataset({
+			id: id,
+			kind: InsightDatasetKind.Sections,
+			numRows: sections.length,
+		});
 		dataset.sections = sections;
 
 		return dataset;

@@ -1,21 +1,17 @@
 import { Section } from "./Section";
-import { InsightDataset, InsightDatasetKind } from "./IInsightFacade";
+import { InsightDataset } from "./IInsightFacade";
 
-export class Dataset implements InsightDataset {
-	public id: string;
-	public kind: InsightDatasetKind;
-	public numRows: number;
+export class Dataset {
+	public insightDataset: InsightDataset;
 	public sections: Section[];
 
-	constructor(id: string, kind: InsightDatasetKind, numRows: number) {
-		this.id = id;
-		this.kind = kind;
+	constructor(insightDataset: InsightDataset) {
+		this.insightDataset = insightDataset;
 		this.sections = [];
-		this.numRows = numRows;
 	}
 
 	public static getDatasetWithId(id: string, datasets: Dataset[]): Dataset {
-		const dataset = datasets.find((d) => d.id === id);
+		const dataset = datasets.find((d) => d.insightDataset.id === id);
 		if (dataset) {
 			return dataset; // Return the found dataset
 		} else {

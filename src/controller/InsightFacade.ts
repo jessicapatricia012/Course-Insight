@@ -36,7 +36,7 @@ export default class InsightFacade implements IInsightFacade {
 			const dataset = await DatasetProcessor.parseContent(id, content);
 			this.datasets.push(dataset);
 			await DatasetProcessor.addToDisk(id, dataset);
-			return this.datasets.map((ds) => ds.id);
+			return this.datasets.map((ds) => ds.insightDataset.id);
 		} else {
 			throw new Error(`unimplemented!`);
 		}
