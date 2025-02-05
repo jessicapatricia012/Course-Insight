@@ -27,7 +27,7 @@
 	 }
  }
 
- class Where {
+ export class Where {
 	 private filter: Filter;
 
 	 //REQUIRES: toFilter is an array of Sections (most likely from dataset field above)
@@ -47,14 +47,14 @@
 	 }
  }
 
- abstract class Filter {
+ export abstract class Filter {
 	 //This is an abstract function implemented by all comparator classes
 	 //REQUIRES: section is a one valid section to check
 	 //EFFECTS: returns true if section passes Comparator check
 	 public abstract performFilter(section: Section): boolean;
  }
 
- class SComparison extends Filter {
+ export class SComparison extends Filter {
 	 private skey: SField; //SField to compare
 	 private val: string; //value to compare with
 
@@ -68,7 +68,7 @@
 	 }
  }
 
- class MComparison extends Filter {
+ export class MComparison extends Filter {
 	 private mkey: MField;
 	 private val: number;
 	 private comp: MComparator;
@@ -92,7 +92,7 @@
 	 }
  }
 
- class LComparison extends Filter {
+ export class LComparison extends Filter {
 	 private filterList: Filter[];
 	 private logic: Logic;
 
@@ -118,7 +118,7 @@
 	 }
  }
 
- class Negation extends Filter{
+ export class Negation extends Filter{
 	 private filter: Filter;
 
 	 constructor(filter:Filter) {
@@ -131,7 +131,8 @@
 	 }
  }
 
- class Options {
+ export class Options {
+	 private datasetId: string; //To append with keys in final object
 	 private keys: Array<MField | SField>;
 	 private order: MField | SField;
 
@@ -144,14 +145,16 @@
 		 for (const section of sections){
 			 const toPush: InsightResult = {};
 			 for (const key of this.keys) {
-				toPush[key] = section[key];
+				toPush[this.datasetId + "_" + key] = section[key];
 			 }
 			 result.push(toPush);
 		 }
+		 // TODO: Still have to order result before returning
 		 return result;
 	 }
 
-	 constructor(keys: Array<MField | SField>, order: MField | SField) {
+	 constructor(datasetId:string, keys: Array<MField | SField>, order: MField | SField) {
+		 this.datasetId = datasetId;
 		 this.keys = keys;
 		 this.order = order;
 	 }

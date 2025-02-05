@@ -7,8 +7,10 @@ import {
 	NotFoundError,
 	// ResultTooLargeError
 } from "./IInsightFacade";
-import { Dataset } from "./Dataset";
+import { Dataset} from "./Dataset";
 import { DatasetProcessor } from "./DatasetProcessor";
+import {QueryParser} from "./Query/QueryParser";
+import {Query} from "./Query/Query";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -62,7 +64,12 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		// TODO: Remove this once you implement the methods!
-		throw new Error(`InsightFacadeImpl::performQuery() is unimplemented! - query=${query};`);
+		const parser: QueryParser = new QueryParser();
+		const queryObj: Query = parser.parseQuery(query);
+
+		//Fetch dataset to query
+		const dataset: Dataset =  Dataset.getDatasetWithId(parser.getDatasetId(), this.datasets);
+		return queryObj.query(dataset.sections);
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {
