@@ -32,7 +32,7 @@ export class QueryParser {
 	//REQUIRES: obj is an object representing a Filter
 	//EFFECTS: Returns a Filter object representing the Filter
 	private parseFilter(obj: unknown): Filter {
-		let filter: Filter;
+		let filter: Filter = {} as Filter;
 		if (!this.isObject(obj)) {
 			throw new InsightError("Invalid WHERE clause body");
 		}
@@ -48,7 +48,6 @@ export class QueryParser {
 			//LComparison
 			filter = this.parseLComparison(Object.values(obj as Object)[0], Object.keys(obj as Object)[0] as Logic);
 		}
-		filter = {} as Filter; //Empty filter if no match
 		return filter;
 	}
 
@@ -67,7 +66,7 @@ export class QueryParser {
 			throw new InsightError("Invalid value for MField");
 		}
 
-		const val = Object.values(obj as Object)[1];
+		const val = Object.values(obj as Object)[0];
 		if (typeof val !== "number") {
 			throw new InsightError("Wrong value type for MComparison");
 		}
@@ -89,7 +88,7 @@ export class QueryParser {
 			throw new InsightError("Invalid value for MField");
 		}
 
-		const val = Object.values(obj as Object)[1];
+		const val = Object.values(obj as Object)[0];
 		if (typeof val !== "string") {
 			throw new InsightError("Wrong value type for SComparison");
 		}
