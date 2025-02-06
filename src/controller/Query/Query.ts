@@ -173,7 +173,6 @@ export class Options {
 	// (NOTE: This is the final result returned by performQuery)
 	public handleOptions(sections: Section[]): InsightResult[] {
 		let result: InsightResult[] = [];
-		console.log(this.keys);
 
 		for (const section of sections) {
 			const toPush: InsightResult = {};
