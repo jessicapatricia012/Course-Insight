@@ -66,9 +66,12 @@ export default class InsightFacade implements IInsightFacade {
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		const parser: QueryParser = new QueryParser();
 		const queryObj: Query = parser.parseQuery(query);
-
-		//Fetch dataset to query
-		const dataset: Dataset = Dataset.getDatasetWithId(parser.getDatasetId(), this.datasets);
+		// Check if dataset exists on disk
+		const id = parser.getDatasetId();
+		if (!(await DatasetProcessor.isInDisk(id))) {
+			throw new InsightError("id not found");
+		}
+		const dataset: Dataset = Dataset.getDatasetWithId(id, this.datasets);
 		const result = queryObj.query(dataset.sections);
 		if (result.length > this.MAX_RES) {
 			throw new ResultTooLargeError("Result exceed 5000");

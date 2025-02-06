@@ -35,7 +35,10 @@ export class Where {
 		// Takes an array of Sections
 		const result: Section[] = [];
 		for (const section of toFilter) {
-			if (this.filter.performFilter(section)) {
+			if (this.filter === null || Object.keys(this.filter).length === 0) {
+				// no filtering, handles empty WHERE ( WHERE:{} )
+				result.push(section);
+			} else if (this.filter.performFilter(section)) {
 				result.push(section);
 			}
 		}
@@ -124,6 +127,9 @@ export class LComparison extends Filter {
 			let result: boolean = this.filterList[0].performFilter(section); // perform first filter because result needs to be initialized
 			for (const filter of this.filterList) {
 				//Loops through all filters in List
+				if (filter === null || Object.keys(filter).length === 0) {
+					throw new InsightError("Invalid filter in filter list");
+				}
 				result = filter.performFilter(section) && result;
 			}
 			return result;
@@ -131,6 +137,9 @@ export class LComparison extends Filter {
 			// OR
 			let result: boolean = this.filterList[0].performFilter(section);
 			for (const filter of this.filterList) {
+				if (filter === null || Object.keys(filter).length === 0) {
+					throw new InsightError("Invalid filter in filter list");
+				}
 				result = filter.performFilter(section) || result;
 			}
 			return result;
@@ -147,6 +156,9 @@ export class Negation extends Filter {
 	}
 
 	public performFilter(section: Section): boolean {
+		if (this.filter === null || Object.keys(this.filter).length === 0) {
+			throw new InsightError("No FILTER on NOT");
+		}
 		return !this.filter.performFilter(section);
 	}
 }
@@ -169,6 +181,7 @@ export class Options {
 			}
 			result.push(toPush);
 		}
+
 		// TODO: Still have to order result before returning
 		return result;
 	}

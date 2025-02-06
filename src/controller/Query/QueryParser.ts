@@ -37,6 +37,9 @@ export class QueryParser {
 		if (!this.isObject(obj)) {
 			throw new InsightError("Invalid WHERE clause body");
 		}
+		if (obj === null) {
+			throw new InsightError("WHERE is null");
+		}
 
 		if (this.isInObject(obj, "LT") || this.isInObject(obj, "GT") || this.isInObject(obj, "EQ")) {
 			const mcomp: MComparator = Object.keys(obj as Object)[0] as MComparator;
@@ -46,8 +49,10 @@ export class QueryParser {
 		} else if (this.isInObject(obj, "NOT")) {
 			filter = this.parseNegation(Object.values(obj as Object)[0]);
 		} else if (this.isInObject(obj, "AND") || this.isInObject(obj, "OR")) {
-			//LComparison
 			filter = this.parseLComparison(Object.values(obj as Object)[0], Object.keys(obj as Object)[0] as Logic);
+		} else if (obj !== null && obj !== undefined && Object.keys(obj).length > 0) {
+			// contains invalid filter other than obove but not {}
+			throw new InsightError("Invalid FILTER key");
 		}
 		return filter;
 	}
@@ -60,7 +65,6 @@ export class QueryParser {
 		if (keyTokens.length !== 2) {
 			throw new InsightError("Invalid format for MComparison key");
 		}
-
 		this.updateId(keyTokens[0]);
 		const mfield: string = keyTokens[1];
 		if (!(mfield in MField)) {
@@ -104,8 +108,15 @@ export class QueryParser {
 	//EFFECTS: Returns an LComparison representation of the object
 	private parseLComparison(obj: unknown, logic: Logic): LComparison {
 		const filterList: Filter[] = [];
+
+		if (!Array.isArray(obj)) {
+			throw new InsightError("Invalid logic filter list");
+		}
 		for (const filter of obj as Array<Object>) {
 			filterList.push(this.parseFilter(filter));
+		}
+		if (filterList.length === 0) {
+			throw new InsightError("Empty logic filter list");
 		}
 		return new LComparison(filterList, logic);
 	}
@@ -114,6 +125,9 @@ export class QueryParser {
 	//EFFECTS: Returns an Options object representation of the clause
 	private parseOptions(obj: unknown): Options {
 		if (!this.isObject(obj)) throw new InsightError("Invalid type for OPTIONS clause");
+		if (obj === null) {
+			throw new InsightError("OPTIONS is null");
+		}
 		if (!("COLUMNS" in (obj as Object))) throw new InsightError("Missing COLUMNS in OPTIONS");
 		const { COLUMNS: columns, ORDER: order = null } = obj as any; //If ORDER doesn't exist, default value of null is assigned
 		if (!(columns instanceof Array) || columns.length < 1)
@@ -134,6 +148,7 @@ export class QueryParser {
 		}
 		let orderField: string = "";
 		if (order !== null) {
+			if (!columns.includes(order)) throw new InsightError("ORDER key must be in COLUMNS");
 			const orderTokens = order.split("_");
 			if (orderTokens.length !== 2) throw new InsightError("Invalid format for ORDER");
 			this.updateId(orderTokens[0]);

@@ -1,17 +1,15 @@
 {
-    "title": "Query invalid key in IS",
+    "title": "Invalid field",
     "input": {
         "WHERE": {
-          "IS": {
-            "sections_avg": "90"
+          "GT": {
+            "_sections_avg": 85
           }
         },
         "OPTIONS": {
           "COLUMNS": [
-            "sections_avg",
-            "sections_dept"
-          ],
-          "ORDER": "sections_avg"
+            "_sections_avg"
+          ]
         }
       },
     "errorExpected": true,

@@ -2,14 +2,24 @@
     "title": "Invalid field",
     "input": {
         "WHERE": {
-          "NOT": {
-            "INVALID_KEY": {
-              "sections_avg": 90
+          "XOR": [
+            {
+              "EQ": {
+                "sections_avg": 85
+              }
+            },
+            {
+              "LT": {
+                "sections_pass": 50
+              }
             }
-          }
+          ]
         },
         "OPTIONS": {
-          "COLUMNS": ["sections_dept", "sections_avg"]
+          "COLUMNS": [
+            "sections_avg",
+            "sections_pass"
+          ]
         }
       }
       ,

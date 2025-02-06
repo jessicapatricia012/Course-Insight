@@ -1,0 +1,14 @@
+{
+    "title": "Null OPTION",
+    "input": {
+        "WHERE": {
+              "IS": {
+                "sections_dept": "anat"
+              }
+            },
+        "OPTIONS": null
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  
