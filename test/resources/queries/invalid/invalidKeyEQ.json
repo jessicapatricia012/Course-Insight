@@ -1,0 +1,20 @@
+{
+    "title": "Query invalid key in EQ",
+    "input": {
+        "WHERE": {
+          "EQ": {
+            "sections_dept": "math"
+          }
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_avg",
+            "sections_dept"
+          ],
+          "ORDER": "sections_avg"
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

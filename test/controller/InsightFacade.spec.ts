@@ -547,6 +547,7 @@ describe("InsightFacade", function () {
 
 		// MCOMPARISON
 		it("[invalid/invalidEQ.json] Invalid key type in EQ", checkQuery);
+		it("[invalid/invalidKeyEQ.json] Invalid key type in EQ", checkQuery);
 		it("[invalid/invalidKeyGT.json] Invalid key type in GT", checkQuery);
 		it("[invalid/invalidValueGT.json] Invalid value GT", checkQuery);
 		it("[invalid/invalidValueLT.json] Invalid value LT", checkQuery);

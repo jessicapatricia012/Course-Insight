@@ -1,0 +1,20 @@
+{
+    "title": "Invalid value type in EQ, should be number",
+    "input": {
+        "WHERE": {
+          "GT": {
+            "sections_avg": null
+          }
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_avg",
+            "sections_dept"
+          ],
+          "ORDER": "sections_avg"
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

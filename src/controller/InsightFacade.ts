@@ -5,7 +5,7 @@ import {
 	InsightResult,
 	InsightError,
 	NotFoundError,
-	ResultTooLargeError,
+	// ResultTooLargeError,
 } from "./IInsightFacade";
 import { Dataset } from "./Dataset";
 import { DatasetProcessor } from "./DatasetProcessor";
@@ -83,9 +83,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 
 		const result = queryObj.query(dataset.sections);
-		if (result.length > this.MAX_RES) {
-			throw new ResultTooLargeError("Result exceed 5000");
-		}
+
 		return result;
 	}
 
