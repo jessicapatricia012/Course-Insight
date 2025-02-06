@@ -5,10 +5,12 @@ import {
 	InsightResult,
 	InsightError,
 	NotFoundError,
-	// ResultTooLargeError
+	ResultTooLargeError,
 } from "./IInsightFacade";
 import { Dataset } from "./Dataset";
 import { DatasetProcessor } from "./DatasetProcessor";
+import { QueryParser } from "./Query/QueryParser";
+import { Query } from "./Query/Query";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -16,6 +18,7 @@ import { DatasetProcessor } from "./DatasetProcessor";
  *
  */
 export default class InsightFacade implements IInsightFacade {
+	private MAX_RES = 5000;
 	private datasets: Dataset[];
 
 	constructor() {
@@ -36,7 +39,7 @@ export default class InsightFacade implements IInsightFacade {
 			const dataset = await DatasetProcessor.parseContent(id, content);
 			this.datasets.push(dataset);
 			await DatasetProcessor.addToDisk(id, dataset);
-			return this.datasets.map((ds) => ds.id);
+			return this.datasets.map((ds) => ds.insightDataset.id);
 		} else {
 			throw new Error(`unimplemented!`);
 		}
@@ -61,8 +64,29 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
-		// TODO: Remove this once you implement the methods!
-		throw new Error(`InsightFacadeImpl::performQuery() is unimplemented! - query=${query};`);
+		const parser: QueryParser = new QueryParser();
+		const queryObj: Query = parser.parseQuery(query);
+		const id = parser.getDatasetId();
+
+		// Check if dataset exists on disk
+		if (!(await DatasetProcessor.isInDisk(id))) {
+			throw new InsightError("id not found");
+		}
+
+		let dataset: Dataset;
+		try {
+			dataset = Dataset.getDatasetWithId(id, this.datasets); // try to read from datasets
+		} catch {
+			// memory doesnt contain id, read from disk instead
+			dataset = await DatasetProcessor.getDatasetFromDiskWithId(id); //guaranteed to be in disk
+			this.datasets.push(dataset); // add to datasets
+		}
+
+		const result = queryObj.query(dataset.sections);
+		if (result.length > this.MAX_RES) {
+			throw new ResultTooLargeError("Result exceed 5000");
+		}
+		return result;
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {

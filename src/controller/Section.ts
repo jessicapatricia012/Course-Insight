@@ -1,9 +1,9 @@
 export class Section {
 	public id: string;
-	public course: string;
+	public uuid: string;
 	public title: string;
-	public professor: string;
-	public subject: string;
+	public instructor: string;
+	public dept: string;
 	public year: number;
 	public avg: number;
 	public pass: number;
@@ -12,11 +12,15 @@ export class Section {
 
 	constructor(json: any) {
 		this.id = json.id.toString();
-		this.course = json.Course;
+		this.uuid = json.Course;
 		this.title = json.Title;
-		this.professor = json.Professor;
-		this.subject = json.Subject;
-		this.year = json.Year;
+		this.instructor = json.Professor;
+		this.dept = json.Subject;
+		if (json.Section === "overall") {
+			this.year = 1900;
+		} else {
+			this.year = json.Year;
+		}
 		this.avg = json.Avg;
 		this.pass = json.Pass;
 		this.fail = json.Fail;
