@@ -8,6 +8,7 @@ export class QueryParser {
 	constructor() {
 		this.datasetId = ""; //intialize id as empty first
 	}
+
 	public parseQuery(query: unknown): Query {
 		if (!this.isObject(query)) {
 			throw new InsightError("Invalid Query type");

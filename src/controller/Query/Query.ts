@@ -1,5 +1,5 @@
 import { SField, MField, MComparator, Logic } from "./enums";
-import { InsightResult } from "../IInsightFacade";
+import { InsightError, InsightResult } from "../IInsightFacade";
 import { Section } from "../Section";
 
 // Query class representing a query
@@ -64,7 +64,24 @@ export class SComparison extends Filter {
 		this.val = val;
 	}
 	public performFilter(section: Section): boolean {
-		return section[this.skey] === this.val;
+		let val = this.val;
+		if (val.slice(1, -1).includes("*")) {
+			// remove first and last char (potentially *), thn check if there's still *
+			throw new InsightError("Illegal wildcard usage");
+		}
+
+		if (val.startsWith("*") && val.endsWith("*")) {
+			val = val.slice(1, -1);
+			return section[this.skey].includes(val);
+		} else if (val.startsWith("*")) {
+			val = val.slice(1);
+			return section[this.skey].endsWith(val);
+		} else if (val.endsWith("*")) {
+			val = val.slice(0, -1);
+			return section[this.skey].startsWith(val);
+		}
+
+		return section[this.skey] === val;
 	}
 }
 

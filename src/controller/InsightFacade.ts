@@ -5,7 +5,7 @@ import {
 	InsightResult,
 	InsightError,
 	NotFoundError,
-	// ResultTooLargeError
+	ResultTooLargeError,
 } from "./IInsightFacade";
 import { Dataset } from "./Dataset";
 import { DatasetProcessor } from "./DatasetProcessor";
@@ -18,6 +18,7 @@ import { Query } from "./Query/Query";
  *
  */
 export default class InsightFacade implements IInsightFacade {
+	private MAX_RES = 5000;
 	private datasets: Dataset[];
 
 	constructor() {
@@ -63,13 +64,16 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
-		// TODO: Remove this once you implement the methods!
 		const parser: QueryParser = new QueryParser();
 		const queryObj: Query = parser.parseQuery(query);
 
 		//Fetch dataset to query
 		const dataset: Dataset = Dataset.getDatasetWithId(parser.getDatasetId(), this.datasets);
-		return queryObj.query(dataset.sections);
+		const result = queryObj.query(dataset.sections);
+		if (result.length > this.MAX_RES) {
+			throw new ResultTooLargeError("Result exceed 5000");
+		}
+		return result;
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {

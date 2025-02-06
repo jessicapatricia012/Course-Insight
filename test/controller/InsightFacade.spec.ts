@@ -465,12 +465,6 @@ describe("InsightFacade", function () {
 					return expect.fail("Write your assertion(s) here.");
 				}
 			}
-			// if (errorExpected) {
-			// 	expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
-			// }
-			// // TODO: replace this failing assertion with your assertions. You will need to reason about the code in this function
-			// // to determine what to put here :)
-			// return expect.fail("Write your assertion(s) here.");
 		}
 
 		before(async function () {
@@ -556,7 +550,6 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidValueLT.json] Invalid value LT", checkQuery);
 		it("[invalid/nullQuery.json] null query", checkQuery);
 
-		//it("[invalid/invalid1.json] empty AND", checkQuery);
 		it("[invalid/invalid2.json] Invalid field 2", checkQuery);
 		it("[invalid/invalid3.json] invalid key 2", checkQuery);
 		it("[invalid/invalidAnd2.json] invalid NOT", checkQuery);

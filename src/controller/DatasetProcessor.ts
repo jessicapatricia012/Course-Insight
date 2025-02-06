@@ -130,7 +130,7 @@ export class DatasetProcessor {
 			files.map(async (file) => {
 				const filePath = path.join(DATA_DIR, file);
 				const fileContent = await fs.readJson(filePath);
-				const { id, kind, numRows } = fileContent;
+				const { id, kind, numRows } = fileContent.insightDataset;
 
 				return { id, kind, numRows };
 			})
