@@ -71,7 +71,7 @@ export default class InsightFacade implements IInsightFacade {
 		if (!(await DatasetProcessor.isInDisk(id))) {
 			throw new InsightError("id not found");
 		}
-		const dataset: Dataset = Dataset.getDatasetWithId(id, this.datasets);
+		const dataset: Dataset = await DatasetProcessor.getDatasetFromDiskWithId(id);
 		const result = queryObj.query(dataset.sections);
 		if (result.length > this.MAX_RES) {
 			throw new ResultTooLargeError("Result exceed 5000");

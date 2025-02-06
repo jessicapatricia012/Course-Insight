@@ -137,4 +137,18 @@ export class DatasetProcessor {
 		);
 		return datasets;
 	}
+
+	public static async getDatasetFromDiskWithId(id: string): Promise<Dataset> {
+		await fs.ensureDir(DATA_DIR);
+		const datasetPath = path.join(DATA_DIR, `${id}.json`);
+		const content = await fs.readJson(datasetPath);
+		const insightDataset: InsightDataset = content.insightDataset;
+		const dataset = new Dataset(insightDataset);
+
+		for (const section of content.sections) {
+			dataset.sections.push(section);
+		}
+
+		return dataset;
+	}
 }
