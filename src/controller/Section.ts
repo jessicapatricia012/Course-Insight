@@ -16,7 +16,11 @@ export class Section {
 		this.title = json.Title;
 		this.instructor = json.Professor;
 		this.dept = json.Subject;
-		this.year = json.Year;
+		if (json.Section === "overall") {
+			this.year = 1900;
+		} else {
+			this.year = json.Year;
+		}
 		this.avg = json.Avg;
 		this.pass = json.Pass;
 		this.fail = json.Fail;

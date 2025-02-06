@@ -172,7 +172,8 @@ export class Options {
 	//EFFECTS: Returns an array of InsightResult with filtred fields and ordered accordingly
 	// (NOTE: This is the final result returned by performQuery)
 	public handleOptions(sections: Section[]): InsightResult[] {
-		const result: InsightResult[] = [];
+		let result: InsightResult[] = [];
+		console.log(this.keys);
 
 		for (const section of sections) {
 			const toPush: InsightResult = {};
@@ -182,7 +183,27 @@ export class Options {
 			result.push(toPush);
 		}
 
-		// TODO: Still have to order result before returning
+		if (this.order in MField) {
+			// number, need to order
+			result = this.orderResultBy(result, this.order);
+		}
+		return result;
+	}
+
+	private orderResultBy(result: InsightResult[], order: MField | SField): InsightResult[] {
+		// selection sort
+		let min: number;
+		for (let i = 0; i < result.length - 1; i++) {
+			min = i;
+			for (let j = i + 1; j < result.length; j++) {
+				if (result[j][order] < result[min][order]) {
+					min = j;
+				}
+			}
+			if (min !== i) {
+				[result[min], result[i]] = [result[i], result[min]];
+			}
+		}
 		return result;
 	}
 
