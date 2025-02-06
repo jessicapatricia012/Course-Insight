@@ -31,55 +31,6 @@ export class DatasetProcessor {
 		}
 	}
 
-	// public static async validateDataset(content: string): Promise<void> {
-	// 	try {
-	// 		// Unzip the content (base64 string)
-	// 		const zip = await JSZip.loadAsync(Buffer.from(content, "base64"));
-
-	// 		// Check if "courses" folder exists
-	// 		const coursesFolder = zip.folder("courses");
-	// 		if (!coursesFolder) {
-	// 			throw new InsightError("Dataset must contain a 'courses' folder");
-	// 		}
-	// 		// Get the files in the 'courses' folder and check if there are any files
-	// 		const courseFiles = coursesFolder.files;
-	// 		if (Object.keys(courseFiles).length === 0) {
-	// 			throw new InsightError("No course files found in the 'courses' folder");
-	// 		}
-
-	// 		// Collect promises to validate the course files
-	// 		const validationPromises = Object.keys(courseFiles).map(async (fileName) => {
-	// 			const file = courseFiles[fileName];
-
-	// 			// Read the content of the file as a string
-	// 			const fileContent = await file.async("string");
-
-	// 			try {
-	// 				// Try to parse the content as JSON
-	// 				const parsedData = JSON.parse(fileContent);
-
-	// 				// Check if the file contains a 'result' array
-	// 				if (parsedData.result && Array.isArray(parsedData.result)) {
-	// 					return true; // Valid course found
-	// 				} else {
-	// 					throw new InsightError(`Course file must contain a 'result' array: ${fileName}`);
-	// 				}
-	// 			} catch {
-	// 				// If parsing fails, treat it as an invalid file
-	// 				throw new InsightError(`Invalid JSON format in course file: ${fileName}`);
-	// 			}
-	// 		});
-
-	// 		// Wait for all validation promises and check if at least one valid course exists
-	// 		const results = await Promise.all(validationPromises);
-	// 		if (!results.includes(true)) {
-	// 			throw new InsightError("No valid course files found in the 'courses' folder");
-	// 		}
-	// 	} catch {
-	// 		throw new InsightError("Invalid dataset content");
-	// 	}
-	// }
-
 	private static isValidSection(section: any): boolean {
 		const requiredFields = ["id", "course", "title", "professor", "subject", "year", "avg", "pass", "fail", "audit"];
 		const sectionFields = Object.keys(section).map((field) => field.toLowerCase());
@@ -103,7 +54,11 @@ export class DatasetProcessor {
 		await DatasetProcessor.processFiles(coursesFolder.files, sections);
 
 		// Create a new Dataset and assign the sections to it
-		const dataset = new Dataset(id, InsightDatasetKind.Sections, sections.length);
+		const dataset = new Dataset({
+			id: id,
+			kind: InsightDatasetKind.Sections,
+			numRows: sections.length,
+		});
 		dataset.sections = sections;
 
 		return dataset;
