@@ -181,27 +181,26 @@ export class Options {
 			}
 			result.push(toPush);
 		}
-
-		if (this.order in MField) {
-			// number, need to order
-			result = this.orderResultBy(result, this.order);
-		}
+		if (this.order in MField || this.order in SField) result = this.orderResultBy(result, this.order);
 		return result;
 	}
 
 	private orderResultBy(result: InsightResult[], order: MField | SField): InsightResult[] {
+		const orderKey = this.datasetId + "_" + order;
 		// selection sort
 		let min: number;
 		for (let i = 0; i < result.length - 1; i++) {
 			min = i;
 			for (let j = i + 1; j < result.length; j++) {
-				if (result[j][order] < result[min][order]) {
+				if (this.order in SField) {
+					if (String(result[j][orderKey]).localeCompare(String(result[min][orderKey])) < 0) {
+						min = j;
+					}
+				} else if (this.order in MField && result[j][orderKey] < result[min][orderKey]) {
 					min = j;
 				}
 			}
-			if (min !== i) {
-				[result[min], result[i]] = [result[i], result[min]];
-			}
+			[result[min], result[i]] = [result[i], result[min]];
 		}
 		return result;
 	}

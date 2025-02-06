@@ -451,9 +451,7 @@ describe("InsightFacade", function () {
 					return expect.fail("performQuery resolved when it should have rejected with ${expected}");
 				}
 				// console.log(result);
-
 				// console.log(expected);
-
 				expect(result).to.have.deep.members(expected);
 				/////////////
 			} catch (err) {
@@ -518,7 +516,7 @@ describe("InsightFacade", function () {
 		it("[invalid/orderEmpty.json] ORDER Empty", checkQuery);
 		it("[invalid/orderNotInCol.json] ORDER not in COLUMN", checkQuery);
 		it("[valid/orderEmptyResult.json] ORDER empty result", checkQuery);
-		//it("[valid/order1.json] ORDER by mfield (avg)", checkQuery);
+		// it("[valid/order1.json] ORDER by mfield (avg)", checkQuery);
 		it("[valid/order2.json] ORDER by sfield (title)", checkQuery);
 		it("[valid/orderExist.json] ORDER exists", checkQuery);
 		it("[valid/orderNone.json] ORDER doesnt exist", checkQuery);
@@ -563,7 +561,7 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidField2.json] Invalid field in COLUMNS", checkQuery);
 
 		// VALID COMPLEX
-		// it("[valid/validComplex.json] Complex valid", checkQuery);
+		//it("[valid/validComplex.json] Complex valid", checkQuery);
 		it("[valid/EBNF1.json] EBNF with NOT", checkQuery);
 		it("[valid/EBNF2.json] EBNF with double NOT", checkQuery);
 		it("[valid/EBNF3.json] EBNF 3", checkQuery);
