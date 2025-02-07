@@ -1,9 +1,9 @@
 {
-    "title": "Query invalid key in GT",
+    "title": "Query invalid key in EQ",
     "input": {
         "WHERE": {
-          "GT": {
-            "sections_avg": "math"
+          "EQ": {
+            "sections_dept": "math"
           }
         },
         "OPTIONS": {

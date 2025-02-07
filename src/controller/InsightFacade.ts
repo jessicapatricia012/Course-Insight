@@ -5,7 +5,7 @@ import {
 	InsightResult,
 	InsightError,
 	NotFoundError,
-	ResultTooLargeError,
+	// ResultTooLargeError,
 } from "./IInsightFacade";
 import { Dataset } from "./Dataset";
 import { DatasetProcessor } from "./DatasetProcessor";
@@ -19,10 +19,10 @@ import { Query } from "./Query/Query";
  */
 export default class InsightFacade implements IInsightFacade {
 	private MAX_RES = 5000;
-	private datasets: Dataset[];
+	public static datasets: Dataset[];
 
 	constructor() {
-		this.datasets = [];
+		InsightFacade.datasets = [];
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
@@ -37,9 +37,9 @@ export default class InsightFacade implements IInsightFacade {
 
 		if (kind === InsightDatasetKind.Sections) {
 			const dataset = await DatasetProcessor.parseContent(id, content);
-			this.datasets.push(dataset);
+			InsightFacade.datasets.push(dataset);
 			await DatasetProcessor.addToDisk(id, dataset);
-			return this.datasets.map((ds) => ds.insightDataset.id);
+			return InsightFacade.datasets.map((ds) => ds.insightDataset.id);
 		} else {
 			throw new Error(`unimplemented!`);
 		}
@@ -55,8 +55,8 @@ export default class InsightFacade implements IInsightFacade {
 			throw new NotFoundError("Dataset not found");
 		}
 
-		const index = this.datasets.indexOf(Dataset.getDatasetWithId(id, this.datasets));
-		this.datasets.splice(index, 1); // Remove the dataset
+		const index = InsightFacade.datasets.indexOf(Dataset.getDatasetWithId(id, InsightFacade.datasets));
+		InsightFacade.datasets.splice(index, 1); // Remove the dataset
 
 		await DatasetProcessor.deleteFromDisk(id);
 
@@ -75,17 +75,13 @@ export default class InsightFacade implements IInsightFacade {
 
 		let dataset: Dataset;
 		try {
-			dataset = Dataset.getDatasetWithId(id, this.datasets); // try to read from datasets
+			dataset = Dataset.getDatasetWithId(id, InsightFacade.datasets); // try to read from datasets
 		} catch {
-			// memory doesnt contain id, read from disk instead
 			dataset = await DatasetProcessor.getDatasetFromDiskWithId(id); //guaranteed to be in disk
-			this.datasets.push(dataset); // add to datasets
+			InsightFacade.datasets.push(dataset); // add to datasets
 		}
-
 		const result = queryObj.query(dataset.sections);
-		if (result.length > this.MAX_RES) {
-			throw new ResultTooLargeError("Result exceed 5000");
-		}
+
 		return result;
 	}
 

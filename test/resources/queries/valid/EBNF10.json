@@ -1,0 +1,28 @@
+{
+    "title": "EBNF 10",
+    "input": {
+        "WHERE": {
+          "AND": [
+            {
+              "EQ": {
+                "sections_avg": 92
+              }
+            },
+            {
+              "EQ": {
+                "sections_year": 1900
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_dept",
+            "sections_avg",
+            "sections_year"
+          ]
+        }
+      }
+    ,
+    "errorExpected": false,
+    "expected":[{"sections_dept":"anat","sections_avg":92,"sections_year":1900},{"sections_dept":"atsc","sections_avg":92,"sections_year":1900},{"sections_dept":"audi","sections_avg":92,"sections_year":1900},{"sections_dept":"audi","sections_avg":92,"sections_year":1900},{"sections_dept":"biol","sections_avg":92,"sections_year":1900},{"sections_dept":"bota","sections_avg":92,"sections_year":1900},{"sections_dept":"chil","sections_avg":92,"sections_year":1900},{"sections_dept":"chil","sections_avg":92,"sections_year":1900},{"sections_dept":"chil","sections_avg":92,"sections_year":1900},{"sections_dept":"civl","sections_avg":92,"sections_year":1900},{"sections_dept":"cnps","sections_avg":92,"sections_year":1900},{"sections_dept":"cnps","sections_avg":92,"sections_year":1900},{"sections_dept":"cpsc","sections_avg":92,"sections_year":1900},{"sections_dept":"edcp","sections_avg":92,"sections_year":1900},{"sections_dept":"eece","sections_avg":92,"sections_year":1900},{"sections_dept":"epse","sections_avg":92,"sections_year":1900},{"sections_dept":"hgse","sections_avg":92,"sections_year":1900},{"sections_dept":"kin","sections_avg":92,"sections_year":1900},{"sections_dept":"math","sections_avg":92,"sections_year":1900},{"sections_dept":"math","sections_avg":92,"sections_year":1900},{"sections_dept":"mech","sections_avg":92,"sections_year":1900},{"sections_dept":"mech","sections_avg":92,"sections_year":1900},{"sections_dept":"mech","sections_avg":92,"sections_year":1900},{"sections_dept":"mech","sections_avg":92,"sections_year":1900},{"sections_dept":"musc","sections_avg":92,"sections_year":1900},{"sections_dept":"pcth","sections_avg":92,"sections_year":1900},{"sections_dept":"psyc","sections_avg":92,"sections_year":1900},{"sections_dept":"spph","sections_avg":92,"sections_year":1900},{"sections_dept":"stat","sections_avg":92,"sections_year":1900}]}

@@ -1,9 +1,9 @@
 {
-    "title": "Query invalid key in GT",
+    "title": "Invalid value type in EQ, should be number",
     "input": {
         "WHERE": {
-          "GT": {
-            "sections_avg": "math"
+          "EQ": {
+            "sections_avg": null
           }
         },
         "OPTIONS": {

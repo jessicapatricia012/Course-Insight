@@ -1,5 +1,5 @@
 import { SField, MField, MComparator, Logic } from "./enums";
-import { InsightError, InsightResult } from "../IInsightFacade";
+import { InsightError, InsightResult, ResultTooLargeError } from "../IInsightFacade";
 import { Section } from "../Section";
 
 // Query class representing a query
@@ -11,6 +11,7 @@ import { Section } from "../Section";
 export class Query {
 	private where: Where; // WHERE Clause
 	private options: Options; // OPTIONS Clause
+	private MAX_RES = 5000;
 
 	constructor(where: Where, options: Options) {
 		this.where = where;
@@ -22,6 +23,9 @@ export class Query {
 	//EFFECTS: Returns the result of the query
 	public query(sections: Section[]): InsightResult[] {
 		const filteredSections: Section[] = this.where.handleWhere(sections);
+		if (filteredSections.length > this.MAX_RES) {
+			throw new ResultTooLargeError("Result exceed 5000");
+		}
 		return this.options.handleOptions(filteredSections);
 	}
 }
@@ -37,6 +41,7 @@ export class Where {
 		for (const section of toFilter) {
 			if (this.filter === null || Object.keys(this.filter).length === 0) {
 				// no filtering, handles empty WHERE ( WHERE:{} )
+
 				result.push(section);
 			} else if (this.filter.performFilter(section)) {
 				result.push(section);

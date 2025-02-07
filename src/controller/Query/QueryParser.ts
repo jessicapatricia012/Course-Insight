@@ -10,7 +10,7 @@ export class QueryParser {
 	}
 
 	public parseQuery(query: unknown): Query {
-		if (!this.isObject(query)) {
+		if (!this.isObject(query) || query === null) {
 			throw new InsightError("Invalid Query type");
 		}
 
