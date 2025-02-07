@@ -1,0 +1,30 @@
+{
+  "title": "SELECT dept, avg WHERE avg > 97",
+	"input": {
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_avg",
+        "sections_instructor",
+        "sections_dept"
+      ]
+    },
+    "WHERE": {
+      "NOT": {
+        "OR": [
+          {
+            "GT": {
+              "sections_avg": 99
+            }
+          },
+          {
+            "LT": {
+              "sections_avg": 97
+            }
+          }
+        ]
+      }
+    }
+  },
+    "errorExpected": false,
+    "expected":[{"sections_dept":"cnps","sections_avg":97.47,"sections_instructor":"neault, roberta a"},{"sections_dept":"cnps","sections_avg":97.47,"sections_instructor":""},{"sections_dept":"crwr","sections_avg":97,"sections_instructor":"campbell, deborah"},{"sections_dept":"crwr","sections_avg":98,"sections_instructor":"maillard, keith"},{"sections_dept":"crwr","sections_avg":98,"sections_instructor":"grady, albert wayne"},{"sections_dept":"educ","sections_avg":97.5,"sections_instructor":"morgan, tannis"},{"sections_dept":"eece","sections_avg":98.75,"sections_instructor":"coria, lino"},{"sections_dept":"eece","sections_avg":98.75,"sections_instructor":""},{"sections_dept":"epse","sections_avg":98.08,"sections_instructor":"cole, kenneth"},{"sections_dept":"epse","sections_avg":98.7,"sections_instructor":"cole, kenneth"},{"sections_dept":"epse","sections_avg":98.36,"sections_instructor":""},{"sections_dept":"epse","sections_avg":97.29,"sections_instructor":"cole, kenneth"},{"sections_dept":"epse","sections_avg":97.29,"sections_instructor":""},{"sections_dept":"epse","sections_avg":98.8,"sections_instructor":"grow, laura"},{"sections_dept":"epse","sections_avg":97.41,"sections_instructor":"wilk, diana"},{"sections_dept":"epse","sections_avg":98.58,"sections_instructor":"grow, laura"},{"sections_dept":"epse","sections_avg":98.58,"sections_instructor":""},{"sections_dept":"epse","sections_avg":98.76,"sections_instructor":"grow, laura"},{"sections_dept":"epse","sections_avg":98.76,"sections_instructor":""},{"sections_dept":"epse","sections_avg":98.45,"sections_instructor":"cannon, joanna"},{"sections_dept":"epse","sections_avg":98.45,"sections_instructor":""},{"sections_dept":"epse","sections_avg":97.78,"sections_instructor":"amaral, deborah;ford, laurie"},{"sections_dept":"epse","sections_avg":97,"sections_instructor":"amaral, deborah;ford, laurie"},{"sections_dept":"epse","sections_avg":97.41,"sections_instructor":""},{"sections_dept":"epse","sections_avg":97.69,"sections_instructor":"grow, laura"},{"sections_dept":"epse","sections_avg":97.09,"sections_instructor":"kishor, nand"},{"sections_dept":"epse","sections_avg":97.09,"sections_instructor":""},{"sections_dept":"epse","sections_avg":97.67,"sections_instructor":"porath, marion"},{"sections_dept":"math","sections_avg":97.25,"sections_instructor":"fraser, ailana"},{"sections_dept":"math","sections_avg":97.25,"sections_instructor":""},{"sections_dept":"math","sections_avg":97.48,"sections_instructor":"karu, kalle"},{"sections_dept":"math","sections_avg":97.48,"sections_instructor":""},{"sections_dept":"math","sections_avg":97.09,"sections_instructor":"laba, izabella"},{"sections_dept":"math","sections_avg":97.09,"sections_instructor":""},{"sections_dept":"nurs","sections_avg":98.71,"sections_instructor":"brew, nancy"},{"sections_dept":"nurs","sections_avg":98.71,"sections_instructor":""},{"sections_dept":"nurs","sections_avg":98.21,"sections_instructor":"krist, jennifer"},{"sections_dept":"nurs","sections_avg":98.21,"sections_instructor":""},{"sections_dept":"nurs","sections_avg":97.53,"sections_instructor":"burrows, marlene;harding, jillian;krist, jennifer;mccuaig, fairleth"},{"sections_dept":"nurs","sections_avg":97.53,"sections_instructor":""},{"sections_dept":"nurs","sections_avg":98.5,"sections_instructor":"burrows, marlene;harding, jillian;krist, jennifer;mccuaig, fairleth"},{"sections_dept":"nurs","sections_avg":98.5,"sections_instructor":""},{"sections_dept":"nurs","sections_avg":98.58,"sections_instructor":""},{"sections_dept":"nurs","sections_avg":98.58,"sections_instructor":""},{"sections_dept":"nurs","sections_avg":97.33,"sections_instructor":"brew, nancy"},{"sections_dept":"nurs","sections_avg":97.33,"sections_instructor":""},{"sections_dept":"psyc","sections_avg":97,"sections_instructor":""},{"sections_dept":"spph","sections_avg":98.98,"sections_instructor":"frank, erica"},{"sections_dept":"spph","sections_avg":98.98,"sections_instructor":""}]}

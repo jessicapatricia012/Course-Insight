@@ -1,0 +1,28 @@
+{
+  "title": "SELECT dept, avg WHERE avg > 97",
+	"input": {
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_avg",
+        "sections_instructor",
+        "sections_dept"
+      ]
+    },
+    "WHERE": {
+      "AND": [
+        {
+          "GT": {
+            "sections_avg": 50
+          }
+        },
+        {
+          "LT": {
+            "sections_avg": 52
+          }
+        }
+      ]
+    }
+  },
+    "errorExpected": false,
+    "expected":[{"sections_dept":"busi","sections_avg":51.19,"sections_instructor":""},{"sections_dept":"comm","sections_avg":51.43,"sections_instructor":"rajwani, aziz"},{"sections_dept":"frst","sections_avg":50.85,"sections_instructor":""},{"sections_dept":"frst","sections_avg":51,"sections_instructor":""},{"sections_dept":"frst","sections_avg":51.5,"sections_instructor":""},{"sections_dept":"frst","sections_avg":51.5,"sections_instructor":""},{"sections_dept":"lled","sections_avg":51.14,"sections_instructor":"gradin, christopher"},{"sections_dept":"lled","sections_avg":51.13,"sections_instructor":"walsh marr, jennifer"},{"sections_dept":"math","sections_avg":51.49,"sections_instructor":"lo, quin wai joseph"},{"sections_dept":"math","sections_avg":51.5,"sections_instructor":""},{"sections_dept":"math","sections_avg":50.13,"sections_instructor":""},{"sections_dept":"math","sections_avg":51.04,"sections_instructor":""},{"sections_dept":"phar","sections_avg":51.25,"sections_instructor":""},{"sections_dept":"phar","sections_avg":51.86,"sections_instructor":""},{"sections_dept":"psyc","sections_avg":51.8,"sections_instructor":""}]}

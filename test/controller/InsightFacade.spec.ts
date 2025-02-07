@@ -542,11 +542,15 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidFilterKey4.json] Invalid filter key after WHERE 2", checkQuery);
 		it("[invalid/invalidNOT.json] invalid NOT", checkQuery);
 
-		// LOGIC
+		// // LOGIC
 		it("[invalid/invalidAnd.json] invalid AND", checkQuery);
 		it("[invalid/invalidAnd2.json] invalid AND 2", checkQuery);
 		it("[invalid/invalidAnd3.json] invalid AND 3", checkQuery);
 		it("[invalid/emptyAND.json] empty AND", checkQuery);
+		it("[invalid/invalidOr.json] invalid OR", checkQuery);
+		it("[invalid/invalidOr2.json] invalid OR 2", checkQuery);
+		it("[invalid/invalidOr3.json] invalid OR 3", checkQuery);
+		it("[invalid/emptyOR.json] empty OR", checkQuery);
 
 		// MCOMPARISON
 		it("[invalid/invalidEQ.json] Invalid key type in EQ", checkQuery);
@@ -602,6 +606,18 @@ describe("InsightFacade", function () {
 		it("[validNew/IS32.json] IS32", checkQuery);
 		it("[validNew/IS4.json] IS4", checkQuery);
 		it("[validNew/IS5.json] IS5", checkQuery);
+
+		it("[validNew/NOT1.json] NOT 1", checkQuery);
+		it("[validNew/NOT2.json] NOT 2", checkQuery);
+		it("[validNew/NOT3.json] NOT 3", checkQuery);
+		it("[validNew/NOT4.json] NOT 4", checkQuery);
+
+		it("[validNew/OR1.json] OR 1", checkQuery);
+		it("[validNew/OR2.json] OR 2", checkQuery);
+		it("[validNew/OR3.json] OR 3", checkQuery);
+		it("[validNew/OR4.json] OR 4", checkQuery);
+
+		it("[validNew/AND1.json] AND", checkQuery);
 	});
 
 	describe("Caching", function () {
