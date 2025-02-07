@@ -11,8 +11,8 @@ export class Section {
 	public audit: number;
 
 	constructor(json: any) {
-		this.id = json.id.toString();
-		this.uuid = json.Course;
+		this.id = json.Course;
+		this.uuid = json.id.toString();
 		this.title = json.Title;
 		this.instructor = json.Professor;
 		this.dept = json.Subject;

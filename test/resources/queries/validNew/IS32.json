@@ -1,0 +1,17 @@
+{
+ "title": "SELECT dept, avg WHERE avg > 97",
+	"input":{
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_uuid"
+      ]
+    },
+    "WHERE": {
+      "IS": {
+        "sections_uuid": "2308*"
+      }
+    }
+  },
+    "errorExpected": false,
+    "expected":[{"sections_dept":"astr","sections_uuid":"23080"},{"sections_dept":"astr","sections_uuid":"23081"},{"sections_dept":"astr","sections_uuid":"23082"},{"sections_dept":"astr","sections_uuid":"23083"},{"sections_dept":"astr","sections_uuid":"23084"},{"sections_dept":"astr","sections_uuid":"23085"},{"sections_dept":"astr","sections_uuid":"23086"},{"sections_dept":"astr","sections_uuid":"23087"},{"sections_dept":"astr","sections_uuid":"23088"},{"sections_dept":"astr","sections_uuid":"23089"},{"sections_dept":"dent","sections_uuid":"2308"}]}

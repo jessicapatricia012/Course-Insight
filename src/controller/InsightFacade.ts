@@ -18,7 +18,6 @@ import { Query } from "./Query/Query";
  *
  */
 export default class InsightFacade implements IInsightFacade {
-	private MAX_RES = 5000;
 	public static datasets: Dataset[];
 
 	constructor() {
