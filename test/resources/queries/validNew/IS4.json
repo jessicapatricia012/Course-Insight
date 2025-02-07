@@ -1,0 +1,17 @@
+{
+  "title": "SELECT dept, avg WHERE avg > 97",
+	"input":{
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_uuid"
+      ]
+    },
+    "WHERE": {
+      "IS": {
+        "sections_instructor": "heyl, jeremy"
+      }
+    }
+  },
+    "errorExpected": false,
+    "expected":[{"sections_dept":"astr","sections_uuid":"23076"},{"sections_dept":"astr","sections_uuid":"23080"},{"sections_dept":"astr","sections_uuid":"23081"},{"sections_dept":"astr","sections_uuid":"26594"},{"sections_dept":"astr","sections_uuid":"30101"},{"sections_dept":"astr","sections_uuid":"51344"},{"sections_dept":"astr","sections_uuid":"76041"},{"sections_dept":"astr","sections_uuid":"85613"},{"sections_dept":"astr","sections_uuid":"76051"},{"sections_dept":"phys","sections_uuid":"41245"}]}

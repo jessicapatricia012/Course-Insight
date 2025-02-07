@@ -1,0 +1,17 @@
+{
+ "title": "SELECT dept, avg WHERE avg > 97",
+	"input":{
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_uuid"
+      ]
+    },
+    "WHERE": {
+      "IS": {
+        "sections_uuid": "23080"
+      }
+    }
+  },
+    "errorExpected": false,
+    "expected":[{"sections_dept":"astr","sections_uuid":"23080"}]}

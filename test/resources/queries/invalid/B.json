@@ -1,0 +1,20 @@
+{
+    "input": "and should have 1 key has 2",
+    "query": {
+        "WHERE": {
+
+        },
+        "GT": {
+
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg"
+        }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }

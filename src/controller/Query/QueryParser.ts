@@ -34,7 +34,7 @@ export class QueryParser {
 	//EFFECTS: Returns a Filter object representing the Filter
 	private parseFilter(obj: unknown): Filter {
 		let filter: Filter = {} as Filter;
-		if (!this.isObject(obj)) {
+		if (!this.isObject(obj) || Array.isArray(obj)) {
 			throw new InsightError("Invalid WHERE clause body");
 		}
 		if (obj === null) {
@@ -90,7 +90,7 @@ export class QueryParser {
 		this.updateId(keyTokens[0]);
 		const sfield: string = keyTokens[1];
 		if (!(sfield in SField)) {
-			throw new InsightError("Invalid value for MField");
+			throw new InsightError("Invalid value for SField");
 		}
 
 		const val = Object.values(obj as Object)[0];
@@ -124,7 +124,9 @@ export class QueryParser {
 	//REQUIRES: obj is an object representing an OPTIONS clause
 	//EFFECTS: Returns an Options object representation of the clause
 	private parseOptions(obj: unknown): Options {
-		if (!this.isObject(obj)) throw new InsightError("Invalid type for OPTIONS clause");
+		if (!this.isObject(obj) || Array.isArray(obj)) {
+			throw new InsightError("Invalid type for OPTIONS clause");
+		}
 		if (obj === null) {
 			throw new InsightError("OPTIONS is null");
 		}

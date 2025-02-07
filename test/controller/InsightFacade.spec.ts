@@ -577,6 +577,31 @@ describe("InsightFacade", function () {
 		it("[valid/EBNF9.json] EBNF 9", checkQuery);
 		it("[valid/EBNF10.json] EBNF 10", checkQuery);
 		it("[valid/EBNF11.json] EBNF 11", checkQuery);
+		it("[invalid/A.json] EBNF A", checkQuery);
+		it("[validNew/EQ1.json] EQ1", checkQuery); //
+		it("[validNew/EQ2.json] EQ2", checkQuery);
+		it("[validNew/EQ3.json] EQ3", checkQuery);
+		it("[validNew/EQ4.json] EQ4", checkQuery);
+		it("[validNew/EQ5.json] EQ5", checkQuery);
+
+		it("[validNew/GT1.json] GT1", checkQuery);
+		it("[validNew/GT2.json] GT2", checkQuery);
+		it("[validNew/GT3.json] GT3", checkQuery);
+		it("[validNew/GT4.json] GT4", checkQuery);
+		it("[validNew/GT5.json] GT5", checkQuery);
+
+		it("[validNew/LT1.json] LT1", checkQuery);
+		it("[validNew/LT2.json] LT2", checkQuery);
+		it("[validNew/LT3.json] LT3", checkQuery);
+		it("[validNew/LT4.json] LT4", checkQuery);
+		it("[validNew/LT5.json] LT5", checkQuery);
+
+		it("[validNew/IS1.json] IS1", checkQuery); //
+		it("[validNew/IS2.json] IS2", checkQuery);
+		it("[validNew/IS3.json] IS3", checkQuery);
+		it("[validNew/IS32.json] IS32", checkQuery);
+		it("[validNew/IS4.json] IS4", checkQuery);
+		it("[validNew/IS5.json] IS5", checkQuery);
 	});
 
 	describe("Caching", function () {

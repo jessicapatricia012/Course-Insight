@@ -107,11 +107,11 @@ export class MComparison extends Filter {
 
 	public performFilter(section: Section): boolean {
 		if (this.comp === "LT") {
-			return section[this.mkey] < this.val;
+			return Number(section[this.mkey]) < Number(this.val);
 		} else if (this.comp === "GT") {
-			return section[this.mkey] > this.val;
+			return Number(section[this.mkey]) > Number(this.val);
 		} else if (this.comp === "EQ") {
-			return section[this.mkey] === this.val;
+			return Number(section[this.mkey]) === Number(this.val);
 		}
 		return false;
 	}
@@ -197,11 +197,11 @@ export class Options {
 		for (let i = 0; i < result.length - 1; i++) {
 			min = i;
 			for (let j = i + 1; j < result.length; j++) {
-				if (this.order in SField) {
+				if (order in SField) {
 					if (String(result[j][orderKey]).localeCompare(String(result[min][orderKey])) < 0) {
 						min = j;
 					}
-				} else if (this.order in MField && result[j][orderKey] < result[min][orderKey]) {
+				} else if (order in MField && result[j][orderKey] < result[min][orderKey]) {
 					min = j;
 				}
 			}

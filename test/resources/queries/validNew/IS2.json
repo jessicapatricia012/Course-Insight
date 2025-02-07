@@ -1,0 +1,17 @@
+{
+  "title": "SELECT dept, avg WHERE avg > 97",
+	"input":{
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_uuid"
+      ]
+    },
+    "WHERE": {
+      "IS": {
+        "sections_title": "explring univ ii"
+      }
+    }
+  },
+    "errorExpected": false,
+    "expected":[{"sections_dept":"astr","sections_uuid":"22261"},{"sections_dept":"astr","sections_uuid":"22262"},{"sections_dept":"astr","sections_uuid":"22263"},{"sections_dept":"astr","sections_uuid":"23080"},{"sections_dept":"astr","sections_uuid":"23081"},{"sections_dept":"astr","sections_uuid":"23082"},{"sections_dept":"astr","sections_uuid":"26594"},{"sections_dept":"astr","sections_uuid":"26595"},{"sections_dept":"astr","sections_uuid":"30101"},{"sections_dept":"astr","sections_uuid":"30102"},{"sections_dept":"astr","sections_uuid":"51343"},{"sections_dept":"astr","sections_uuid":"51344"},{"sections_dept":"astr","sections_uuid":"51345"},{"sections_dept":"astr","sections_uuid":"70025"},{"sections_dept":"astr","sections_uuid":"70026"},{"sections_dept":"astr","sections_uuid":"70027"},{"sections_dept":"astr","sections_uuid":"76041"},{"sections_dept":"astr","sections_uuid":"76042"},{"sections_dept":"astr","sections_uuid":"85612"},{"sections_dept":"astr","sections_uuid":"85613"},{"sections_dept":"astr","sections_uuid":"85614"},{"sections_dept":"astr","sections_uuid":"92827"},{"sections_dept":"astr","sections_uuid":"92828"},{"sections_dept":"astr","sections_uuid":"92829"}]}
