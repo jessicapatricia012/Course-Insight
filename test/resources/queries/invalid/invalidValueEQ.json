@@ -2,7 +2,7 @@
     "title": "Invalid value type in EQ, should be number",
     "input": {
         "WHERE": {
-          "GT": {
+          "EQ": {
             "sections_avg": null
           }
         },

@@ -10,6 +10,7 @@ import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
+// import { Dataset } from "../../src/controller/Dataset";
 
 use(chaiAsPromised);
 
@@ -22,6 +23,8 @@ export interface ITestQuery {
 
 describe("InsightFacade", function () {
 	let facade: IInsightFacade;
+	let facade1: IInsightFacade;
+	let facade2: IInsightFacade;
 
 	// Declare datasets used in tests. You should add more datasets like this!
 	let sections: string;
@@ -572,6 +575,204 @@ describe("InsightFacade", function () {
 		it("[valid/EBNF7.json] EBNF 7", checkQuery);
 		it("[valid/EBNF8.json] EBNF 8", checkQuery);
 		it("[valid/EBNF9.json] EBNF 9", checkQuery);
+		it("[valid/EBNF10.json] EBNF 10", checkQuery);
+		it("[valid/EBNF11.json] EBNF 11", checkQuery);
+	});
+
+	describe("Caching", function () {
+		beforeEach(async function () {
+			await clearDisk();
+			facade1 = new InsightFacade();
+			facade2 = new InsightFacade();
+		});
+
+		afterEach(async function () {});
+
+		it("should reject adding id added by another object", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade2.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should successfully remove id added by another object", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				const result = await facade2.removeDataset("ubc");
+				expect(result).to.equal("ubc");
+			} catch {
+				expect.fail("Should not have thrown!");
+			}
+		});
+
+		it("should successfully add id removed by another object", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade2.removeDataset("ubc");
+				const result = await facade2.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				expect(result).to.have.members(["ubc"]);
+			} catch {
+				expect.fail("Should not have thrown!");
+			}
+		});
+
+		it("should successfully add id removed by another object 2", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade2.removeDataset("ubc");
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade2.removeDataset("ubc");
+				const result = await facade2.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				expect(result).to.have.members(["ubc"]);
+			} catch {
+				expect.fail("Should not have thrown!");
+			}
+		});
+
+		it("should successfully list id added by another object", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				const result = await facade2.listDatasets();
+				const expected = [
+					{
+						id: "ubc",
+						kind: InsightDatasetKind.Sections,
+						numRows: 64612,
+					},
+				];
+				expect(result).to.deep.equal(expected);
+			} catch {
+				expect.fail("Should not have thrown!");
+			}
+		});
+
+		it("should successfully to list [] after id removed by another object", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade2.removeDataset("ubc");
+				const result = await facade1.listDatasets();
+				expect(result).to.deep.equal([]);
+			} catch {
+				expect.fail("Should have thrown!");
+			}
+		});
+
+		it("should fail removing id removed by another object", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade2.removeDataset("ubc");
+				await facade1.removeDataset("ubc");
+
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(NotFoundError);
+			}
+		});
+		it("should fail removing id removed by another object 2", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade1.removeDataset("ubc");
+				await facade2.removeDataset("ubc");
+
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(NotFoundError);
+			}
+		});
+
+		it("should successfully add list remove ", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade1.listDatasets();
+
+				const result = await facade2.removeDataset("ubc");
+				expect(result).to.equal("ubc");
+			} catch (err) {
+				expect.fail("Should not have thrown: " + err);
+			}
+		});
+
+		it("should successfully add add list", async function () {
+			try {
+				await facade1.addDataset("ubc1", sections, InsightDatasetKind.Sections);
+				await facade2.addDataset("ubc2", sections, InsightDatasetKind.Sections);
+				const result = await facade1.listDatasets();
+				const expected = [
+					{
+						id: "ubc1",
+						kind: InsightDatasetKind.Sections,
+						numRows: 64612,
+					},
+					{
+						id: "ubc2",
+						kind: InsightDatasetKind.Sections,
+						numRows: 64612,
+					},
+				];
+				expect(result).to.deep.equal(expected);
+				const result2 = await facade2.listDatasets();
+				const expected2 = [
+					{
+						id: "ubc1",
+						kind: InsightDatasetKind.Sections,
+						numRows: 64612,
+					},
+					{
+						id: "ubc2",
+						kind: InsightDatasetKind.Sections,
+						numRows: 64612,
+					},
+				];
+				expect(result2).to.deep.equal(expected2);
+			} catch {
+				expect.fail("Should not have thrown!");
+			}
+		});
+
+		it("should successfully perform after added", async function () {
+			await facade2.addDataset("sections", sections, InsightDatasetKind.Sections);
+			const { input, expected, errorExpected } = await loadTestQuery("[valid/EBNF10.json] EBNF 10");
+			let result: InsightResult[] = [];
+			try {
+				result = await facade1.performQuery(input);
+				//////////
+				if (errorExpected) {
+					// If error was expected but no error occurred, fail the test
+					return expect.fail("performQuery resolved when it should have rejected with ${expected}");
+				}
+				// console.log(result);
+				// console.log(expected);
+				expect(result).to.have.deep.members(expected);
+				/////////////
+			} catch (err) {
+				if (!errorExpected) {
+					expect.fail(`performQuery threw unexpected error: ${err}`);
+				} else if (expected === "ResultTooLargeError") {
+					expect(err).to.be.an.instanceOf(ResultTooLargeError);
+				} else if (expected === "InsightError") {
+					expect(err).to.be.an.instanceOf(InsightError);
+				} else {
+					return expect.fail("Write your assertion(s) here.");
+				}
+			}
+		});
+
+		it("should fail perform after removed", async function () {
+			await facade1.addDataset("sections", sections, InsightDatasetKind.Sections);
+			await facade2.removeDataset("sections");
+			const { input } = await loadTestQuery("[valid/EBNF10.json] EBNF 10");
+			try {
+				await facade1.performQuery(input);
+
+				expect.fail("should have thrown");
+				/////////////
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
 	});
 });
 

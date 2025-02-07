@@ -3,7 +3,7 @@
     "input": {
         "WHERE": {
           "GT": {
-            "sections_dept": "math"
+            "sections_avg": "math"
           }
         },
         "OPTIONS": {
