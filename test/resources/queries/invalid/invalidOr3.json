@@ -1,0 +1,20 @@
+{
+    "title": "Invalid AND 3",
+    "input": {
+        "WHERE": {
+          "OR": {
+            "LT": {
+              "sections_pass": 50
+            }
+          }
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_pass"
+          ]
+        }
+      },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

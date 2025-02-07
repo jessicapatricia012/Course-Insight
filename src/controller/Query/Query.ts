@@ -80,16 +80,16 @@ export class SComparison extends Filter {
 
 		if (val.startsWith("*") && val.endsWith("*")) {
 			val = val.slice(1, -1);
-			return section[this.skey].includes(val);
+			return String(section[this.skey]).includes(String(val));
 		} else if (val.startsWith("*")) {
 			val = val.slice(1);
-			return section[this.skey].endsWith(val);
+			return String(section[this.skey]).endsWith(String(val));
 		} else if (val.endsWith("*")) {
 			val = val.slice(0, -1);
-			return section[this.skey].startsWith(val);
+			return String(section[this.skey]).startsWith(String(val));
 		}
 
-		return section[this.skey] === val;
+		return String(section[this.skey]) === String(val);
 	}
 }
 

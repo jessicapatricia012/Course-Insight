@@ -1,0 +1,28 @@
+{
+  "title": "SELECT dept, avg WHERE avg > 97",
+	"input": {
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_avg",
+        "sections_instructor",
+        "sections_dept"
+      ]
+    },
+    "WHERE": {
+      "OR": [
+        {
+          "IS": {
+        "sections_uuid": "23080"
+      }
+        },
+        {
+          "EQ": {
+            "sections_pass": 222
+          }
+        }
+      ]
+    }
+  },
+    "errorExpected": false,
+    "expected":[{"sections_dept":"astr","sections_avg":78.61,"sections_instructor":"matthews, jaymie mark"},{"sections_dept":"astr","sections_avg":73.13,"sections_instructor":"richer, harvey"},{"sections_dept":"astr","sections_avg":68.5,"sections_instructor":"heyl, jeremy"},{"sections_dept":"bahr","sections_avg":80.69,"sections_instructor":""},{"sections_dept":"biol","sections_avg":70.21,"sections_instructor":""},{"sections_dept":"biol","sections_avg":70.21,"sections_instructor":""},{"sections_dept":"biol","sections_avg":76.83,"sections_instructor":"cooke, james"},{"sections_dept":"biol","sections_avg":79.29,"sections_instructor":"whitlock, michael"},{"sections_dept":"busi","sections_avg":68.9,"sections_instructor":""},{"sections_dept":"chem","sections_avg":77.74,"sections_instructor":"lekhi, priya;love, jennifer ann;macfarlane, william andrew;patey, grenfell;sherman, john"},{"sections_dept":"chin","sections_avg":73.64,"sections_instructor":""},{"sections_dept":"comm","sections_avg":76.73,"sections_instructor":""},{"sections_dept":"cpsc","sections_avg":70.62,"sections_instructor":""},{"sections_dept":"econ","sections_avg":78.71,"sections_instructor":"kotwal, ashok"},{"sections_dept":"econ","sections_avg":78.71,"sections_instructor":""},{"sections_dept":"elec","sections_avg":86.09,"sections_instructor":""},{"sections_dept":"eosc","sections_avg":78.16,"sections_instructor":"harris, sara;hodge, kirsten"},{"sections_dept":"fren","sections_avg":73.7,"sections_instructor":""},{"sections_dept":"kin","sections_avg":72.82,"sections_instructor":""},{"sections_dept":"lled","sections_avg":61.65,"sections_instructor":""},{"sections_dept":"phar","sections_avg":83.3,"sections_instructor":"ensom, mary;riggs, kenneth wayne"},{"sections_dept":"phar","sections_avg":83.3,"sections_instructor":""},{"sections_dept":"phar","sections_avg":79.7,"sections_instructor":"hafeli, urs;letchford, kevin"},{"sections_dept":"phar","sections_avg":79.7,"sections_instructor":""},{"sections_dept":"phar","sections_avg":74.85,"sections_instructor":"mccormack, james;soon, judith"},{"sections_dept":"phar","sections_avg":74.85,"sections_instructor":""},{"sections_dept":"phar","sections_avg":76.22,"sections_instructor":"carr, roxane;lalji, fawziah"},{"sections_dept":"phar","sections_avg":76.22,"sections_instructor":""},{"sections_dept":"phar","sections_avg":83.93,"sections_instructor":"leung, larry;min, jason"},{"sections_dept":"phar","sections_avg":83.93,"sections_instructor":""},{"sections_dept":"phys","sections_avg":73.31,"sections_instructor":"witt, donald"},{"sections_dept":"phys","sections_avg":71.63,"sections_instructor":"mcmillan, j malcolm;semenoff, gordon walter"},{"sections_dept":"phys","sections_avg":73.21,"sections_instructor":"mcmillan, j malcolm;semenoff, gordon walter"},{"sections_dept":"psyc","sections_avg":72.42,"sections_instructor":""},{"sections_dept":"span","sections_avg":73.48,"sections_instructor":""}]}
