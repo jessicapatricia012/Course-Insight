@@ -138,7 +138,7 @@ export class LComparison extends Filter {
 				result = filter.performFilter(section) && result;
 			}
 			return result;
-		} else {
+		} else if (this.logic === "OR") {
 			// OR
 			let result: boolean = this.filterList[0].performFilter(section);
 			for (const filter of this.filterList) {
@@ -149,6 +149,7 @@ export class LComparison extends Filter {
 			}
 			return result;
 		}
+		throw new InsightError("Invalid Logic operation");
 	}
 }
 
