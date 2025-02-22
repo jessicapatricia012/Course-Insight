@@ -816,22 +816,3 @@ describe("InsightFacade", function () {
 		});
 	});
 });
-
-// // tests for coverage
-// describe("Dataset", function () {
-// 	let datasets: Dataset[];
-
-// 	describe("getDatasetWithId", async function () {
-// 		beforeEach(async function () {
-// 			datasets = [];
-// 		});
-
-// 		it("should throws an error when id not found", function () {
-// 			try {
-// 				Dataset.getDatasetWithId("ashgb", datasets);
-// 			} catch (err) {
-// 				expect(err).to.be.an.instanceOf(Error);
-// 			}
-// 		});
-// 	});
-// });

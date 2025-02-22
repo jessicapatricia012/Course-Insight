@@ -1,12 +1,13 @@
 import { Section } from "./Section";
 import { InsightDataset } from "./IInsightFacade";
+import { Room } from "./Room";
 
 export class Dataset {
-	public sections: Section[];
+	public data: Section[] | Room[];
 	public insightDataset: InsightDataset;
 
 	constructor(insightDataset: InsightDataset) {
-		this.sections = [];
+		this.data = [];
 		this.insightDataset = insightDataset;
 	}
 

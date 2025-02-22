@@ -83,7 +83,9 @@ export default class InsightFacade implements IInsightFacade {
 			dataset = await DatasetProcessor.getDatasetFromDiskWithId(id); //guaranteed to be in disk
 			InsightFacade.datasets.push(dataset); // add to datasets
 		}
-		const result = queryObj.query(dataset.sections);
+
+		// TODO: make all query functions take data:Sections[]|Rooms[] instead of sections:Section[]
+		const result = queryObj.query(dataset.data);
 
 		return result;
 	}

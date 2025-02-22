@@ -60,7 +60,7 @@ export class DatasetProcessor {
 			kind: InsightDatasetKind.Sections,
 			numRows: sections.length,
 		});
-		dataset.sections = sections;
+		dataset.data = sections;
 
 		return dataset;
 	}
@@ -145,7 +145,7 @@ export class DatasetProcessor {
 		const dataset = new Dataset(insightDataset);
 
 		for (const section of content.sections) {
-			dataset.sections.push(section);
+			dataset.data.push(section);
 		}
 
 		return dataset;
@@ -160,16 +160,16 @@ export class DatasetProcessor {
 		}
 
 		// Check if index.htm exists
-		const indexFile = zip.file("index.htm"); 
-		if (!indexFile) { 
-			throw new InsightError("index.htm not found"); 
+		const indexFile = zip.file("index.htm");
+		if (!indexFile) {
+			throw new InsightError("index.htm not found");
 		}
 
 		// parse index.htm
 		const indexPromise = await indexFile.async("text");
 		const parsedDoc = parse5.parse(indexPromise);
 		console.log("log: " + parsedDoc);
-	
+
 		// find the valid building list table.
 		const buildingTable = this.findBuildingTable(parsedDoc);
 		if (!buildingTable) {
@@ -195,21 +195,38 @@ export class DatasetProcessor {
 		if (node.childNodes) {
 			for (const child of node.childNodes) {
 				const resultNode = DatasetProcessor.findBuildingTable(child); // recurse on children
-			if (resultNode) return resultNode; // Return the first valid result found
+				if (resultNode) return resultNode; // Return the first valid result found
 			}
 		}
 		return null;
 	}
 
 	private static isBuildingTable(table: any): boolean {
-		return table.childNodes.some((row: any) => row.childNodes.some((cell: any) => {
-			return cell.nodeName === 'td' && cell.classList?.includes('views-field-title')  && cell.classList?.includes('views-field-field-building-address');
-		}));
+		return table.childNodes.some((row: any) =>
+			row.childNodes.some((cell: any) => {
+				return (
+					cell.nodeName === "td" &&
+					cell.classList?.includes("views-field-title") &&
+					cell.classList?.includes("views-field-field-building-address")
+				);
+			})
+		);
 	}
-	
 
 	private static isValidRoom(room: any): boolean {
-		const requiredFields = ["fullname", "shortname", "number", "name", "address", "lat", "lon", "seats", "type", "furniture", "href"];
+		const requiredFields = [
+			"fullname",
+			"shortname",
+			"number",
+			"name",
+			"address",
+			"lat",
+			"lon",
+			"seats",
+			"type",
+			"furniture",
+			"href",
+		];
 		const roomFields = Object.keys(room).map((field) => field.toLowerCase());
 		// Check if all required fields are present in the section
 		if (!requiredFields.every((field) => roomFields.includes(field.toLowerCase()))) {
@@ -217,6 +234,6 @@ export class DatasetProcessor {
 		}
 		// check if requested room's geolocation request returns successfully (i.e., there is no error)
 		// TODO
-		return true
+		return true;
 	}
 }
