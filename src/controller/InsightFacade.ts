@@ -35,12 +35,16 @@ export default class InsightFacade implements IInsightFacade {
 		}
 
 		if (kind === InsightDatasetKind.Sections) {
-			const dataset = await DatasetProcessor.parseContent(id, content);
+			const dataset = await DatasetProcessor.parseSectionContent(id, content);
 			InsightFacade.datasets.push(dataset);
 			await DatasetProcessor.addToDisk(id, dataset);
 			return InsightFacade.datasets.map((ds) => ds.insightDataset.id);
+
+		} else if (kind === InsightDatasetKind.Rooms) {
+			// parse content
+			throw new Error("not implemented yet");
 		} else {
-			throw new Error(`unimplemented!`);
+			throw new Error("Kind not recognized");
 		}
 	}
 

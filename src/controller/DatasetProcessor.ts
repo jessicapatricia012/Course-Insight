@@ -1,5 +1,6 @@
 import { JSZipObject } from "jszip";
 import JSZip from "jszip";
+const parse5 = require("parse5");
 import { InsightError, InsightDatasetKind, InsightDataset } from "./IInsightFacade";
 import { Dataset } from "./Dataset";
 import { Section } from "./Section";
@@ -38,7 +39,7 @@ export class DatasetProcessor {
 		return requiredFields.every((field) => sectionFields.includes(field.toLowerCase()));
 	}
 
-	public static async parseContent(id: string, content: string): Promise<Dataset> {
+	public static async parseSectionContent(id: string, content: string): Promise<Dataset> {
 		let zip = null;
 		try {
 			zip = await JSZip.loadAsync(content, { base64: true });
@@ -98,8 +99,6 @@ export class DatasetProcessor {
 		allSections.forEach((sectionData: any) => {
 			if (this.isValidSection(sectionData)) {
 				sections.push(new Section(sectionData));
-			} else {
-				//console.warn("Invalid section:", sectionData);
 			}
 		});
 
@@ -150,5 +149,74 @@ export class DatasetProcessor {
 		}
 
 		return dataset;
+	}
+
+	public static async parseRoomContent(id: string, content: string): Promise<Dataset> {
+		let zip = null;
+		try {
+			zip = await JSZip.loadAsync(content, { base64: true });
+		} catch {
+			throw new InsightError("Invalid ZIP format");
+		}
+
+		// Check if index.htm exists
+		const indexFile = zip.file("index.htm"); 
+		if (!indexFile) { 
+			throw new InsightError("index.htm not found"); 
+		}
+
+		// parse index.htm
+		const indexPromise = await indexFile.async("text");
+		const parsedDoc = parse5.parse(indexPromise);
+		console.log("log: " + parsedDoc);
+	
+		// find the valid building list table.
+		const buildingTable = this.findBuildingTable(parsedDoc);
+		if (!buildingTable) {
+			throw new InsightError("No valid building table found");
+		}
+
+		const dataset = new Dataset({
+			id: id,
+			kind: InsightDatasetKind.Rooms,
+			numRows: 1,
+		});
+		return dataset;
+
+		// TODO
+	}
+
+	private static findBuildingTable(node: any): any {
+		if (!node) return null;
+
+		if (node.tagName === "table" && DatasetProcessor.isBuildingTable(node)) {
+			return node;
+		}
+		if (node.childNodes) {
+			for (const child of node.childNodes) {
+				const resultNode = DatasetProcessor.findBuildingTable(child); // recurse on children
+			if (resultNode) return resultNode; // Return the first valid result found
+			}
+		}
+		return null;
+	}
+
+	private static isBuildingTable(table: any): boolean {
+		return table.childNodes.some((row: any) => row.childNodes.some((cell: any) => {
+			return cell.nodeName === 'td' && cell.classList?.includes('views-field-title')  && cell.classList?.includes('views-field-field-building-address');
+		}));
+	}
+	
+
+	private static isValidRoom(room: any): boolean {
+		const requiredFields = ["fullname", "shortname", "number", "name", "address", "lat", "lon", "seats", "type", "furniture", "href"];
+		const roomFields = Object.keys(room).map((field) => field.toLowerCase());
+		// Check if all required fields are present in the section
+		if (!requiredFields.every((field) => roomFields.includes(field.toLowerCase()))) {
+			return false;
+		}
+		// check if requested room's geolocation request returns successfully (i.e., there is no error)
+		// TODO
+		return true
 	}
 }
