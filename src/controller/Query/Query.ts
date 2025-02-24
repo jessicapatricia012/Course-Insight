@@ -1,6 +1,6 @@
 import { SField, MField, MComparator, Logic } from "./enums";
 import { InsightError, InsightResult, ResultTooLargeError } from "../IInsightFacade";
-import { Section } from "../Section";
+import { Section } from "../Dataset/Dataset";
 
 // Query class representing a query
 // General process of query:
