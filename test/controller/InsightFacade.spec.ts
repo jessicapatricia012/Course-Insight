@@ -10,7 +10,7 @@ import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
-// import { Dataset } from "../../src/controller/Dataset";
+import { Dataset } from "../../src/controller/Dataset/Dataset";
 
 use(chaiAsPromised);
 
@@ -815,4 +815,23 @@ describe("InsightFacade", function () {
 	// 		}
 	// 	});
 	// });
+});
+
+// tests for coverage
+describe("Dataset", function () {
+	let datasets: Dataset[];
+
+	describe("getDatasetWithId", async function () {
+		beforeEach(async function () {
+			datasets = [];
+		});
+
+		it("should throws an error when id not found", function () {
+			try {
+				Dataset.getDatasetWithId("ashgb", datasets);
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(Error);
+			}
+		});
+	});
 });

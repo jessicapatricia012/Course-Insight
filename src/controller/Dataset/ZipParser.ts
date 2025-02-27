@@ -2,7 +2,7 @@ import JSZip from "jszip";
 import { InsightError, InsightDatasetKind } from "../IInsightFacade";
 import { Dataset, Section, Room, Building } from "./Dataset";
 import { JSZipObject } from "jszip";
-// import { Section } from "./Section";
+import { doGeolocation } from "./Georesponse";
 // import { Room, Building } from "./Room";
 const parse5 = require("parse5");
 
@@ -105,7 +105,6 @@ export class RoomParser extends ZipParser {
 		// parse index.htm
 		const indexPromise = await indexFile.async("text");
 		const parsedDoc = parse5.parse(indexPromise);
-		// console.log("log: " + parsedDoc);
 
 		// find the valid building list table.
 		const buildingTable = this.findBuildingTable(parsedDoc);
@@ -113,22 +112,43 @@ export class RoomParser extends ZipParser {
 			throw new InsightError("No valid building table found");
 		}
 
-		const buildings = this.extractBuildingsData(buildingTable);
-		if (!buildings || buildings.length === 0) {
-			throw new InsightError("No buildings data found");
-		}
+		let buildings = this.extractBuildingsData(buildingTable);
 
-		const roomPromises = buildings.map(async (building) => 
-			this.processBuildingFile(building, zip));
+		buildings = await doGeolocation(buildings);
+
+
+		const roomPromises = buildings.map(async (building) => this.processBuildingFile(building, zip));
 
 		const roomsArray = await Promise.all(roomPromises);
 		const rooms: Room[] = roomsArray.flat();
 
-		// do geolocation to set lon, lat
-		//
-
 		return rooms;
 	}
+
+	// private async fetchGeolocation(address: string): Promise<{ lat?: number; lon?: number; error?: string }> {
+	// 	return new Promise((resolve, reject) => {
+	// 		const encodedAddress = encodeURIComponent(address);
+	// 		const url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team271/${encodedAddress}`;
+	
+	// 		http.get(url, (res) => {
+	// 			let data = "";
+	
+	// 			res.on("data", (chunk) => {
+	// 				data += chunk;
+	// 			});
+	
+	// 			res.on("end", () => {
+	// 				try {
+	// 					resolve(JSON.parse(data));
+	// 				} catch {
+	// 					reject(new Error("Failed to fet geolocation"));
+	// 				}
+	// 			});
+	// 		}).on("error", (err) => {
+	// 			reject(err);
+	// 		});
+	// 	});
+	// }
 
 	private async processBuildingFile(building: Building, zip: JSZip): Promise<Room[]> {
 		// Fetch the HTML content of the building's page
@@ -203,18 +223,17 @@ export class RoomParser extends ZipParser {
 			if (childNode.nodeName === "tbody") {
 				childNode.childNodes.forEach((row: any) => {
 					if (row.nodeName === "tr") {
-						const room = new Room();
+						const room = new Room(building);
 						room.number = this.nodeSearch("views-field-field-room-number", row);
 						room.seats = parseInt(this.nodeSearch("views-field-field-room-capacity", row));
 						room.type = this.nodeSearch("views-field-field-room-type", row);
 						room.furniture = this.nodeSearch("views-field-field-room-furniture", row);
 						room.href = this.nodeSearch("views-field-nothing", row);
-						room.fullname = building.fullname;
-						room.shortname = building.shortname;
-						room.address = building.address;
-						room.name = room.shortname + "_" + room.number;
-						room.lon = room.lat = 0; // for now
-
+						// room.fullname = building.fullname;
+						// room.shortname = building.shortname;
+						// room.address = building.address;
+						// room.name = room.shortname + "_" + room.number;
+						// room.lon = room.lat = 0; // for now
 						roomData.push(room);
 					}
 				});
@@ -231,7 +250,9 @@ export class RoomParser extends ZipParser {
 				buildings.push(...this.extractBuildingDataFromRows(childNode.childNodes));
 			}
 		});
-
+		if (!buildings || buildings.length === 0) {
+			throw new InsightError("No buildings data found");
+		}
 		return buildings;
 	}
 
@@ -270,9 +291,8 @@ export class RoomParser extends ZipParser {
 
 	private nodeSearch(className: string, row: any): string {
 		const cell = row.childNodes.find((c: any) => c.classList?.includes(className));
-	
-		return cell?.childNodes.find((child: any) => child.nodeName === "#text" && child.value)
-			?.value.trim() ?? "";
+
+		return cell?.childNodes.find((child: any) => child.nodeName === "#text" && child.value)?.value.trim() ?? "";
 	}
 
 	private findBuildingTable(node: any): any {
