@@ -131,6 +131,7 @@ export class RoomParser extends ZipParser {
 		let buildings = this.extractBuildingsData(buildingTable);
 
 		buildings = await doGeolocation(buildings);
+		console.log(buildings);
 
 		const roomPromises = buildings.map(async (building) => this.processBuildingFile(building, zip));
 
@@ -184,17 +185,16 @@ export class RoomParser extends ZipParser {
 				childNode.childNodes.forEach((row: any) => {
 					if (row.nodeName === "tr") {
 						const room = new Room(building);
-						const numberNode = this.findNodeByClass("views-field-field-room-number", row);
-						const seatsNode = this.findNodeByClass("views-field-field-room-capacity", row);
-						const typeNode = this.findNodeByClass("views-field-field-room-type", row);
-						const furnitureNode = this.findNodeByClass("views-field-field-room-furniture", row);
-						const hrefNode = this.findNodeByClass("views-field-nothing", row);
-						room.number = this.getTextContent(numberNode);
-						room.seats = parseInt(this.getTextContent(seatsNode));
-						room.type = this.getTextContent(typeNode);
-						room.furniture = this.getTextContent(furnitureNode);
-						room.href = this.getTextContent(hrefNode);
-						rooms.push(room);
+						try {
+							room.number = this.getTextOfNodeClass("views-field-field-room-number", row);
+							room.seats = parseInt(this.getTextOfNodeClass("views-field-field-room-capacity", row));
+							room.type = this.getTextOfNodeClass("views-field-field-room-type", row);
+							room.furniture = this.getTextOfNodeClass("views-field-field-room-furniture", row);
+							room.href = this.getTextOfNodeClass("views-field-nothing", row);
+							rooms.push(room);
+						} catch {
+							// if node with class not found, skip the room
+						}
 					}
 				});
 			}
@@ -220,26 +220,26 @@ export class RoomParser extends ZipParser {
 		return rows
 			.filter((row: any) => row.nodeName === "tr")
 			.map((row: any) => {
-				const shortnameNode = this.findNodeByClass("views-field views-field-field-building-code", row);
-				const fullnameNode = this.findNodeByClass("views-field-title", row);
-				const addressNode = this.findNodeByClass("views-field-field-building-address", row);
+				try {
+					const shortname = this.getTextOfNodeClass("views-field views-field-field-building-code", row);
+					const fullname = this.getTextOfNodeClass("views-field-title", row);
+					const address = this.getTextOfNodeClass("views-field-field-building-address", row);
+					const link = this.extractLink(row);
 
-				const link = this.extractLink(fullnameNode);
-				// Ensure the link has the corect path
-				if (link.startsWith("./campus/discover/buildings-and-classrooms/")) {
-					return new Building(
-						this.getTextContent(shortnameNode),
-						this.getTextContent(fullnameNode),
-						this.getTextContent(addressNode),
-						link
-					);
+					if (!link.startsWith("./campus/discover/buildings-and-classrooms/")) {
+						return null;
+					}
+					// Ensure the link has the corect path and has all field to be passed to room
+					return new Building(shortname, fullname, address, link);
+				} catch {
+					return null;
 				}
-				return null;
 			})
 			.filter((building: any): building is Building => building !== null); // remove nulls
 	}
 
-	private extractLink(linkNode: any): string {
+	private extractLink(row: any): string {
+		const linkNode = this.findNodeByClass("views-field-title", row);
 		const anchorNode = this.findNodeByTag(linkNode, "a");
 		return anchorNode?.attrs?.find((attr: any) => attr.name === "href")?.value || "";
 	}
@@ -254,13 +254,18 @@ export class RoomParser extends ZipParser {
 		return null;
 	}
 
-	private findNodeByClass(className: string, row: any): string {
+	private getTextOfNodeClass(className: string, row: any): string {
+		const node = this.findNodeByClass(className, row);
+		if (!node) throw new Error("Not valid");
+		return this.getTextContent(node);
+	}
+
+	private findNodeByClass(className: string, row: any): any {
 		return row.childNodes.find(
 			(c: any) =>
 				c.nodeName === "td" && c.attrs?.some((attr: any) => attr.name === "class" && attr.value.includes(className))
 		);
 	}
-
 	private getTextContent(node: any): string {
 		if (node.nodeName === "#text") {
 			return node.value ?? "";

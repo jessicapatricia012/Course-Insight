@@ -33,6 +33,7 @@ export async function fetchGeolocation(address: string): Promise<GeoResponse> {
 	return new Promise((resolve, reject) => {
 		const encodedAddress = encodeURIComponent(address);
 		const url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team271/${encodedAddress}`;
+		console.log(url);
 
 		http
 			.get(url, (res) => {
