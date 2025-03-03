@@ -128,7 +128,6 @@ export class RoomParser extends ZipParser {
 	}
 
 	private async processBuildingFile(building: Building, zip: JSZip): Promise<Room[]> {
-
 		// Fetch the HTML content of the building's page
 		let parsedBuildingDoc;
 		try {
@@ -184,7 +183,7 @@ export class RoomParser extends ZipParser {
 			"views-field-field-room-capacity",
 			"views-field-field-room-type",
 			"views-field-field-room-furniture",
-			"views-field-nothing"
+			"views-field-nothing",
 		];
 
 		if (table.nodeName === "td" && table.attrs) {
@@ -240,9 +239,10 @@ export class RoomParser extends ZipParser {
 	}
 
 	private extractBuildingDataFromRows(rows: any[]): Building[] {
-		return rows.filter((row: any) => 
-			row.nodeName === "tr").map((row: any) => {
-				const shortnameNode = this.findNodeByClass("views-field views-field-field-building-code", row)
+		return rows
+			.filter((row: any) => row.nodeName === "tr")
+			.map((row: any) => {
+				const shortnameNode = this.findNodeByClass("views-field views-field-field-building-code", row);
 				const fullnameNode = this.findNodeByClass("views-field-title", row);
 				const addressNode = this.findNodeByClass("views-field-field-building-address", row);
 
@@ -250,24 +250,25 @@ export class RoomParser extends ZipParser {
 				// Ensure the link has the corect path
 				if (link.startsWith("./campus/discover/buildings-and-classrooms/")) {
 					return new Building(
-						this.getTextContent(shortnameNode), 
-						this.getTextContent(fullnameNode), 
+						this.getTextContent(shortnameNode),
+						this.getTextContent(fullnameNode),
 						this.getTextContent(addressNode),
-						link);
+						link
+					);
 				}
 				return null;
 			})
 			.filter((building: any): building is Building => building !== null); // remove nulls
 	}
 
-	private extractLink(linkNode: any): string {	
+	private extractLink(linkNode: any): string {
 		const anchorNode = this.findNodeByTag(linkNode, "a");
 		return anchorNode?.attrs?.find((attr: any) => attr.name === "href")?.value || "";
 	}
-	
+
 	private findNodeByTag(node: any, tag: string): any {
 		if (!node) return null;
-    	for (const child of node.childNodes ?? []) {
+		for (const child of node.childNodes ?? []) {
 			if (child.nodeName === tag) return child;
 			const found = this.findNodeByTag(child, tag);
 			if (found) return found;
@@ -276,8 +277,9 @@ export class RoomParser extends ZipParser {
 	}
 
 	private findNodeByClass(className: string, row: any): string {
-		return row.childNodes.find((c: any) =>
-			c.nodeName === "td" && c.attrs?.some((attr: any) => attr.name === "class" && attr.value.includes(className))
+		return row.childNodes.find(
+			(c: any) =>
+				c.nodeName === "td" && c.attrs?.some((attr: any) => attr.name === "class" && attr.value.includes(className))
 		);
 	}
 
@@ -285,9 +287,14 @@ export class RoomParser extends ZipParser {
 		if (node.nodeName === "#text") {
 			return node.value ?? "";
 		}
-		return node.childNodes?.map((child: any) => this.getTextContent(child)).join(" ").trim() ?? "";
+		return (
+			node.childNodes
+				?.map((child: any) => this.getTextContent(child))
+				.join(" ")
+				.trim() ?? ""
+		);
 	}
-	
+
 	private findBuildingTable(node: any): any {
 		if (!node) return null;
 
@@ -307,7 +314,7 @@ export class RoomParser extends ZipParser {
 		const requiredFields = [
 			"views-field-title",
 			"views-field-field-building-address",
-			"views-field-field-building-code"
+			"views-field-field-building-code",
 		];
 
 		if (table.nodeName === "td" && table.attrs) {
