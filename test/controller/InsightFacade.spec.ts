@@ -11,8 +11,8 @@ import {clearDisk, getContentFromArchives /*, loadTestQuery*/} from "../TestUtil
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import * as fs from "fs-extra";
-import {Group} from "../../src/controller/Query/Query";
-import {Section} from "../../src/controller/Dataset/Dataset";
+import {Apply, ApplyRule, Group} from "../../src/controller/Query/QueryPlus";
+// import {Section} from "../../src/controller/Dataset/Dataset";
 // import { Dataset } from "../../src/controller/Dataset";
 
 use(chaiAsPromised);
@@ -27,6 +27,13 @@ export interface ITestQuery {
 export interface GroupTest{
 	name?: string,
 	keylist: any
+	input: any,
+	expected: any
+}
+
+export interface ApplyTest{
+	name?: string,
+	rules: any,
 	input: any,
 	expected: any
 }
@@ -447,7 +454,7 @@ describe("InsightFacade", function () {
 		async function loadGroupTest(filename: string): Promise<GroupTest> {
 			const data = await fs.readFile(`test/resources/queries/GroupTest/${filename}`, "utf-8");
 			const groupTest: any = JSON.parse(data);
-			assertTestQuery(groupTest);
+			assertGroupTest(groupTest);
 			return groupTest;
 		}
 
@@ -455,18 +462,18 @@ describe("InsightFacade", function () {
 		 * Type check groupTest
 		 * @param groupTest
 		 */
-		function assertTestQuery(groupTest: any): asserts groupTest is GroupTest {
+		function assertGroupTest(groupTest: any): asserts groupTest is GroupTest {
 			if (Array.isArray(groupTest)) {
-				throw new Error("ValidationError: Test Query must be an object not an array.");
+				throw new Error("ValidationError: Test Group must be an object not an array.");
 			}
 			if (!Object.hasOwn(groupTest, "input")) {
-				throw new Error("ValidationError: Test Query is missing required field 'input'.");
+				throw new Error("ValidationError: Test Group is missing required field 'input'.");
 			}
 			if (!Object.hasOwn(groupTest, "expected")) {
-				throw new Error("ValidationError: Test Query is missing required field 'expected'.");
+				throw new Error("ValidationError: Test Group is missing required field 'expected'.");
 			}
 			if (!Object.hasOwn(groupTest, "keylist")) {
-				throw new Error("ValidationError: Test Query is missing required field 'keylist'.");
+				throw new Error("ValidationError: Test Group is missing required field 'keylist'.");
 			}
 		}
 
@@ -489,6 +496,60 @@ describe("InsightFacade", function () {
 		it ("should group by two keys", async function(){
 			await checkGroup("test2.json");
 		})
+	})
+
+	describe("Apply", async function(){
+		async function loadApplyTest(filename: string): Promise<ApplyTest>{
+			const data = await fs.readFile(`test/resources/queries/ApplyTest/${filename}`, "utf-8");
+			const applyTest: any = JSON.parse(data);
+			assertApplyTest(applyTest);
+			return applyTest;
+		}
+
+		function assertApplyTest(applyTest: any): asserts applyTest is ApplyTest{
+			if (Array.isArray(applyTest)) {
+				throw new Error("ValidationError: Test Apply must be an object not an array.");
+			}
+			if (!Object.hasOwn(applyTest, "input")) {
+				throw new Error("ValidationError: Test Apply is missing required field 'input'.");
+			}
+			if (!Object.hasOwn(applyTest, "expected")) {
+				throw new Error("ValidationError: Test Apply is missing required field 'expected'.");
+			}
+			if (!Object.hasOwn(applyTest, "rules")) {
+				throw new Error("ValidationError: Test Apply is missing required field 'rules'.");
+			}
+		}
+
+		async function checkApply(filename: string): Promise<void>{
+			const {rules, input, expected} = await loadApplyTest(filename);
+			const rulesObj:ApplyRule[] =[];
+			rules.forEach((rule: any) => {rulesObj.push(new ApplyRule(rule.applyKey, rule.applyToken, rule.key))})
+			const apply: Apply = new Apply(rulesObj);
+			apply.apply(input);
+			const res = apply.getApplyRules();
+			expect(res).to.have.deep.members(expected);
+		}
+		it("Should work with MAX", async function(){
+			await checkApply("test1.json")
+		})
+
+		it("Should work with MIN", async function(){
+			await checkApply("test2.json")
+		})
+
+		it("Should work with AVG", async function(){
+			await checkApply("test3.json")
+		})
+
+		it("Should work with SUM", async function(){
+			await checkApply("test4.json")
+		})
+
+		it("Should work with COUNT", async function(){
+			await checkApply("test5.json")
+		})
+
 	})
 
 	// describe("PerformQuery", function () {

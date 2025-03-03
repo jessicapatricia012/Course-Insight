@@ -1,0 +1,116 @@
+{
+	"name": "Test one COUNT",
+	"rules": [{
+		"applyKey": "countAVG",
+		"applyToken": "COUNT",
+		"key": "avg",
+		"val": []
+	}],
+	"input": [[
+		{
+			"uuid": "1",
+			"id":"Software Engineering"   ,
+			"title": "310",
+			"instructor": "Jean",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 90,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "2",
+			"id":"Software Engineering"   ,
+			"title": "310",
+			"instructor": "Jean",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 80,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "3",
+			"id":"Software Engineering"   ,
+			"title": "310",
+			"instructor": "Casey",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 95,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "4",
+			"id":"Software Engineering"   ,
+			"title": "310",
+			"instructor": "Casey",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 85,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "5",
+			"id":"Software Construction",
+			"title": "210",
+			"instructor": "Kelly",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 74,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "6",
+			"id":"Software Construction"   ,
+			"title": "210",
+			"instructor": "Kelly",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 78,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "7",
+			"id":"Software Construction",
+			"title": "210",
+			"instructor": "Kelly",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 72,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "8",
+			"id":"Software Construction",
+			"title": "210",
+			"instructor": "Eli",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 85,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		}
+	]],
+	"expected": [{
+		"applyKey": "countAVG",
+		"applyToken": "COUNT",
+		"key": "avg",
+		"val": [7]
+	}]
+}
+
+
+

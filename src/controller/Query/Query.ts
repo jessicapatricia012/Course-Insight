@@ -220,70 +220,11 @@ export class Options {
 
 
 
-export class Group{
-	private keylist : Array<MField | SField>;
 
-	constructor(keylist: Array<MField | SField>) {
-		this.keylist = keylist;
-	}
 
-	/**
-	 * Group things by keylist, note that
-	 * @param things - Array of sections or rooms to group
-	 * @return an array of groups of sections or rooms
-	 */
-	public group(things: Section[] | Room[]){
-		let groups  = [];
-		groups.push(things);
-		for (const key of this.keylist){
-			let split: Section[][] | Room[][] = []
-			for (const group of groups){
- 				split = this.splitGroup(group,key);
-				 groups = groups.concat(split);
-				 groups.shift();
-			}
-		}
-	 	return groups;
-	}
 
-	/**
-	 * Splits group into multiple groups based on val of key, note that this function
-	 * modifies group
-	 * @param group - An array of Section or Room
-	 * @param key - key to group by
-	 * @returns an Array of groups
-	 * @private
-	 */
-	private splitGroup (group: Section[] | Room[], key: MField | SField): Array<Section[]> | Array<Room[]> {
-		const res  = [];
-		for (let i = 0; i < group.length; i++) {
-			const newGroup = [];
-			const thing = group[i];
-			newGroup.push(thing);
-			const val: string | number = getKey(thing,key);
-			for (let j = i + 1; j < group.length; j++){
-				const thing2:  any = group[j];
-				const val2 = getKey(thing2, key);
-				if (val === val2){
-					newGroup.push(thing2);
-					group.splice(j,1); //Removes thing2
-					j--;//adjusts index
-				}
-			}
-			res.push(newGroup);
-		}
-		return res;
-	}
-}
 
-/**
- * Returns the value of the field
- * @param thing  - A Section or Room
- * @param key - Key of Section or Room
- * @returns value of key
- * @private
- */
- function getKey(thing: Section | Room , key: MField | SField): string | number {
-	 return thing[key as keyof typeof thing];
- }
+
+
+
 
