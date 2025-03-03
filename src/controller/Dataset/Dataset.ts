@@ -1,6 +1,4 @@
-// import { Section } from "./Section";
 import { InsightDataset } from "../IInsightFacade";
-// import { Room } from "./Room";
 
 export class Dataset {
 	public data: Section[] | Room[];
