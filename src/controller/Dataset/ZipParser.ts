@@ -94,6 +94,20 @@ export class SectionParser extends ZipParser {
 }
 
 export class RoomParser extends ZipParser {
+	private roomRequiredFields = [
+		"views-field-field-room-number",
+		"views-field-field-room-capacity",
+		"views-field-field-room-type",
+		"views-field-field-room-furniture",
+		"views-field-nothing",
+	];
+
+	private buildingRequiredFields = [
+		"views-field-title",
+		"views-field-field-building-address",
+		"views-field-field-building-code",
+	];
+
 	public async getDataFromZip(zip: JSZip): Promise<Section[] | Room[]> {
 		// Check if index.htm exists
 		const indexFile = zip.files["index.htm"];
@@ -108,7 +122,7 @@ export class RoomParser extends ZipParser {
 		// console.log(parsedDoc);
 
 		// find the valid building list table.
-		const buildingTable = this.findBuildingTable(parsedDoc);
+		const buildingTable = this.findTable(parsedDoc, this.buildingRequiredFields);
 		if (!buildingTable) {
 			throw new InsightError("No valid building table found");
 		}
@@ -137,7 +151,7 @@ export class RoomParser extends ZipParser {
 		}
 
 		// Extract room table from the parsed document
-		const roomTable = this.findRoomTable(parsedBuildingDoc);
+		const roomTable = this.findTable(parsedBuildingDoc, this.roomRequiredFields);
 		if (!roomTable) {
 			return []; // no valid table for this building file, process next building
 		}
@@ -160,42 +174,6 @@ export class RoomParser extends ZipParser {
 		// parse content of file
 		const buildingContent = await buildingFile.async("text");
 		return parse5.parse(buildingContent);
-	}
-
-	private findRoomTable(node: any): any {
-		if (!node) return null;
-
-		if (node.tagName === "table" && this.isRoomTable(node)) {
-			return node;
-		}
-		if (node.childNodes && node.childNodes.length > 0) {
-			for (const child of node.childNodes) {
-				const resultNode = this.findRoomTable(child); // recurse on children
-				if (resultNode) return resultNode; // Return the first valid result found
-			}
-		}
-		return null;
-	}
-
-	private isRoomTable(table: any): boolean {
-		const requiredFields = [
-			"views-field-field-room-number",
-			"views-field-field-room-capacity",
-			"views-field-field-room-type",
-			"views-field-field-room-furniture",
-			"views-field-nothing",
-		];
-
-		if (table.nodeName === "td" && table.attrs) {
-			const attribute = table.attrs.find((attr: any) => attr.name === "class");
-			if (attribute) {
-				return requiredFields.some((field) => attribute.value.includes(field));
-			}
-		}
-		if (table.childNodes) {
-			return table.childNodes.some((child: any) => this.isRoomTable(child));
-		}
-		return false;
 	}
 
 	private extractRoomData(table: any, building: Building): any[] {
@@ -295,28 +273,22 @@ export class RoomParser extends ZipParser {
 		);
 	}
 
-	private findBuildingTable(node: any): any {
+	private findTable(node: any, requiredFields: string[]): any {
 		if (!node) return null;
 
-		if (node.tagName === "table" && this.isBuildingTable(node)) {
+		if (node.tagName === "table" && this.isValidTable(node, requiredFields)) {
 			return node;
 		}
 		if (node.childNodes && node.childNodes.length > 0) {
 			for (const child of node.childNodes) {
-				const resultNode = this.findBuildingTable(child); // recurse on children
+				const resultNode = this.findTable(child, requiredFields); // recurse on children
 				if (resultNode) return resultNode; // Return the first valid result found
 			}
 		}
 		return null;
 	}
 
-	private isBuildingTable(table: any): boolean {
-		const requiredFields = [
-			"views-field-title",
-			"views-field-field-building-address",
-			"views-field-field-building-code",
-		];
-
+	private isValidTable(table: any, requiredFields: string[]): boolean {
 		if (table.nodeName === "td" && table.attrs) {
 			const attribute = table.attrs.find((attr: any) => attr.name === "class");
 			if (attribute) {
@@ -324,32 +296,8 @@ export class RoomParser extends ZipParser {
 			}
 		}
 		if (table.childNodes) {
-			return table.childNodes.some((child: any) => this.isBuildingTable(child));
+			return table.childNodes.some((child: any) => this.isValidTable(child, requiredFields));
 		}
 		return false;
 	}
-
-	// private static isValidRoom(room: any): boolean {
-	// 	const requiredFields = [
-	// 		"fullname",
-	// 		"shortname",
-	// 		"number",
-	// 		"name",
-	// 		"address",
-	// 		"lat",
-	// 		"lon",
-	// 		"seats",
-	// 		"type",
-	// 		"furniture",
-	// 		"href",
-	// 	];
-	// 	const roomFields = Object.keys(room).map((field) => field.toLowerCase());
-	// 	// Check if all required fields are present in the section
-	// 	if (!requiredFields.every((field) => roomFields.includes(field.toLowerCase()))) {
-	// 		return false;
-	// 	}
-	// 	// check if requested room's geolocation request returns successfully (i.e., there is no error)
-	// 	// TODO
-	// 	return true;
-	// }
 }
