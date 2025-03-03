@@ -2,14 +2,17 @@ import {
 	IInsightFacade,
 	InsightDatasetKind,
 	InsightError,
-	NotFoundError,
+	NotFoundError/*,
 	InsightResult,
-	ResultTooLargeError,
+	ResultTooLargeError,*/
 } from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
-import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
+import {clearDisk, getContentFromArchives /*, loadTestQuery*/} from "../TestUtil";
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
+import * as fs from "fs-extra";
+import {Group} from "../../src/controller/Query/Query";
+import {Section} from "../../src/controller/Dataset/Dataset";
 // import { Dataset } from "../../src/controller/Dataset";
 
 use(chaiAsPromised);
@@ -21,10 +24,17 @@ export interface ITestQuery {
 	expected: any;
 }
 
+export interface GroupTest{
+	name?: string,
+	keylist: any
+	input: any,
+	expected: any
+}
+
 describe("InsightFacade", function () {
 	let facade: IInsightFacade;
-	let facade1: IInsightFacade;
-	let facade2: IInsightFacade;
+	// let facade1: IInsightFacade;
+	// let facade2: IInsightFacade;
 
 	// Declare datasets used in tests. You should add more datasets like this!
 	let sections: string;
@@ -428,6 +438,58 @@ describe("InsightFacade", function () {
 			expect(result).to.deep.equal([]);
 		});
 	});
+
+	describe("Group", function(){
+		/**
+		 * Loads group test
+		 * @param filename - name of file
+		 */
+		async function loadGroupTest(filename: string): Promise<GroupTest> {
+			const data = await fs.readFile(`test/resources/queries/GroupTest/${filename}`, "utf-8");
+			const groupTest: any = JSON.parse(data);
+			assertTestQuery(groupTest);
+			return groupTest;
+		}
+
+		/**
+		 * Type check groupTest
+		 * @param groupTest
+		 */
+		function assertTestQuery(groupTest: any): asserts groupTest is GroupTest {
+			if (Array.isArray(groupTest)) {
+				throw new Error("ValidationError: Test Query must be an object not an array.");
+			}
+			if (!Object.hasOwn(groupTest, "input")) {
+				throw new Error("ValidationError: Test Query is missing required field 'input'.");
+			}
+			if (!Object.hasOwn(groupTest, "expected")) {
+				throw new Error("ValidationError: Test Query is missing required field 'expected'.");
+			}
+			if (!Object.hasOwn(groupTest, "keylist")) {
+				throw new Error("ValidationError: Test Query is missing required field 'keylist'.");
+			}
+		}
+
+		/**
+		 * Tests the group function from the Group class
+		 * @param filename
+		 */
+		async function checkGroup(filename: string): Promise<void>{
+			const {keylist, input, expected} =  await loadGroupTest(filename);
+			const group = new Group(keylist)
+
+			const res = group.group(input);
+			expect(res).to.have.deep.members(expected);
+		}
+
+		it("Should group by one key", async function (){
+			await checkGroup("test1.json");
+		})
+
+		it ("should group by two keys", async function(){
+			await checkGroup("test2.json");
+		})
+	})
 
 	// describe("PerformQuery", function () {
 	// 	/**

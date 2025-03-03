@@ -1,6 +1,6 @@
-import { SField, MField, MComparator, Logic } from "./enums";
-import { InsightError, InsightResult, ResultTooLargeError } from "../IInsightFacade";
-import { Section } from "../Dataset/Dataset";
+import {ApplyToken, Logic, MComparator, MField, SField} from "./enums";
+import {InsightError, InsightResult, ResultTooLargeError} from "../IInsightFacade";
+import {Room, Section} from "../Dataset/Dataset";
 
 // Query class representing a query
 // General process of query:
@@ -80,16 +80,16 @@ export class SComparison extends Filter {
 
 		if (val.startsWith("*") && val.endsWith("*")) {
 			val = val.slice(1, -1);
-			return String(section[this.skey]).includes(String(val));
+			return String(section[this.skey as keyof Section]).includes(String(val));
 		} else if (val.startsWith("*")) {
 			val = val.slice(1);
-			return String(section[this.skey]).endsWith(String(val));
+			return String(section[this.skey as keyof Section]).endsWith(String(val));
 		} else if (val.endsWith("*")) {
 			val = val.slice(0, -1);
-			return String(section[this.skey]).startsWith(String(val));
+			return String(section[this.skey as keyof Section]).startsWith(String(val));
 		}
 
-		return String(section[this.skey]) === String(val);
+		return String(section[this.skey as keyof Section]) === String(val);
 	}
 }
 
@@ -107,11 +107,11 @@ export class MComparison extends Filter {
 
 	public performFilter(section: Section): boolean {
 		if (this.comp === "LT") {
-			return Number(section[this.mkey]) < Number(this.val);
+			return Number(section[this.mkey as keyof Section]) < Number(this.val);
 		} else if (this.comp === "GT") {
-			return Number(section[this.mkey]) > Number(this.val);
+			return Number(section[this.mkey as keyof Section]) > Number(this.val);
 		} else if (this.comp === "EQ") {
-			return Number(section[this.mkey]) === Number(this.val);
+			return Number(section[this.mkey as keyof Section]) === Number(this.val);
 		}
 		return false;
 	}
@@ -183,7 +183,7 @@ export class Options {
 		for (const section of sections) {
 			const toPush: InsightResult = {};
 			for (const key of this.keys) {
-				toPush[this.datasetId + "_" + key] = section[key];
+				toPush[this.datasetId + "_" + key] = section[key as keyof Section];
 			}
 			result.push(toPush);
 		}
@@ -217,3 +217,73 @@ export class Options {
 		this.order = order;
 	}
 }
+
+
+
+export class Group{
+	private keylist : Array<MField | SField>;
+
+	constructor(keylist: Array<MField | SField>) {
+		this.keylist = keylist;
+	}
+
+	/**
+	 * Group things by keylist, note that
+	 * @param things - Array of sections or rooms to group
+	 * @return an array of groups of sections or rooms
+	 */
+	public group(things: Section[] | Room[]){
+		let groups  = [];
+		groups.push(things);
+		for (const key of this.keylist){
+			let split: Section[][] | Room[][] = []
+			for (const group of groups){
+ 				split = this.splitGroup(group,key);
+				 groups = groups.concat(split);
+				 groups.shift();
+			}
+		}
+	 	return groups;
+	}
+
+	/**
+	 * Splits group into multiple groups based on val of key, note that this function
+	 * modifies group
+	 * @param group - An array of Section or Room
+	 * @param key - key to group by
+	 * @returns an Array of groups
+	 * @private
+	 */
+	private splitGroup (group: Section[] | Room[], key: MField | SField): Array<Section[]> | Array<Room[]> {
+		const res  = [];
+		for (let i = 0; i < group.length; i++) {
+			const newGroup = [];
+			const thing = group[i];
+			newGroup.push(thing);
+			const val: string | number = getKey(thing,key);
+			for (let j = i + 1; j < group.length; j++){
+				const thing2:  any = group[j];
+				const val2 = getKey(thing2, key);
+				if (val === val2){
+					newGroup.push(thing2);
+					group.splice(j,1); //Removes thing2
+					j--;//adjusts index
+				}
+			}
+			res.push(newGroup);
+		}
+		return res;
+	}
+}
+
+/**
+ * Returns the value of the field
+ * @param thing  - A Section or Room
+ * @param key - Key of Section or Room
+ * @returns value of key
+ * @private
+ */
+ function getKey(thing: Section | Room , key: MField | SField): string | number {
+	 return thing[key as keyof typeof thing];
+ }
+
