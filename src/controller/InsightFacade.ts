@@ -6,10 +6,10 @@ import {
 	InsightError,
 	NotFoundError,
 } from "./IInsightFacade";
-import { Dataset } from "./Dataset/Dataset";
+import { Dataset, Section } from "./Dataset/Dataset";
 import { DatasetProcessor } from "./Dataset/DatasetProcessor";
 import { QueryParser } from "./Query/QueryParser";
-// import { Query } from "./Query/Query";
+import { Query } from "./Query/Query";
 import { ZipParser, SectionParser, RoomParser } from "./Dataset/ZipParser";
 
 /**
@@ -42,6 +42,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 
 		const dataset = await parser.parseContent(id, content, kind);
+		// console.log(dataset);
 		InsightFacade.datasets.push(dataset);
 		await DatasetProcessor.addToDisk(id, dataset);
 		return InsightFacade.datasets.map((ds) => ds.insightDataset.id);
@@ -65,7 +66,7 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		const parser: QueryParser = new QueryParser();
-		// const queryObj: Query = parser.parseQuery(query);
+		const queryObj: Query = parser.parseQuery(query);
 		const id = parser.getDatasetId();
 
 		// Check if dataset exists on disk
@@ -80,12 +81,11 @@ export default class InsightFacade implements IInsightFacade {
 			dataset = await DatasetProcessor.getDatasetFromDiskWithId(id); //guaranteed to be in disk
 			InsightFacade.datasets.push(dataset); // add to datasets
 		}
-		throw new InsightError("a");
-
-		// TODO: make all query functions take data:Sections[]|Rooms[] instead of sections:Section[]
-		// const result = queryObj.query(dataset.data);
-
-		// return result;
+		if (dataset.insightDataset.kind === InsightDatasetKind.Sections) {
+			return queryObj.query(dataset.data as Section[]);
+		} else {
+			return [];
+		}
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {

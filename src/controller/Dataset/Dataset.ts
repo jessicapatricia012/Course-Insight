@@ -1,6 +1,4 @@
-// import { Section } from "./Section";
 import { InsightDataset } from "../IInsightFacade";
-// import { Room } from "./Room";
 
 export class Dataset {
 	public data: Section[] | Room[];
@@ -64,14 +62,14 @@ export class Room {
 	public furniture: string;
 	public href: string;
 
-	constructor() {
-		this.fullname = "";
-		this.shortname = "";
+	constructor(building: Building) {
+		this.fullname = building.fullname;
+		this.shortname = building.shortname;
 		this.number = "";
-		this.name = "";
-		this.address = "";
-		this.lat = 0;
-		this.lon = 0;
+		this.name = this.shortname + "_" + this.number;
+		this.address = building.address;
+		this.lat = building.lat;
+		this.lon = building.lon;
 		this.seats = 0;
 		this.type = "";
 		this.furniture = "";
@@ -84,12 +82,15 @@ export class Building {
 	public fullname: string;
 	public address: string;
 	public link: string;
+	public lat: number;
+	public lon: number;
 
 	constructor(shortname: string, fullname: string, address: string, link: string) {
 		this.shortname = shortname;
 		this.fullname = fullname;
 		this.address = address;
 		this.link = link;
+		this.lat = 0;
+		this.lon = 0;
 	}
 }
-
