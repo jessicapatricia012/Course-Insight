@@ -66,7 +66,7 @@ export class Room {
 		this.fullname = building.fullname;
 		this.shortname = building.shortname;
 		this.number = "";
-		this.name = this.shortname + "_" + this.number;
+		this.name = "";
 		this.address = building.address;
 		this.lat = building.lat;
 		this.lon = building.lon;
