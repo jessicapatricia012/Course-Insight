@@ -11,7 +11,7 @@ export enum SField {
 	address = "address",
 	type = "type",
 	furniture = "furniture",
-	href = "href"
+	href = "href",
 }
 
 export enum MField {
@@ -22,7 +22,7 @@ export enum MField {
 	year = "year",
 	lat = "lat",
 	lon = "lon",
-	seats = "seats"
+	seats = "seats",
 }
 
 export enum MComparator {
@@ -36,19 +36,15 @@ export enum Logic {
 	OR = "OR",
 }
 
-export enum Direction{
+export enum Direction {
 	UP = "UP",
-	DOWN = "DOWN"
+	DOWN = "DOWN",
 }
 
-export enum ApplyToken{
+export enum ApplyToken {
 	MAX = "MAX",
 	MIN = "MIN",
 	AVG = "AVG",
 	COUNT = "COUNT",
-	SUM = "SUM"
+	SUM = "SUM",
 }
-
-
-
-

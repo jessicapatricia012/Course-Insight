@@ -118,8 +118,7 @@ export class RoomParser extends ZipParser {
 			throw new InsightError("No buildings data found");
 		}
 
-		const roomPromises = buildings.map(async (building) => 
-			this.processBuildingFile(building, zip));
+		const roomPromises = buildings.map(async (building) => this.processBuildingFile(building, zip));
 
 		const roomsArray = await Promise.all(roomPromises);
 		const rooms: Room[] = roomsArray.flat();
@@ -270,9 +269,8 @@ export class RoomParser extends ZipParser {
 
 	private nodeSearch(className: string, row: any): string {
 		const cell = row.childNodes.find((c: any) => c.classList?.includes(className));
-	
-		return cell?.childNodes.find((child: any) => child.nodeName === "#text" && child.value)
-			?.value.trim() ?? "";
+
+		return cell?.childNodes.find((child: any) => child.nodeName === "#text" && child.value)?.value.trim() ?? "";
 	}
 
 	private findBuildingTable(node: any): any {

@@ -1,10 +1,10 @@
-import {ApplyToken, MField, SField} from "./enums";
-import {Room, Section} from "../Dataset/Dataset";
-import {InsightError} from "../IInsightFacade";
+import { ApplyToken, MField, SField } from "./enums";
+import { Room, Section } from "../Dataset/Dataset";
+import { InsightError } from "../IInsightFacade";
 
 type Things = Section[] | Room[];
-export class Group{
-	private keylist : Array<MField | SField>;
+export class Group {
+	private keylist: Array<MField | SField>;
 
 	constructor(keylist: Array<MField | SField>) {
 		this.keylist = keylist;
@@ -15,13 +15,13 @@ export class Group{
 	 * @param things - Array of sections or rooms to group
 	 * @return an array of groups of sections or rooms
 	 */
-	public group(things: Things): any{
-		let groups  = [];
+	public group(things: Things): any {
+		let groups = [];
 		groups.push(things);
-		for (const key of this.keylist){
-			let split: Section[][] | Room[][] = []
-			for (const group of groups){
-				split = splitGroup(group,key);
+		for (const key of this.keylist) {
+			let split: Section[][] | Room[][] = [];
+			for (const group of groups) {
+				split = splitGroup(group, key);
 				groups = groups.concat(split);
 				groups.shift();
 			}
@@ -37,25 +37,25 @@ export class Group{
  * @returns an Array of groups
  * @private
  */
-function  splitGroup (group: Things, key: MField | SField): Array<Section[]> | Array<Room[]> {
-	const res  = [];
+function splitGroup(group: Things, key: MField | SField): Array<Section[]> | Array<Room[]> {
+	const res = [];
 	for (let i = 0; i < group.length; i++) {
-	const newGroup = [];
-	const thing = group[i];
-	newGroup.push(thing);
-	const val: string | number = getKey(thing,key);
-	for (let j = i + 1; j < group.length; j++){
-		const thing2:  any = group[j];
-		const val2 = getKey(thing2, key);
-		if (val === val2){
-			newGroup.push(thing2);
-			group.splice(j,1); //Removes thing2
-			j--;//adjusts index
+		const newGroup = [];
+		const thing = group[i];
+		newGroup.push(thing);
+		const val: string | number = getKey(thing, key);
+		for (let j = i + 1; j < group.length; j++) {
+			const thing2: any = group[j];
+			const val2 = getKey(thing2, key);
+			if (val === val2) {
+				newGroup.push(thing2);
+				group.splice(j, 1); //Removes thing2
+				j--; //adjusts index
+			}
 		}
+		res.push(newGroup);
 	}
-	res.push(newGroup);
-}
-return res;
+	return res;
 }
 
 /**
@@ -65,9 +65,8 @@ return res;
  * @returns value of key
  * @private
  */
-function getKey(thing: Section | Room , key: MField | SField): string | number {
-	if (! (key in thing))
-		throw new Error(`Invalid key: ${key} is not in ${typeof thing}`);
+export function getKey(thing: Section | Room, key: MField | SField): string | number {
+	if (!(key in thing)) throw new Error(`Invalid key: ${key} is not in ${typeof thing}`);
 	return thing[key as keyof typeof thing];
 }
 
@@ -78,24 +77,24 @@ export class ApplyRule {
 	public applyKey: string;
 	public applyToken: ApplyToken;
 	public key: MField | SField;
-	private val : number[];
+	private val: number[];
 
 	constructor(applyKey: string, token: ApplyToken, key: MField | SField) {
 		this.applyKey = applyKey;
 		this.applyToken = token;
 		this.key = key;
-		this.val = [];//Buffer for holding result
+		this.val = []; //Buffer for holding result
 	}
 
-	public addVal(val:number): void{
+	public addVal(val: number): void {
 		this.val.push(val);
 	}
-	public getVal(): number[]{
+	public getVal(): number[] {
 		return this.val;
 	}
 }
 
-export class Apply{
+export class Apply {
 	private rules: ApplyRule[];
 
 	constructor(rules: ApplyRule[]) {
@@ -106,15 +105,15 @@ export class Apply{
 	 * Applies all Apply rules into each group in  groups, the value is stored in the local rules' val field
 	 * @param groups - and Array of arrays of sections or rooms
 	 */
-	public apply(groups: Section[][] | Room [][]): void {
-		for (const rule of this.rules){
-			for (const group of groups){
+	public apply(groups: Section[][] | Room[][]): void {
+		for (const rule of this.rules) {
+			for (const group of groups) {
 				this.handleApply(rule, group);
 			}
 		}
 	}
 
-	public getApplyRules(): ApplyRule[]{
+	public getApplyRules(): ApplyRule[] {
 		return this.rules;
 	}
 
@@ -124,9 +123,9 @@ export class Apply{
 	 * @param group
 	 * @private
 	 */
-	private handleApply(rule: ApplyRule, group: Things): void{
-		const {applyToken, key} = rule;
-		switch(applyToken){
+	private handleApply(rule: ApplyRule, group: Things): void {
+		const { applyToken, key } = rule;
+		switch (applyToken) {
 			case ApplyToken.MAX:
 				rule.addVal(this.handleMax(group, key));
 				break;
@@ -143,7 +142,7 @@ export class Apply{
 				rule.addVal(this.handleSum(group, key));
 				break;
 			default:
-				throw new InsightError(`Invalid Apply token: ${rule}`)
+				throw new InsightError(`Invalid Apply token: ${rule}`);
 		}
 	}
 
@@ -153,15 +152,14 @@ export class Apply{
 	 * @param key - key used for aggregation
 	 * @private
 	 */
-	private handleMax(group: Things, key: MField | SField): number{
-		if (!(key in MField)){
+	private handleMax(group: Things, key: MField | SField): number {
+		if (!(key in MField)) {
 			throw new InsightError("Invalid key for MAX: A key of type number is required");
 		}
 		let max: number = getKey(group[0], key) as number;
-		for (const thing of group){
+		for (const thing of group) {
 			const val: number = getKey(thing, key) as number;
-			if(val > max)
-				max = val ;
+			if (val > max) max = val;
 		}
 		return max;
 	}
@@ -173,14 +171,13 @@ export class Apply{
 	 * @private
 	 */
 	private handleMin(group: Things, key: MField | SField): number {
-		if (!(key in MField)){
+		if (!(key in MField)) {
 			throw new InsightError("Invalid key for MIN: A key of type number is required");
 		}
 		let min: number = getKey(group[0], key) as number;
-		for (const thing of group){
+		for (const thing of group) {
 			const val: number = getKey(thing, key) as number;
-			if(val < min)
-				min = val ;
+			if (val < min) min = val;
 		}
 		return min;
 		return 0;
@@ -193,12 +190,12 @@ export class Apply{
 	 * @private
 	 */
 	private handleAvg(group: Things, key: MField | SField): number {
-		if (!(key in MField)){
+		if (!(key in MField)) {
 			throw new InsightError("Invalid key for AVG: A key of type number is required");
 		}
 		const len: number = group.length;
 		let sum: number = 0;
-		for (const thing of group){
+		for (const thing of group) {
 			sum += getKey(thing, key) as number;
 		}
 		return Number((sum / len).toFixed(2));
@@ -215,7 +212,6 @@ export class Apply{
 		return groups.length;
 	}
 
-
 	/**
 	 * 	Returns the sum of key in group
 	 * @param group - group to sum over
@@ -223,11 +219,11 @@ export class Apply{
 	 * @private
 	 */
 	private handleSum(group: Things, key: MField | SField): number {
-		if (!(key in MField)){
+		if (!(key in MField)) {
 			throw new InsightError("Invalid key for SUM: A key of type number is required");
 		}
 		let sum: number = 0;
-		for (const thing of group){
+		for (const thing of group) {
 			sum += getKey(thing, key) as number;
 		}
 		return sum;

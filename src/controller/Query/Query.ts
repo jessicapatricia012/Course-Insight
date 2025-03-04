@@ -1,6 +1,7 @@
-import {ApplyToken, Logic, MComparator, MField, SField} from "./enums";
-import {InsightError, InsightResult, ResultTooLargeError} from "../IInsightFacade";
-import {Room, Section} from "../Dataset/Dataset";
+import { Logic, MComparator, MField, SField } from "./enums";
+import { InsightError, InsightResult, ResultTooLargeError } from "../IInsightFacade";
+import { Room, Section } from "../Dataset/Dataset";
+import { getKey } from "./QueryPlus";
 
 // Query class representing a query
 // General process of query:
@@ -18,15 +19,16 @@ export class Query {
 		this.options = options;
 	}
 
-	//This is the main function called by the UI to do the query
-	//REQUIRES: sections is an array of section from a  dataset
-	//EFFECTS: Returns the result of the query
-	public query(sections: Section[]): InsightResult[] {
-		const filteredSections: Section[] = this.where.handleWhere(sections);
-		if (filteredSections.length > this.MAX_RES) {
+	/**
+	 * Queries sections based on where and options
+	 * @param things - things to query
+	 */
+	public query(things: Section[] | Room[]): InsightResult[] {
+		const filteredThings: any = this.where.handleWhere(things);
+		if (filteredThings.length > this.MAX_RES) {
 			throw new ResultTooLargeError("Result exceed 5000");
 		}
-		return this.options.handleOptions(filteredSections);
+		return this.options.handleOptions(filteredThings);
 	}
 }
 
@@ -35,16 +37,16 @@ export class Where {
 
 	//REQUIRES: toFilter is an array of Sections (most likely from dataset field above)
 	//EFFECTS: a filtered array of sections with WHERE clause applied
-	public handleWhere(toFilter: Section[]): Section[] {
+	public handleWhere(toFilter: Section[] | Room[]): Array<Section | Room> {
 		// Takes an array of Sections
-		const result: Section[] = [];
-		for (const section of toFilter) {
+		const result: Array<Section | Room> = [];
+		for (const thing of toFilter) {
 			if (this.filter === null || Object.keys(this.filter).length === 0) {
 				// no filtering, handles empty WHERE ( WHERE:{} )
 
-				result.push(section);
-			} else if (this.filter.performFilter(section)) {
-				result.push(section);
+				result.push(thing);
+			} else if (this.filter.performFilter(thing)) {
+				result.push(thing);
 			}
 		}
 		return result;
@@ -59,7 +61,7 @@ export abstract class Filter {
 	//This is an abstract function implemented by all comparator classes
 	//REQUIRES: section is a one valid section to check
 	//EFFECTS: returns true if section passes Comparator check
-	public abstract performFilter(section: Section): boolean;
+	public abstract performFilter(section: Section | Room): boolean;
 }
 
 export class SComparison extends Filter {
@@ -71,7 +73,7 @@ export class SComparison extends Filter {
 		this.skey = skey;
 		this.val = val;
 	}
-	public performFilter(section: Section): boolean {
+	public performFilter(thing: Section | Room): boolean {
 		let val = this.val;
 		if (val.slice(1, -1).includes("*")) {
 			// remove first and last char (potentially *), thn check if there's still *
@@ -80,16 +82,16 @@ export class SComparison extends Filter {
 
 		if (val.startsWith("*") && val.endsWith("*")) {
 			val = val.slice(1, -1);
-			return String(section[this.skey as keyof Section]).includes(String(val));
+			return String(getKey(thing, this.skey)).includes(String(val));
 		} else if (val.startsWith("*")) {
 			val = val.slice(1);
-			return String(section[this.skey as keyof Section]).endsWith(String(val));
+			return String(getKey(thing, this.skey)).endsWith(String(val));
 		} else if (val.endsWith("*")) {
 			val = val.slice(0, -1);
-			return String(section[this.skey as keyof Section]).startsWith(String(val));
+			return String(getKey(thing, this.skey)).startsWith(String(val));
 		}
 
-		return String(section[this.skey as keyof Section]) === String(val);
+		return String(getKey(thing, this.skey)) === String(val);
 	}
 }
 
@@ -105,13 +107,13 @@ export class MComparison extends Filter {
 		this.comp = comp;
 	}
 
-	public performFilter(section: Section): boolean {
+	public performFilter(thing: Section | Room): boolean {
 		if (this.comp === "LT") {
-			return Number(section[this.mkey as keyof Section]) < Number(this.val);
+			return Number(getKey(thing, this.mkey)) < Number(this.val);
 		} else if (this.comp === "GT") {
-			return Number(section[this.mkey as keyof Section]) > Number(this.val);
+			return Number(getKey(thing, this.mkey)) > Number(this.val);
 		} else if (this.comp === "EQ") {
-			return Number(section[this.mkey as keyof Section]) === Number(this.val);
+			return Number(getKey(thing, this.mkey)) === Number(this.val);
 		}
 		return false;
 	}
@@ -126,26 +128,26 @@ export class LComparison extends Filter {
 		this.filterList = filterList;
 		this.logic = logic;
 	}
-	public performFilter(section: Section): boolean {
+	public performFilter(thing: Section | Room): boolean {
 		if (this.logic === "AND") {
 			// AND
-			let result: boolean = this.filterList[0].performFilter(section); // perform first filter because result needs to be initialized
+			let result: boolean = this.filterList[0].performFilter(thing); // perform first filter because result needs to be initialized
 			for (const filter of this.filterList) {
 				//Loops through all filters in List
 				if (filter === null || Object.keys(filter).length === 0) {
 					throw new InsightError("Invalid filter in filter list");
 				}
-				result = filter.performFilter(section) && result;
+				result = filter.performFilter(thing) && result;
 			}
 			return result;
 		} else if (this.logic === "OR") {
 			// OR
-			let result: boolean = this.filterList[0].performFilter(section);
+			let result: boolean = this.filterList[0].performFilter(thing);
 			for (const filter of this.filterList) {
 				if (filter === null || Object.keys(filter).length === 0) {
 					throw new InsightError("Invalid filter in filter list");
 				}
-				result = filter.performFilter(section) || result;
+				result = filter.performFilter(thing) || result;
 			}
 			return result;
 		}
@@ -161,11 +163,11 @@ export class Negation extends Filter {
 		this.filter = filter;
 	}
 
-	public performFilter(section: Section): boolean {
+	public performFilter(thing: Section | Room): boolean {
 		if (this.filter === null || Object.keys(this.filter).length === 0) {
 			throw new InsightError("No FILTER on NOT");
 		}
-		return !this.filter.performFilter(section);
+		return !this.filter.performFilter(thing);
 	}
 }
 
@@ -177,13 +179,13 @@ export class Options {
 	//REQUIRES: sections is an array of valid sections
 	//EFFECTS: Returns an array of InsightResult with filtred fields and ordered accordingly
 	// (NOTE: This is the final result returned by performQuery)
-	public handleOptions(sections: Section[]): InsightResult[] {
+	public handleOptions(things: Section[] | Room[]): InsightResult[] {
 		let result: InsightResult[] = [];
 
-		for (const section of sections) {
+		for (const thing of things) {
 			const toPush: InsightResult = {};
 			for (const key of this.keys) {
-				toPush[this.datasetId + "_" + key] = section[key as keyof Section];
+				toPush[this.datasetId + "_" + key] = getKey(thing,key);
 			}
 			result.push(toPush);
 		}
@@ -217,14 +219,3 @@ export class Options {
 		this.order = order;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-

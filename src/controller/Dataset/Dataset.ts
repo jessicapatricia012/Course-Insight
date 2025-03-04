@@ -92,4 +92,3 @@ export class Building {
 		this.link = link;
 	}
 }
-
