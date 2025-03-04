@@ -13,7 +13,7 @@ import { Query } from "./Query/Query";
 import { ZipParser, SectionParser, RoomParser } from "./Dataset/ZipParser";
 
 /**
- * This is the main programmatic entry point for the project.
+ * This is the magit chein programmatic entry point for the project.
  * Method documentation is in IInsightFacade
  *
  */
