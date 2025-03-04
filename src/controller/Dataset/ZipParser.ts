@@ -131,7 +131,6 @@ export class RoomParser extends ZipParser {
 		let buildings = this.extractBuildingsData(buildingTable);
 
 		buildings = await doGeolocation(buildings);
-		console.log(buildings);
 
 		const roomPromises = buildings.map(async (building) => this.processBuildingFile(building, zip));
 

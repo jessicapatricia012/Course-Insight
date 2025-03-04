@@ -6,14 +6,14 @@ import {
 	InsightError,
 	NotFoundError,
 } from "./IInsightFacade";
-import { Dataset, Section } from "./Dataset/Dataset";
+import { Dataset } from "./Dataset/Dataset";
 import { DatasetProcessor } from "./Dataset/DatasetProcessor";
 import { QueryParser } from "./Query/QueryParser";
 import { Query } from "./Query/Query";
 import { ZipParser, SectionParser, RoomParser } from "./Dataset/ZipParser";
 
 /**
- * This is the magit chein programmatic entry point for the project.
+ * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
  *
  */
