@@ -6,7 +6,7 @@ import {
 	InsightError,
 	NotFoundError,
 } from "./IInsightFacade";
-import { Dataset, Section } from "./Dataset/Dataset";
+import { Dataset } from "./Dataset/Dataset";
 import { DatasetProcessor } from "./Dataset/DatasetProcessor";
 import { QueryParser } from "./Query/QueryParser";
 import { Query } from "./Query/Query";

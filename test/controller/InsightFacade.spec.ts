@@ -562,7 +562,6 @@ describe("InsightFacade", function () {
 		});
 	});
 
-
 	describe("PerformQuery", function () {
 		/**
 		 * Loads the TestQuery specified in the test name and asserts the behaviour of performQuery.
@@ -949,7 +948,6 @@ describe("InsightFacade", function () {
 			}
 		});
 	});
-
 });
 
 // tests for coverage
