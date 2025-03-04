@@ -185,7 +185,7 @@ export class Options {
 		for (const thing of things) {
 			const toPush: InsightResult = {};
 			for (const key of this.keys) {
-				toPush[this.datasetId + "_" + key] = getKey(thing,key);
+				toPush[this.datasetId + "_" + key] = getKey(thing, key);
 			}
 			result.push(toPush);
 		}

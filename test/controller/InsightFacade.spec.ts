@@ -4,15 +4,14 @@ import {
 	InsightError,
 	NotFoundError,
 	InsightResult,
-	ResultTooLargeError
+	ResultTooLargeError,
 } from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
-import {clearDisk, getContentFromArchives, loadTestQuery} from "../TestUtil";
+import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import * as fs from "fs-extra";
 import { Apply, ApplyRule, Group } from "../../src/controller/Query/QueryPlus";
-
 
 use(chaiAsPromised);
 
