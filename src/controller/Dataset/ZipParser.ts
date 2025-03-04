@@ -189,7 +189,8 @@ export class RoomParser extends ZipParser {
 							room.seats = parseInt(this.getTextOfNodeClass("views-field-field-room-capacity", row));
 							room.type = this.getTextOfNodeClass("views-field-field-room-type", row);
 							room.furniture = this.getTextOfNodeClass("views-field-field-room-furniture", row);
-							room.href = this.getTextOfNodeClass("views-field-nothing", row);
+							room.href = this.extractLink("views-field-nothing", row);
+							room.name = room.shortname + "_" + room.number;
 							rooms.push(room);
 						} catch {
 							// if node with class not found, skip the room
@@ -223,7 +224,7 @@ export class RoomParser extends ZipParser {
 					const shortname = this.getTextOfNodeClass("views-field views-field-field-building-code", row);
 					const fullname = this.getTextOfNodeClass("views-field-title", row);
 					const address = this.getTextOfNodeClass("views-field-field-building-address", row);
-					const link = this.extractLink(row);
+					const link = this.extractLink("views-field-title", row);
 
 					if (!link.startsWith("./campus/discover/buildings-and-classrooms/")) {
 						return null;
@@ -237,8 +238,8 @@ export class RoomParser extends ZipParser {
 			.filter((building: any): building is Building => building !== null); // remove nulls
 	}
 
-	private extractLink(row: any): string {
-		const linkNode = this.findNodeByClass("views-field-title", row);
+	private extractLink(className: string, row: any): string {
+		const linkNode = this.findNodeByClass(className, row);
 		const anchorNode = this.findNodeByTag(linkNode, "a");
 		return anchorNode?.attrs?.find((attr: any) => attr.name === "href")?.value || "";
 	}
