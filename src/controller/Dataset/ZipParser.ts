@@ -2,13 +2,12 @@ import JSZip from "jszip";
 import { InsightError, InsightDatasetKind } from "../IInsightFacade";
 import { Dataset, Section, Room, Building } from "./Dataset";
 import { JSZipObject } from "jszip";
-// import { Section } from "./Section";
-// import { Room, Building } from "./Room";
+import { doGeolocation } from "./Georesponse";
 const parse5 = require("parse5");
 
 export abstract class ZipParser {
 	public async parseContent(id: string, content: string, kind: InsightDatasetKind): Promise<Dataset> {
-		const zip = await this.validateZip(content);
+		const zip = await this.validateZip(content); //
 		const data = await this.getDataFromZip(zip);
 
 		const dataset = new Dataset({
@@ -95,36 +94,50 @@ export class SectionParser extends ZipParser {
 }
 
 export class RoomParser extends ZipParser {
+	private roomRequiredFields = [
+		"views-field-field-room-number",
+		"views-field-field-room-capacity",
+		"views-field-field-room-type",
+		"views-field-field-room-furniture",
+		"views-field-nothing",
+	];
+
+	private buildingRequiredFields = [
+		"views-field-title",
+		"views-field-field-building-address",
+		"views-field-field-building-code",
+	];
+
 	public async getDataFromZip(zip: JSZip): Promise<Section[] | Room[]> {
 		// Check if index.htm exists
-		const indexFile = zip.file("index.htm");
+		const indexFile = zip.files["index.htm"];
 		if (!indexFile) {
 			throw new InsightError("index.htm not found");
 		}
 
 		// parse index.htm
 		const indexPromise = await indexFile.async("text");
-		const parsedDoc = parse5.parse(indexPromise);
-		// console.log("log: " + parsedDoc);
+		const parsedDoc = parse5.parse(indexPromise); //
+
+		// console.log(parsedDoc);
 
 		// find the valid building list table.
-		const buildingTable = this.findBuildingTable(parsedDoc);
+		const buildingTable = this.findTable(parsedDoc, this.buildingRequiredFields);
 		if (!buildingTable) {
 			throw new InsightError("No valid building table found");
 		}
+		// console.log(buildingTable);
 
-		const buildings = this.extractBuildingsData(buildingTable);
-		if (!buildings || buildings.length === 0) {
-			throw new InsightError("No buildings data found");
-		}
+		let buildings = this.extractBuildingsData(buildingTable);
+
+		buildings = await doGeolocation(buildings);
+		console.log(buildings);
 
 		const roomPromises = buildings.map(async (building) => this.processBuildingFile(building, zip));
 
 		const roomsArray = await Promise.all(roomPromises);
 		const rooms: Room[] = roomsArray.flat();
-
-		// do geolocation to set lon, lat
-		//
+		// console.log(rooms);
 
 		return rooms;
 	}
@@ -139,7 +152,7 @@ export class RoomParser extends ZipParser {
 		}
 
 		// Extract room table from the parsed document
-		const roomTable = this.findRoomTable(parsedBuildingDoc);
+		const roomTable = this.findTable(parsedBuildingDoc, this.roomRequiredFields);
 		if (!roomTable) {
 			return []; // no valid table for this building file, process next building
 		}
@@ -164,62 +177,29 @@ export class RoomParser extends ZipParser {
 		return parse5.parse(buildingContent);
 	}
 
-	private findRoomTable(node: any): any {
-		if (!node) return null;
-
-		if (node.tagName === "table" && this.isRoomTable(node)) {
-			return node;
-		}
-		if (node.childNodes) {
-			for (const child of node.childNodes) {
-				const resultNode = this.findRoomTable(child); // recurse on children
-				if (resultNode) return resultNode; // Return the first valid result found
-			}
-		}
-		return null;
-	}
-
-	private isRoomTable(table: any): boolean {
-		return table.childNodes.some(
-			(row: any) =>
-				row.tagName === "tr" && // Ensure it's a row
-				row.childNodes.some(
-					(cell: any) =>
-						cell.nodeName === "td" &&
-						cell.classList?.includes("views-field-field-room-number") &&
-						cell.classList?.includes("views-field-field-room-capacity") &&
-						cell.classList?.includes("views-field-field-room-type") &&
-						cell.classList?.includes("views-field-field-room-furniture") &&
-						cell.classList?.includes("views-field-nothing")
-				)
-		);
-	}
-
 	private extractRoomData(table: any, building: Building): any[] {
-		const roomData: Room[] = [];
+		const rooms: Room[] = [];
 
 		table.childNodes.forEach((childNode: any) => {
 			if (childNode.nodeName === "tbody") {
 				childNode.childNodes.forEach((row: any) => {
 					if (row.nodeName === "tr") {
-						const room = new Room();
-						room.number = this.nodeSearch("views-field-field-room-number", row);
-						room.seats = parseInt(this.nodeSearch("views-field-field-room-capacity", row));
-						room.type = this.nodeSearch("views-field-field-room-type", row);
-						room.furniture = this.nodeSearch("views-field-field-room-furniture", row);
-						room.href = this.nodeSearch("views-field-nothing", row);
-						room.fullname = building.fullname;
-						room.shortname = building.shortname;
-						room.address = building.address;
-						room.name = room.shortname + "_" + room.number;
-						room.lon = room.lat = 0; // for now
-
-						roomData.push(room);
+						const room = new Room(building);
+						try {
+							room.number = this.getTextOfNodeClass("views-field-field-room-number", row);
+							room.seats = parseInt(this.getTextOfNodeClass("views-field-field-room-capacity", row));
+							room.type = this.getTextOfNodeClass("views-field-field-room-type", row);
+							room.furniture = this.getTextOfNodeClass("views-field-field-room-furniture", row);
+							room.href = this.getTextOfNodeClass("views-field-nothing", row);
+							rooms.push(room);
+						} catch {
+							// if node with class not found, skip the room
+						}
 					}
 				});
 			}
 		});
-		return roomData;
+		return rooms;
 	}
 
 	private extractBuildingsData(buildingTable: any): Building[] {
@@ -230,7 +210,9 @@ export class RoomParser extends ZipParser {
 				buildings.push(...this.extractBuildingDataFromRows(childNode.childNodes));
 			}
 		});
-
+		if (!buildings || buildings.length === 0) {
+			throw new InsightError("No buildings data found");
+		}
 		return buildings;
 	}
 
@@ -238,88 +220,89 @@ export class RoomParser extends ZipParser {
 		return rows
 			.filter((row: any) => row.nodeName === "tr")
 			.map((row: any) => {
-				const shortnameNode = row.childNodes.find((cell: any) =>
-					cell.classList?.includes("views-field-field-building-code")
-				);
-				const fullnameNode = row.childNodes.find((cell: any) => cell.classList?.includes("views-field-title"));
-				const addressNode = row.childNodes.find((cell: any) =>
-					cell.classList?.includes("views-field-field-building-address")
-				);
-				const linkNode = row.childNodes.find(
-					(cell: any) => cell.nodeName === "td" && cell.classList?.includes("views-field-title")
-				);
+				try {
+					const shortname = this.getTextOfNodeClass("views-field views-field-field-building-code", row);
+					const fullname = this.getTextOfNodeClass("views-field-title", row);
+					const address = this.getTextOfNodeClass("views-field-field-building-address", row);
+					const link = this.extractLink(row);
 
-				const shortname = shortnameNode ? shortnameNode.textContent : "";
-				const fullname = fullnameNode ? fullnameNode.textContent : "";
-				const address = addressNode ? addressNode.textContent : "";
-
-				const link =
-					linkNode && linkNode.childNodes[0]?.nodeName === "a"
-						? linkNode.childNodes[0].attrs.find((attr: any) => attr.name === "href")?.value
-						: "";
-
-				// Ensure the link contains the desired prefix
-				if (link.startsWith("./campus/discover/buildings-and-classrooms/")) {
+					if (!link.startsWith("./campus/discover/buildings-and-classrooms/")) {
+						return null;
+					}
+					// Ensure the link has the corect path and has all field to be passed to room
 					return new Building(shortname, fullname, address, link);
+				} catch {
+					return null;
 				}
-				return null;
 			})
 			.filter((building: any): building is Building => building !== null); // remove nulls
 	}
 
-	private nodeSearch(className: string, row: any): string {
-		const cell = row.childNodes.find((c: any) => c.classList?.includes(className));
-
-		return cell?.childNodes.find((child: any) => child.nodeName === "#text" && child.value)?.value.trim() ?? "";
+	private extractLink(row: any): string {
+		const linkNode = this.findNodeByClass("views-field-title", row);
+		const anchorNode = this.findNodeByTag(linkNode, "a");
+		return anchorNode?.attrs?.find((attr: any) => attr.name === "href")?.value || "";
 	}
 
-	private findBuildingTable(node: any): any {
+	private findNodeByTag(node: any, tag: string): any {
+		if (!node) return null;
+		for (const child of node.childNodes ?? []) {
+			if (child.nodeName === tag) return child;
+			const found = this.findNodeByTag(child, tag);
+			if (found) return found;
+		}
+		return null;
+	}
+
+	private getTextOfNodeClass(className: string, row: any): string {
+		const node = this.findNodeByClass(className, row);
+		if (!node) throw new Error("Not valid");
+		return this.getTextContent(node);
+	}
+
+	private findNodeByClass(className: string, row: any): any {
+		return row.childNodes.find(
+			(c: any) =>
+				c.nodeName === "td" && c.attrs?.some((attr: any) => attr.name === "class" && attr.value.includes(className))
+		);
+	}
+	private getTextContent(node: any): string {
+		if (node.nodeName === "#text") {
+			return node.value ?? "";
+		}
+		return (
+			node.childNodes
+				?.map((child: any) => this.getTextContent(child))
+				.join(" ")
+				.trim() ?? ""
+		);
+	}
+
+	private findTable(node: any, requiredFields: string[]): any {
 		if (!node) return null;
 
-		if (node.tagName === "table" && this.isBuildingTable(node)) {
+		if (node.tagName === "table" && this.isValidTable(node, requiredFields)) {
 			return node;
 		}
-		if (node.childNodes) {
+		if (node.childNodes && node.childNodes.length > 0) {
 			for (const child of node.childNodes) {
-				const resultNode = this.findBuildingTable(child); // recurse on children
+				const resultNode = this.findTable(child, requiredFields); // recurse on children
 				if (resultNode) return resultNode; // Return the first valid result found
 			}
 		}
 		return null;
 	}
 
-	private isBuildingTable(table: any): boolean {
-		// Iterate through rows in the table
-		return table.childNodes.some(
-			(row: any) =>
-				row.tagName === "tr" && // Ensure it's a row
-				row.childNodes.some((cell: any) => {
-					return cell.nodeName === "td" && cell.classList?.includes("views-field");
-				})
-		);
-	}
-
-	private static isValidRoom(room: any): boolean {
-		const requiredFields = [
-			"fullname",
-			"shortname",
-			"number",
-			"name",
-			"address",
-			"lat",
-			"lon",
-			"seats",
-			"type",
-			"furniture",
-			"href",
-		];
-		const roomFields = Object.keys(room).map((field) => field.toLowerCase());
-		// Check if all required fields are present in the section
-		if (!requiredFields.every((field) => roomFields.includes(field.toLowerCase()))) {
-			return false;
+	private isValidTable(table: any, requiredFields: string[]): boolean {
+		if (table.nodeName === "td" && table.attrs) {
+			const attribute = table.attrs.find((attr: any) => attr.name === "class");
+			if (attribute) {
+				return requiredFields.some((field) => attribute.value.includes(field));
+			}
 		}
-		// check if requested room's geolocation request returns successfully (i.e., there is no error)
-		// TODO
-		return true;
+		if (table.childNodes) {
+			return table.childNodes.some((child: any) => this.isValidTable(child, requiredFields));
+		}
+		return false;
 	}
 }

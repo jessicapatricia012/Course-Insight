@@ -12,6 +12,7 @@ import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import * as fs from "fs-extra";
 import { Apply, ApplyRule, Group } from "../../src/controller/Query/QueryPlus";
+import { Dataset } from "../../src/controller/Dataset/Dataset";
 
 use(chaiAsPromised);
 
@@ -59,6 +60,8 @@ describe("InsightFacade", function () {
 	let oneValidSection: string;
 	let skipFolder: string;
 
+	let campus: string;
+
 	before(async function () {
 		// This block runs once and loads the datasets.
 		sections = await getContentFromArchives("pair.zip");
@@ -78,6 +81,8 @@ describe("InsightFacade", function () {
 		oneValidSection = await getContentFromArchives("oneValidSection.zip");
 		skipFolder = await getContentFromArchives("skipFolder.zip");
 
+		campus = await getContentFromArchives("campus.zip");
+
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
 	});
@@ -86,6 +91,12 @@ describe("InsightFacade", function () {
 		beforeEach(async function () {
 			await clearDisk();
 			facade = new InsightFacade();
+		});
+
+		// ROOM /////////////////////////
+		it("should successfully add a room datasets", async function () {
+			const result = await facade.addDataset("ubc room", campus, InsightDatasetKind.Rooms);
+			expect(result).to.have.members(["ubc room"]);
 		});
 
 		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
@@ -551,6 +562,7 @@ describe("InsightFacade", function () {
 		});
 	});
 
+
 	describe("PerformQuery", function () {
 		/**
 		 * Loads the TestQuery specified in the test name and asserts the behaviour of performQuery.
@@ -934,6 +946,26 @@ describe("InsightFacade", function () {
 				/////////////
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+	});
+
+});
+
+// tests for coverage
+describe("Dataset", function () {
+	let datasets: Dataset[];
+
+	describe("getDatasetWithId", async function () {
+		beforeEach(async function () {
+			datasets = [];
+		});
+
+		it("should throws an error when id not found", function () {
+			try {
+				Dataset.getDatasetWithId("ashgb", datasets);
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(Error);
 			}
 		});
 	});

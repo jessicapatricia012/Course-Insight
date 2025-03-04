@@ -6,7 +6,7 @@ import {
 	InsightError,
 	NotFoundError,
 } from "./IInsightFacade";
-import { Dataset } from "./Dataset/Dataset";
+import { Dataset, Section } from "./Dataset/Dataset";
 import { DatasetProcessor } from "./Dataset/DatasetProcessor";
 import { QueryParser } from "./Query/QueryParser";
 import { Query } from "./Query/Query";
@@ -42,6 +42,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 
 		const dataset = await parser.parseContent(id, content, kind);
+		// if (kind === InsightDatasetKind.Rooms) console.log(dataset);
 		InsightFacade.datasets.push(dataset);
 		await DatasetProcessor.addToDisk(id, dataset);
 		return InsightFacade.datasets.map((ds) => ds.insightDataset.id);
