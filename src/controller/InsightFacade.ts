@@ -81,11 +81,10 @@ export default class InsightFacade implements IInsightFacade {
 			dataset = await DatasetProcessor.getDatasetFromDiskWithId(id); //guaranteed to be in disk
 			InsightFacade.datasets.push(dataset); // add to datasets
 		}
-		if (dataset.insightDataset.kind === InsightDatasetKind.Sections) {
-			return queryObj.query(dataset.data as Section[]);
-		} else {
-			return [];
-		}
+
+		// TODO: make all query functions take data:Sections[]|Rooms[] instead of sections:Section[]
+		const result = queryObj.query(dataset.data);
+		return result;
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {

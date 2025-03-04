@@ -10,6 +10,8 @@ import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
+import * as fs from "fs-extra";
+import { Apply, ApplyRule, Group } from "../../src/controller/Query/QueryPlus";
 import { Dataset } from "../../src/controller/Dataset/Dataset";
 
 use(chaiAsPromised);
@@ -18,6 +20,20 @@ export interface ITestQuery {
 	title?: string;
 	input: unknown;
 	errorExpected: boolean;
+	expected: any;
+}
+
+export interface GroupTest {
+	name?: string;
+	keylist: any;
+	input: any;
+	expected: any;
+}
+
+export interface ApplyTest {
+	name?: string;
+	rules: any;
+	input: any;
 	expected: any;
 }
 
@@ -439,6 +455,114 @@ describe("InsightFacade", function () {
 		});
 	});
 
+	describe("Group", function () {
+		/**
+		 * Loads group test
+		 * @param filename - name of file
+		 */
+		async function loadGroupTest(filename: string): Promise<GroupTest> {
+			const data = await fs.readFile(`test/resources/queries/GroupTest/${filename}`, "utf-8");
+			const groupTest: any = JSON.parse(data);
+			assertGroupTest(groupTest);
+			return groupTest;
+		}
+
+		/**
+		 * Type check groupTest
+		 * @param groupTest
+		 */
+		function assertGroupTest(groupTest: any): asserts groupTest is GroupTest {
+			if (Array.isArray(groupTest)) {
+				throw new Error("ValidationError: Test Group must be an object not an array.");
+			}
+			if (!Object.hasOwn(groupTest, "input")) {
+				throw new Error("ValidationError: Test Group is missing required field 'input'.");
+			}
+			if (!Object.hasOwn(groupTest, "expected")) {
+				throw new Error("ValidationError: Test Group is missing required field 'expected'.");
+			}
+			if (!Object.hasOwn(groupTest, "keylist")) {
+				throw new Error("ValidationError: Test Group is missing required field 'keylist'.");
+			}
+		}
+
+		/**
+		 * Tests the group function from the Group class
+		 * @param filename
+		 */
+		async function checkGroup(filename: string): Promise<void> {
+			const { keylist, input, expected } = await loadGroupTest(filename);
+			const group = new Group(keylist);
+
+			const res = group.group(input);
+			expect(res).to.have.deep.members(expected);
+		}
+
+		it("Should group by one key", async function () {
+			await checkGroup("test1.json");
+		});
+
+		it("should group by two keys", async function () {
+			await checkGroup("test2.json");
+		});
+	});
+
+	describe("Apply", async function () {
+		async function loadApplyTest(filename: string): Promise<ApplyTest> {
+			const data = await fs.readFile(`test/resources/queries/ApplyTest/${filename}`, "utf-8");
+			const applyTest: any = JSON.parse(data);
+			assertApplyTest(applyTest);
+			return applyTest;
+		}
+
+		function assertApplyTest(applyTest: any): asserts applyTest is ApplyTest {
+			if (Array.isArray(applyTest)) {
+				throw new Error("ValidationError: Test Apply must be an object not an array.");
+			}
+			if (!Object.hasOwn(applyTest, "input")) {
+				throw new Error("ValidationError: Test Apply is missing required field 'input'.");
+			}
+			if (!Object.hasOwn(applyTest, "expected")) {
+				throw new Error("ValidationError: Test Apply is missing required field 'expected'.");
+			}
+			if (!Object.hasOwn(applyTest, "rules")) {
+				throw new Error("ValidationError: Test Apply is missing required field 'rules'.");
+			}
+		}
+
+		async function checkApply(filename: string): Promise<void> {
+			const { rules, input, expected } = await loadApplyTest(filename);
+			const rulesObj: ApplyRule[] = [];
+			rules.forEach((rule: any) => {
+				rulesObj.push(new ApplyRule(rule.applyKey, rule.applyToken, rule.key));
+			});
+			const apply: Apply = new Apply(rulesObj);
+			apply.apply(input);
+			const res = apply.getApplyRules();
+			expect(res).to.have.deep.members(expected);
+		}
+		it("Should work with MAX", async function () {
+			await checkApply("test1.json");
+		});
+
+		it("Should work with MIN", async function () {
+			await checkApply("test2.json");
+		});
+
+		it("Should work with AVG", async function () {
+			await checkApply("test3.json");
+		});
+
+		it("Should work with SUM", async function () {
+			await checkApply("test4.json");
+		});
+
+		it("Should work with COUNT", async function () {
+			await checkApply("test5.json");
+		});
+	});
+
+
 	describe("PerformQuery", function () {
 		/**
 		 * Loads the TestQuery specified in the test name and asserts the behaviour of performQuery.
@@ -825,6 +949,7 @@ describe("InsightFacade", function () {
 			}
 		});
 	});
+
 });
 
 // tests for coverage
