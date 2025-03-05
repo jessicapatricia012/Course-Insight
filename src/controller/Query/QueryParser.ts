@@ -1,6 +1,7 @@
 import { Filter, LComparison, MComparison, Negation, Query, SComparison, Where, Options } from "./Query";
 import { InsightError } from "../IInsightFacade";
-import { Logic, MComparator, MField, SField } from "./enums";
+import { ApplyToken, Logic, MComparator, MField, SField } from "./enums";
+import { Apply, ApplyRule, Group, Transformation } from "./QueryPlus";
 
 export class QueryParser {
 	private datasetId: string; //to check consistent id throughout query
@@ -18,13 +19,13 @@ export class QueryParser {
 			throw new InsightError("Missing WHERE or OPTIONS Clause");
 		}
 
-		//Destructure WHERE and OPTIONS
-		const { WHERE: whereObj, OPTIONS: optionsObj } = query as any;
+		//Destructure WHERE, OPTIONS and TRANSFORMATIONS
+		const { WHERE: whereObj, OPTIONS: optionsObj, TRANSFORMATIONS: transObj = null } = query as any;
 
 		const where: Where = new Where(this.parseFilter(whereObj));
+		const transformation: Transformation | null = this.parseTransformations(transObj);
 		const options: Options = this.parseOptions(optionsObj);
-
-		return new Query(where, options);
+		return new Query(where, options, transformation);
 	}
 
 	//Helper Functions
@@ -61,12 +62,7 @@ export class QueryParser {
 	//EFFECTS: Returns an MComparison representation of the object
 	private parseMComparison(obj: unknown, mcomp: MComparator): MComparison {
 		const key: string = Object.keys(obj as Object)[0];
-		const keyTokens = key.split("_");
-		if (keyTokens.length !== 2) {
-			throw new InsightError("Invalid format for MComparison key");
-		}
-		this.updateId(keyTokens[0]);
-		const mfield: string = keyTokens[1];
+		const mfield = this.getField(key);
 		if (!(mfield in MField)) {
 			throw new InsightError("Invalid value for MField");
 		}
@@ -76,6 +72,22 @@ export class QueryParser {
 			throw new InsightError("Wrong value type for MComparison");
 		}
 		return new MComparison(mfield as MField, val, mcomp);
+	}
+
+	/**
+	 * Extracts the field from the key of format: "idstring_field"
+	 * Also checks that idstring is consistent
+	 * @param key - string of format "idstring_field"
+	 * @private
+	 */
+	private getField(key: string): string {
+		const keyTokens = key.split("_");
+		if (keyTokens.length !== 2) {
+			throw new InsightError("Invalid format for MComparison key");
+		}
+		this.updateId(keyTokens[0]);
+		const field: string = keyTokens[1];
+		return field;
 	}
 
 	//REQUIRES: obj is an object representing an SComparison
@@ -137,7 +149,7 @@ export class QueryParser {
 		const fields: Array<MField | SField> = []; //List of fields in COLUMNS
 		for (const key of columns) {
 			const keyTokens = key.split("_");
-			if (keyTokens.length !== 2) throw new InsightError("Invalid format for COLUMNS");
+			//if (keyTokens.length !== 2) throw new InsightError("Invalid format for COLUMNS");
 			this.updateId(keyTokens[0]);
 			const field: string = keyTokens[1];
 			if (field in MField) {
@@ -157,6 +169,53 @@ export class QueryParser {
 			orderField = orderTokens[1];
 		}
 		return new Options(this.datasetId, fields, orderField as MField | SField);
+	}
+
+	/**
+	 * Parses obj into a valid Transformation
+	 * @param obj - transformations clause
+	 * @private
+	 */
+	private parseTransformations(obj: unknown): Transformation | null {
+		if (!this.isObject(obj) || Array.isArray(obj)) {
+			throw new InsightError("Invalid Transformation clause body");
+		}
+
+		if (obj === null) return null;
+
+		const { GROUP: keylist, APPLY: rules } = obj as any;
+
+		const groupKeylist = this.parseGroup(keylist);
+		const applyRules: ApplyRule[] = this.parseApply(rules);
+		return new Transformation(new Group(groupKeylist), new Apply(applyRules));
+	}
+
+	private parseGroup(keylist: any): Array<any> {
+		if (keylist === null || keylist.length === 0) throw new InsightError("GROUP CLAUSE IS EMPTY OR MISSING");
+
+		const res = [];
+		for (const key of keylist) {
+			const field: string = this.getField(key);
+			if (!(field in MField || field in SField)) throw new InsightError("Invalid key in GROUP");
+
+			res.push(field);
+		}
+		return res;
+	}
+
+	private parseApply(rules: unknown): ApplyRule[] {
+		const res: ApplyRule[] = [];
+		for (const rule of rules as any) {
+			const [[applyKey, applyObj]] = Object.entries(rule);
+			const [[applyToken, key]] = Object.entries(applyObj as any);
+			const field = this.getField(key as string);
+			if (!(applyToken in ApplyToken)) throw new InsightError("Invalid Apply Token");
+
+			if (!(field in MField || field in SField)) throw new InsightError("Invalid field");
+
+			res.push(new ApplyRule(applyKey, applyToken as ApplyToken, field as MField | SField));
+		}
+		return res;
 	}
 
 	//REQUIRES: obj is an object

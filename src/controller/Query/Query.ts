@@ -1,7 +1,7 @@
 import { Logic, MComparator, MField, SField } from "./enums";
 import { InsightError, InsightResult, ResultTooLargeError } from "../IInsightFacade";
 import { Room, Section } from "../Dataset/Dataset";
-import { getKey } from "./QueryPlus";
+import { getKey, Transformation } from "./QueryPlus";
 
 // Query class representing a query
 // General process of query:
@@ -13,10 +13,12 @@ export class Query {
 	private where: Where; // WHERE Clause
 	private options: Options; // OPTIONS Clause
 	private MAX_RES = 5000;
+	private transformation: Transformation | null;
 
-	constructor(where: Where, options: Options) {
+	constructor(where: Where, options: Options, transformation: Transformation | null) {
 		this.where = where;
 		this.options = options;
+		this.transformation = transformation;
 	}
 
 	/**
@@ -25,6 +27,7 @@ export class Query {
 	 */
 	public query(things: Section[] | Room[]): InsightResult[] {
 		const filteredThings: any = this.where.handleWhere(things);
+
 		if (filteredThings.length > this.MAX_RES) {
 			throw new ResultTooLargeError("Result exceed 5000");
 		}

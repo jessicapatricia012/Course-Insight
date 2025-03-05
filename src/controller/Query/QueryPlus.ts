@@ -3,11 +3,41 @@ import { Room, Section } from "../Dataset/Dataset";
 import { InsightError } from "../IInsightFacade";
 
 type Things = Section[] | Room[];
+export class Transformation {
+	private group: Group;
+	private apply: Apply;
+
+	constructor(group: Group, apply: Apply) {
+		this.group = group;
+		this.apply = apply;
+	}
+
+	/**
+	 * Returns a list of valid keys that can be used in COLUMNS
+	 */
+	public getValidKeys(): Array<string> {
+		let res: Array<string> = [];
+
+		const groupKeys = this.group.getKeyList();
+		const applyKeys = this.apply.getRuleKeys();
+		res = res.concat(groupKeys);
+		res = res.concat(applyKeys);
+		return res;
+	}
+}
+
 export class Group {
 	private keylist: Array<MField | SField>;
 
 	constructor(keylist: Array<MField | SField>) {
 		this.keylist = keylist;
+	}
+
+	/**
+	 * Returns the keylist of group
+	 */
+	public getKeyList(): Array<MField | SField> {
+		return this.keylist;
 	}
 
 	/**
@@ -71,27 +101,27 @@ export function getKey(thing: Section | Room, key: MField | SField): string | nu
 }
 
 /**
- * Class representing an applyRule
+ * Class representing an apply rule
  */
 export class ApplyRule {
 	public applyKey: string;
 	public applyToken: ApplyToken;
 	public key: MField | SField;
-	private val: number[];
 
 	constructor(applyKey: string, token: ApplyToken, key: MField | SField) {
 		this.applyKey = applyKey;
 		this.applyToken = token;
 		this.key = key;
-		this.val = []; //Buffer for holding result
 	}
+}
 
-	public addVal(val: number): void {
-		this.val.push(val);
-	}
-	public getVal(): number[] {
-		return this.val;
-	}
+/**
+ * An interface representing the result of Apply
+ */
+export interface ApplyResult {
+	group: Array<any>;
+	//The rest of the fields are results
+	[key: string]: any;
 }
 
 export class Apply {
@@ -102,15 +132,33 @@ export class Apply {
 	}
 
 	/**
+	 * Returns the list of applykeys in all apply rules
+	 * @param rules
+	 */
+	public getRuleKeys(): Array<string> {
+		const res: Array<string> = [];
+		for (const rule of this.rules) {
+			res.push(rule.applyKey);
+		}
+		return res;
+	}
+
+	/**
 	 * Applies all Apply rules into each group in  groups, the value is stored in the local rules' val field
 	 * @param groups - and Array of arrays of sections or rooms
 	 */
-	public apply(groups: Section[][] | Room[][]): void {
-		for (const rule of this.rules) {
-			for (const group of groups) {
-				this.handleApply(rule, group);
+	public apply(groups: Section[][] | Room[][]): Array<ApplyResult> {
+		const res: ApplyResult[] = [];
+		for (const group of groups) {
+			const applyResult: ApplyResult = { group: [] };
+			applyResult.group = applyResult.group.concat(group); //copy group into result
+			for (const rule of this.rules) {
+				const val: number = this.handleApply(rule, group);
+				applyResult[rule.applyKey] = val;
 			}
+			res.push(applyResult);
 		}
+		return res;
 	}
 
 	public getApplyRules(): ApplyRule[] {
@@ -123,24 +171,19 @@ export class Apply {
 	 * @param group
 	 * @private
 	 */
-	private handleApply(rule: ApplyRule, group: Things): void {
+	private handleApply(rule: ApplyRule, group: Things): number {
 		const { applyToken, key } = rule;
 		switch (applyToken) {
 			case ApplyToken.MAX:
-				rule.addVal(this.handleMax(group, key));
-				break;
+				return this.handleMax(group, key);
 			case ApplyToken.MIN:
-				rule.addVal(this.handleMin(group, key));
-				break;
+				return this.handleMin(group, key);
 			case ApplyToken.AVG:
-				rule.addVal(this.handleAvg(group, key));
-				break;
+				return this.handleAvg(group, key);
 			case ApplyToken.COUNT:
-				rule.addVal(this.handleCount(group, key));
-				break;
+				return this.handleCount(group, key);
 			case ApplyToken.SUM:
-				rule.addVal(this.handleSum(group, key));
-				break;
+				return this.handleSum(group, key);
 			default:
 				throw new InsightError(`Invalid Apply token: ${rule}`);
 		}

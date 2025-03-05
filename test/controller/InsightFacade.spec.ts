@@ -13,6 +13,8 @@ import chaiAsPromised from "chai-as-promised";
 import * as fs from "fs-extra";
 import { Apply, ApplyRule, Group } from "../../src/controller/Query/QueryPlus";
 import { Dataset } from "../../src/controller/Dataset/Dataset";
+import { QueryParser } from "../../src/controller/Query/QueryParser";
+import { Query } from "../../src/controller/Query/Query";
 
 use(chaiAsPromised);
 
@@ -537,8 +539,7 @@ describe("InsightFacade", function () {
 				rulesObj.push(new ApplyRule(rule.applyKey, rule.applyToken, rule.key));
 			});
 			const apply: Apply = new Apply(rulesObj);
-			apply.apply(input);
-			const res = apply.getApplyRules();
+			const res = apply.apply(input);
 			expect(res).to.have.deep.members(expected);
 		}
 		it("Should work with MAX", async function () {
@@ -560,6 +561,21 @@ describe("InsightFacade", function () {
 		it("Should work with COUNT", async function () {
 			await checkApply("test5.json");
 		});
+	});
+
+	describe("QueryParser", async function () {
+		async function loadParseTest(filename: string): Promise<any> {
+			const data = await fs.readFile(`test/resources/queries/ParseTest/${filename}`, "utf-8");
+			const parseTest: any = JSON.parse(data);
+			return parseTest;
+		}
+
+		it ("Should parse simple query", async function(){
+			const {input} = await loadParseTest("test1.json");
+			const parser: QueryParser = new QueryParser();
+			const query: Query = parser.parseQuery(input);
+			expect(query).to.not.be.null;
+		})
 	});
 
 	describe("PerformQuery", function () {
