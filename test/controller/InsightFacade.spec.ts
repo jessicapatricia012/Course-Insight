@@ -685,6 +685,7 @@ describe("InsightFacade", function () {
 		//TRANSFORMATIONS and SORTING
 		it("[c2/validSimple.json] valid example simple", checkQuery);
 		it("[c2/validComplex.json] valid example complex", checkQuery);
+		it("[c2/validComplex2.json] valid example complex 2", checkQuery);
 
 		it("[c2/invalidApplyDuplicateKey.json] Invalid APPLY duplicate key", checkQuery);
 		it("[c2/invalidApplyKey.json] invalid applykey", checkQuery);
@@ -716,6 +717,9 @@ describe("InsightFacade", function () {
 		it("[c2/validApplyRuleMultiple.json] Multiple apply rule", checkQuery);
 		it("[c2/validApplySum.json] SUM", checkQuery);
 		it("[c2/validRoomAllFields.json] valid room all fields", checkQuery);
+		it("[c2/invalid2.json] invalid dir", checkQuery);
+		it("[c2/invalid3.json] empty transformations", checkQuery);
+		it("[c2/invalid5.json] transformations missing clause", checkQuery);
 
 		// Examples demonstrating how to test performQuery using the JSON Test Queries.
 		// The relative path to the query file must be given in square brackets.
