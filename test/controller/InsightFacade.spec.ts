@@ -690,7 +690,6 @@ describe("InsightFacade", function () {
 		it("[valid/transRoom1.json] Simple Room Avg", checkQuery);
 		it("[valid/transRoom2.json] Simple Room Avg", checkQuery);
 
-
 		it("[invalid/exceedResultLimit.json] Query exceeding result limit", checkQuery);
 		it("[invalid/emptyWhere.json] Query exceeding result limit empty WHERE", checkQuery);
 		it("[valid/emptyResult.json] Empty result", checkQuery);
