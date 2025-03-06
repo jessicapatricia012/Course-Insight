@@ -720,6 +720,7 @@ describe("InsightFacade", function () {
 		it("[c2/invalid2.json] invalid dir", checkQuery);
 		it("[c2/invalid3.json] empty transformations", checkQuery);
 		it("[c2/invalid5.json] transformations missing clause", checkQuery);
+		it("[c2/invalidApplyKey2.json] transformations missing clause", checkQuery);
 
 		// Examples demonstrating how to test performQuery using the JSON Test Queries.
 		// The relative path to the query file must be given in square brackets.

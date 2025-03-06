@@ -237,8 +237,8 @@ export class QueryParser {
 			// }
 			const [[applyKey, applyObj]] = Object.entries(rule);
 			const [[applyToken, key]] = Object.entries(applyObj as any);
-			if (typeof applyKey !== "string" || applyKey === "") {
-				throw new InsightError("APPLY key must be a string and non-empty");
+			if (typeof applyKey !== "string" || applyKey === "" || applyKey.includes("_")) {
+				throw new InsightError("APPLY key must be a string and non-empty and not have underscore");
 			}
 			if (typeof key !== "string" || key === "") {
 				throw new InsightError("APPLYTOKEN key must be a string and non-empty");
