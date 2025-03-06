@@ -1,0 +1,84 @@
+{
+	"title": "Simple Min",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"sections_dept": "adhe"
+					}
+				},
+				{
+					"GT": {
+						"sections_avg": 60
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_year",
+				"overallMin"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_year"
+			],
+			"APPLY": [
+				{
+					"overallMin": {
+						"MIN": "sections_pass"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_year": 1900,
+			"overallMin": 15
+		},
+		{
+			"sections_year": 2007,
+			"overallMin": 9
+		},
+		{
+			"sections_year": 2008,
+			"overallMin": 7
+		},
+		{
+			"sections_year": 2009,
+			"overallMin": 11
+		},
+		{
+			"sections_year": 2010,
+			"overallMin": 9
+		},
+		{
+			"sections_year": 2011,
+			"overallMin": 15
+		},
+		{
+			"sections_year": 2012,
+			"overallMin": 15
+		},
+		{
+			"sections_year": 2013,
+			"overallMin": 19
+		},
+		{
+			"sections_year": 2014,
+			"overallMin": 15
+		},
+		{
+			"sections_year": 2015,
+			"overallMin": 19
+		},
+		{
+			"sections_year": 2016,
+			"overallMin": 25
+		}
+	]
+}

@@ -2,8 +2,8 @@ import {
 	IInsightFacade,
 	InsightDatasetKind,
 	InsightError,
-	NotFoundError,
 	InsightResult,
+	NotFoundError,
 	ResultTooLargeError,
 } from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
@@ -659,7 +659,8 @@ describe("InsightFacade", function () {
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
 				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
-				facade.addDataset("sections2", sections, InsightDatasetKind.Sections),
+				//facade.addDataset("sections2", sections, InsightDatasetKind.Sections),
+				facade.addDataset("rooms", campus, InsightDatasetKind.Rooms),
 			];
 
 			try {
@@ -678,8 +679,17 @@ describe("InsightFacade", function () {
 		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery); //
 		it("[invalid/invalid.json] Query missing WHERE", checkQuery);
 
-		//New Ones with Transformation
-		it("[valid/transformation1.json] Simple Transformation", checkQuery);
+		//New Ones with Transformation on Sections
+		it("[valid/trans1.json] Avg", checkQuery);
+		it("[valid/trans2.json] Min", checkQuery);
+		it("[valid/trans3.json] Min", checkQuery);
+		it("[valid/trans4.json] Sum", checkQuery);
+		it("[valid/trans5.json] Max Min Complex", checkQuery);
+
+		//With transformations on
+		it("[valid/transRoom1.json] Simple Room Avg", checkQuery);
+		it("[valid/transRoom2.json] Simple Room Avg", checkQuery);
+
 
 		it("[invalid/exceedResultLimit.json] Query exceeding result limit", checkQuery);
 		it("[invalid/emptyWhere.json] Query exceeding result limit empty WHERE", checkQuery);

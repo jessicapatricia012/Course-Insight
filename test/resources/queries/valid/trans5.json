@@ -1,0 +1,107 @@
+{
+	"title": "trans5",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"sections_audit": 11
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_year",
+				"overallMax",
+				"overallMin"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_audit",
+				"sections_year"
+			],
+			"APPLY": [
+				{
+					"overallMax": {
+						"MAX": "sections_audit"
+					}
+				},
+				{
+					"overallMin": {
+						"MIN": "sections_audit"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_year": 2007,
+			"overallMax": 12,
+			"overallMin": 12
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 12,
+			"overallMin": 12
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 13,
+			"overallMin": 13
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 15,
+			"overallMin": 15
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 14,
+			"overallMin": 14
+		},
+		{
+			"sections_year": 2015,
+			"overallMax": 18,
+			"overallMin": 18
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 21,
+			"overallMin": 21
+		},
+		{
+			"sections_year": 2013,
+			"overallMax": 19,
+			"overallMin": 19
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 19,
+			"overallMin": 19
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 23,
+			"overallMin": 23
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 18,
+			"overallMin": 18
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 20,
+			"overallMin": 20
+		},
+		{
+			"sections_year": 1900,
+			"overallMax": 17,
+			"overallMin": 17
+		}
+	]
+}

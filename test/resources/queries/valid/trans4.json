@@ -1,0 +1,64 @@
+{
+	"title": "trans4.json",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"sections_dept": "adhe"
+					}
+				},
+				{
+					"GT": {
+						"sections_pass": 30
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_fail",
+				"overallSum"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_fail"
+			],
+			"APPLY": [
+				{
+					"overallSum": {
+						"SUM": "sections_pass"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_fail": 0,
+			"overallSum": 2210
+		},
+		{
+			"sections_fail": 1,
+			"overallSum": 1255
+		},
+		{
+			"sections_fail": 2,
+			"overallSum": 661
+		},
+		{
+			"sections_fail": 3,
+			"overallSum": 792
+		},
+		{
+			"sections_fail": 4,
+			"overallSum": 80
+		},
+		{
+			"sections_fail": 5,
+			"overallSum": 140
+		}
+	]
+}

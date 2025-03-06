@@ -85,7 +85,6 @@ export default class InsightFacade implements IInsightFacade {
 			InsightFacade.datasets.push(dataset); // add to datasets
 		}
 
-		// TODO: make all query functions take data:Sections[]|Rooms[] instead of sections:Section[]
 		const result = queryObj.query(dataset.data);
 		return result;
 	}
