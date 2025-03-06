@@ -1,0 +1,168 @@
+{
+	"title": "Simple Min",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"sections_dept": "math"
+					}
+				},
+				{
+					"GT": {
+						"sections_avg": 90
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_title",
+				"overallMin"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_title"
+			],
+			"APPLY": [
+				{
+					"overallMin": {
+						"MIN": "sections_avg"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_title": "mltvar&vctr calc",
+			"overallMin": 90.25
+		},
+		{
+			"sections_title": "ord diff equtns",
+			"overallMin": 91.1
+		},
+		{
+			"sections_title": "real analysis i",
+			"overallMin": 90.57
+		},
+		{
+			"sections_title": "real analysis ii",
+			"overallMin": 91.38
+		},
+		{
+			"sections_title": "intr mod diff ge",
+			"overallMin": 90.29
+		},
+		{
+			"sections_title": "complex analysis",
+			"overallMin": 90.43
+		},
+		{
+			"sections_title": "algebra i",
+			"overallMin": 90.6
+		},
+		{
+			"sections_title": "algebra ii",
+			"overallMin": 92.2
+		},
+		{
+			"sections_title": "discrete math",
+			"overallMin": 91.2
+		},
+		{
+			"sections_title": "meas thry&integr",
+			"overallMin": 92.63
+		},
+		{
+			"sections_title": "complex analy i",
+			"overallMin": 92.4
+		},
+		{
+			"sections_title": "complex analy",
+			"overallMin": 91.38
+		},
+		{
+			"sections_title": "functional analy",
+			"overallMin": 90.6
+		},
+		{
+			"sections_title": "ptl dif eqn flud",
+			"overallMin": 90.5
+		},
+		{
+			"sections_title": "prt diff equa i",
+			"overallMin": 91.25
+		},
+		{
+			"sections_title": "num anly prtl df",
+			"overallMin": 91.56
+		},
+		{
+			"sections_title": "combinatorial op",
+			"overallMin": 92.67
+		},
+		{
+			"sections_title": "diff geometry i",
+			"overallMin": 90.83
+		},
+		{
+			"sections_title": "algb topology i",
+			"overallMin": 91.67
+		},
+		{
+			"sections_title": "algb geometry i",
+			"overallMin": 95
+		},
+		{
+			"sections_title": "lie theory i",
+			"overallMin": 91.4
+		},
+		{
+			"sections_title": "elem number thry",
+			"overallMin": 91.75
+		},
+		{
+			"sections_title": "analyt num thry",
+			"overallMin": 91
+		},
+		{
+			"sections_title": "harmonic anal i",
+			"overallMin": 93.11
+		},
+		{
+			"sections_title": "probability i",
+			"overallMin": 90.5
+		},
+		{
+			"sections_title": "probability ii",
+			"overallMin": 91.8
+		},
+		{
+			"sections_title": "cnt tme stchastc",
+			"overallMin": 91.73
+		},
+		{
+			"sections_title": "mthds asymp anal",
+			"overallMin": 90.94
+		},
+		{
+			"sections_title": "pertrb diff equa",
+			"overallMin": 90.73
+		},
+		{
+			"sections_title": "intr dyn systems",
+			"overallMin": 94.33
+		},
+		{
+			"sections_title": "complex fluids",
+			"overallMin": 90.24
+		},
+		{
+			"sections_title": "msc major essay",
+			"overallMin": 90.57
+		}
+	]
+}

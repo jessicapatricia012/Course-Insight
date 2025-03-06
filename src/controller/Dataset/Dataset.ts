@@ -40,7 +40,7 @@ export class Section {
 		if (json.Section === "overall") {
 			this.year = 1900;
 		} else {
-			this.year = json.Year;
+			this.year = Number(json.Year);
 		}
 		this.avg = json.Avg;
 		this.pass = json.Pass;

@@ -82,11 +82,8 @@ export default class InsightFacade implements IInsightFacade {
 			InsightFacade.datasets.push(dataset); // add to datasets
 		}
 
-		return queryObj.query(dataset.data);
-		console.log("aaaa");
-		console.timeEnd("queryy");
-
-		// return result;
+		const result = queryObj.query(dataset.data);
+		return result;
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {
