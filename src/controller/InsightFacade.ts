@@ -44,9 +44,6 @@ export default class InsightFacade implements IInsightFacade {
 		const dataset = await parser.parseContent(id, content, kind);
 		// if (kind === InsightDatasetKind.Rooms) console.log(dataset);
 		InsightFacade.datasets.push(dataset);
-		if (dataset.insightDataset.kind === InsightDatasetKind.Rooms) {
-			console.log(dataset);
-		}
 		await DatasetProcessor.addToDisk(id, dataset);
 		return InsightFacade.datasets.map((ds) => ds.insightDataset.id);
 	}
@@ -85,9 +82,11 @@ export default class InsightFacade implements IInsightFacade {
 			InsightFacade.datasets.push(dataset); // add to datasets
 		}
 
-		// TODO: make all query functions take data:Sections[]|Rooms[] instead of sections:Section[]
-		const result = queryObj.query(dataset.data);
-		return result;
+		return queryObj.query(dataset.data);
+		console.log("aaaa");
+		console.timeEnd("queryy");
+
+		// return result;
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {

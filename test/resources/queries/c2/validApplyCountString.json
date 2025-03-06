@@ -1,0 +1,30 @@
+{
+	"title": "Valid Count",
+	"input": {
+    "WHERE": {
+      "IS": {
+        "rooms_address": "*East*"
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "rooms_address",
+        "count"
+      ]
+    },
+    "TRANSFORMATIONS": {
+      "GROUP": [
+        "rooms_address",
+        "rooms_fullname"
+      ],
+      "APPLY": [
+        {
+          "count": {
+            "COUNT": "rooms_name"
+        }
+        }
+      ]
+    }
+  },
+	"errorExpected": false,
+	"expected":[{"rooms_address":"1822 East Mall","count":5},{"rooms_address":"1874 East Mall","count":2},{"rooms_address":"2360 East Mall V6T 1Z3","count":3},{"rooms_address":"2205 East Mall","count":6},{"rooms_address":"2045 East Mall","count":4},{"rooms_address":"1961 East Mall V6T 1Z1","count":18},{"rooms_address":"2206 East Mall","count":6}]}

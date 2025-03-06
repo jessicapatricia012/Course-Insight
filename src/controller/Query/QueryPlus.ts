@@ -1,6 +1,7 @@
 import { ApplyToken, MField, SField } from "./enums";
 import { Room, Section } from "../Dataset/Dataset";
 import { InsightError } from "../IInsightFacade";
+import Decimal from "decimal.js";
 
 type Things = Section[] | Room[];
 export class Transformation {
@@ -26,7 +27,11 @@ export class Transformation {
 	}
 
 	public transform(things: Things): Array<any> {
+		console.time("group");
+
 		const groups = this.group.group(things);
+		console.timeEnd("group");
+
 		const applyRes = this.apply.apply(groups);
 		return this.flattenGroups(applyRes, this.group.getKeyList());
 	}
@@ -119,7 +124,7 @@ function splitGroup(group: Things, key: MField | SField): Array<Section[]> | Arr
  * @private
  */
 export function getKey(thing: Section | Room, key: MField | SField): string | number {
-	if (!(key in thing)) throw new Error(`Invalid key: ${key} is not in ${typeof thing}`);
+	if (!(key in thing)) throw new InsightError(`Invalid key: ${key} is not in ${typeof thing}`);
 	return thing[key as keyof typeof thing];
 }
 
@@ -252,15 +257,18 @@ export class Apply {
 	 * @private
 	 */
 	private handleAvg(group: Things, key: MField | SField): number {
-		if (!(key in MField)) {
+		if (!Object.values(MField).includes(key as MField)) {
 			throw new InsightError("Invalid key for AVG: A key of type number is required");
 		}
 		const len: number = group.length;
-		let sum: number = 0;
+		let sum = new Decimal(0);
+
 		for (const thing of group) {
-			sum += getKey(thing, key) as number;
+			sum = sum.add(new Decimal(getKey(thing, key) as number));
 		}
-		return Number((sum / len).toFixed(2));
+		const avg = sum.toNumber() / len;
+
+		return Number(avg.toFixed(2));
 	}
 
 	/**
@@ -288,6 +296,6 @@ export class Apply {
 		for (const thing of group) {
 			sum += getKey(thing, key) as number;
 		}
-		return sum;
+		return parseFloat(sum.toFixed(2));
 	}
 }

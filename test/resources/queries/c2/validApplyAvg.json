@@ -1,0 +1,32 @@
+{
+	"title": "Valid Avg",
+	"input": {
+    "WHERE": {
+      "GT": {
+        "rooms_seats": 200
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "rooms_fullname",
+        "avgSeats"
+      ]
+    },
+    "TRANSFORMATIONS": {
+      "GROUP": [
+        "rooms_fullname"
+      ],
+      "APPLY": [
+        {
+          "avgSeats": {
+            "AVG": "rooms_seats"
+          }
+        }
+      ]
+    }
+  },
+	"errorExpected": false,
+	"expected":[{"rooms_fullname":"Biological Sciences","avgSeats":228},{"rooms_fullname":"Buchanan","avgSeats":275},{"rooms_fullname":"Centre for Interactive  Research on Sustainability","avgSeats":426},{"rooms_fullname":"Chemistry","avgSeats":252.5},{"rooms_fullname":"Earth Sciences Building","avgSeats":350},{"rooms_fullname":"Forest Sciences Centre","avgSeats":250},{"rooms_fullname":"Geography","avgSeats":225},{"rooms_fullname":"Hebb","avgSeats":375},{"rooms_fullname":"Hennings","avgSeats":257},{"rooms_fullname":"Henry Angus","avgSeats":260},{"rooms_fullname":"Leonard S. Klinck (also known as CSCI)","avgSeats":205},{"rooms_fullname":"Life Sciences Centre","avgSeats":350},{"rooms_fullname":"Mathematics","avgSeats":224},{"rooms_fullname":"Neville Scarfe","avgSeats":280},{"rooms_fullname":"Pharmaceutical Sciences Building","avgSeats":236},{"rooms_fullname":"Robert F. Osborne Centre","avgSeats":442},{"rooms_fullname":"Student Recreation Centre","avgSeats":299},{"rooms_fullname":"Wesbrook","avgSeats":325},{"rooms_fullname":"Woodward (Instructional Resources Centre-IRC)","avgSeats":503}]
+}
+
+

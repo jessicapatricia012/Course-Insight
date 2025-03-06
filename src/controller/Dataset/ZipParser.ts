@@ -61,14 +61,18 @@ export class SectionParser extends ZipParser {
 		const allSections: any[] = [];
 
 		const parsePromises = Object.keys(courseFiles).map(async (fileName) => {
-			const file = courseFiles[fileName];
-			const fileContent = await file.async("string");
+			try {
+				const file = courseFiles[fileName];
+				const fileContent = await file.async("string");
 
-			const parsedData = JSON.parse(fileContent);
-			if (parsedData.result && Array.isArray(parsedData.result)) {
-				allSections.push(...Object.values(parsedData.result));
-			} else {
-				throw new InsightError(`Invalid 'result' key in file: ${fileName}`);
+				const parsedData = JSON.parse(fileContent);
+				if (parsedData.result && Array.isArray(parsedData.result)) {
+					allSections.push(...Object.values(parsedData.result));
+				} else {
+					throw new InsightError(`Invalid 'result' key in file: ${fileName}`);
+				}
+			} catch {
+				// throw err;
 			}
 		});
 
@@ -83,6 +87,7 @@ export class SectionParser extends ZipParser {
 		if (sections.length === 0) {
 			throw new InsightError("No valid sections found in dataset");
 		}
+		return;
 	}
 
 	private isValidSection(section: any): boolean {

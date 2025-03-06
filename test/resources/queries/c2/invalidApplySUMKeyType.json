@@ -1,0 +1,25 @@
+{
+  "title": "Invalid key type in SUM",
+  "input": {
+    "WHERE": {},
+    "OPTIONS": {
+      "COLUMNS": [
+        "sum"
+      ]
+    },
+    "TRANSFORMATIONS": {
+      "GROUP": [
+        "sections_title"
+      ],
+      "APPLY": [
+        {
+          "sum": {
+            "SUM": "sections_title"
+          }
+        }
+      ]
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}
