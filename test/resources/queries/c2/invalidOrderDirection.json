@@ -3,10 +3,10 @@
     "input": {
       "WHERE": {},
       "OPTIONS": {
-        "COLUMNS": ["courses_dept", "courses_avg"],
+        "COLUMNS": ["sections_dept", "sections_avg"],
         "ORDER": {
           "dir": "INVALID",
-          "keys": ["courses_avg"]
+          "keys": ["sections_avg"]
         }
       }
     },
