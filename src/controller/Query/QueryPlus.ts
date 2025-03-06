@@ -24,6 +24,30 @@ export class Transformation {
 		res = res.concat(applyKeys);
 		return res;
 	}
+
+	public transform(things:Things):Array<any>{
+		const groups = this.group.group(things);
+		const applyRes = this.apply.apply(groups);
+		return this.flattenGroups(applyRes, this.group.getKeyList());
+	}
+
+	private flattenGroups(applyResults :ApplyResult[], groupKeys : Array<MField | SField>):Array<any>{
+		const res = []
+		for (const appRes of applyResults){
+			const obj: any = {}
+			const group = appRes.group;
+			for (const key of groupKeys){
+				obj[key] = getKey(group[0], key);
+			}
+			for (const [key, value] of Object.entries(appRes)){
+				if (key === "group")
+					continue;
+				obj[key] = value;
+			}
+			res.push(obj);
+		}
+		return res;
+	}
 }
 
 export class Group {
@@ -159,10 +183,6 @@ export class Apply {
 			res.push(applyResult);
 		}
 		return res;
-	}
-
-	public getApplyRules(): ApplyRule[] {
-		return this.rules;
 	}
 
 	/**

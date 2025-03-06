@@ -5,9 +5,11 @@ import { Apply, ApplyRule, Group, Transformation } from "./QueryPlus";
 
 export class QueryParser {
 	private datasetId: string; //to check consistent id throughout query
+	private transKeys: Array<string>; //Columns can only use these keys
 
 	constructor() {
 		this.datasetId = ""; //intialize id as empty first
+		this.transKeys = [];
 	}
 
 	public parseQuery(query: unknown): Query {
@@ -200,21 +202,26 @@ export class QueryParser {
 
 			res.push(field);
 		}
+		this.transKeys = this.transKeys.concat(res);
 		return res;
 	}
 
 	private parseApply(rules: unknown): ApplyRule[] {
 		const res: ApplyRule[] = [];
+		const keysSoFar:Array<string> = [];//TO check for duplicates
 		for (const rule of rules as any) {
 			const [[applyKey, applyObj]] = Object.entries(rule);
 			const [[applyToken, key]] = Object.entries(applyObj as any);
 			const field = this.getField(key as string);
-			if (!(applyToken in ApplyToken)) throw new InsightError("Invalid Apply Token");
 
+			if (!(applyToken in ApplyToken)) throw new InsightError("Invalid Apply Token");
 			if (!(field in MField || field in SField)) throw new InsightError("Invalid field");
+			if (keysSoFar.includes(applyKey)) throw new InsightError("Duplicate Apply Keys found")
+			keysSoFar.push(applyKey);
 
 			res.push(new ApplyRule(applyKey, applyToken as ApplyToken, field as MField | SField));
 		}
+		this.transKeys = this.transKeys.concat(keysSoFar);// can use these keys for COLUMNS
 		return res;
 	}
 
