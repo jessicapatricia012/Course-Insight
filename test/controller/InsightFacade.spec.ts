@@ -682,7 +682,6 @@ describe("InsightFacade", function () {
 			await clearDisk();
 		});
 
-
 		// Examples demonstrating how to test performQuery using the JSON Test Queries.
 		// The relative path to the query file must be given in square brackets.
 		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery); //
