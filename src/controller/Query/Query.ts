@@ -1,4 +1,4 @@
-import { Logic, MComparator, MField, SField } from "./enums";
+import { Direction, Logic, MComparator, MField, SField } from "./enums";
 import { InsightError, InsightResult, ResultTooLargeError } from "../IInsightFacade";
 import { Room, Section } from "../Dataset/Dataset";
 import { getKey, Transformation } from "./QueryPlus";
@@ -187,7 +187,8 @@ export class Negation extends Filter {
 export class Options {
 	private datasetId: string; //To append with keys in final object
 	private keys: Array<MField | SField | string>;
-	private order: MField | SField | string;
+	private order: Array<MField | SField | string>;
+	private dir: Direction;
 
 	//REQUIRES: sections is an array of valid sections
 	//EFFECTS: Returns an array of InsightResult with filtred fields and ordered accordingly
@@ -203,7 +204,8 @@ export class Options {
 			}
 			result.push(toPush);
 		}
-		if (this.order in MField || this.order in SField) result = this.orderResultBy(result, this.order);
+		// if (this.order in MField || this.order in SField) result = this.orderResultBy(result, this.order);
+		result = this.sortArray(result, this.order, this.dir);
 		return result;
 	}
 
@@ -227,9 +229,35 @@ export class Options {
 		return result;
 	}
 
-	constructor(datasetId: string, keys: Array<MField | SField | string>, order: MField | SField) {
+	private sortArray(arr: InsightResult[], order: Array<MField | SField | string>, dir: Direction): InsightResult[] {
+		return arr.sort(this.fieldSorter(order, dir));
+	}
+
+	private fieldSorter(fields: Array<any>, direction: Direction) {
+		return function (a: any, b: any): number {
+			return fields
+				.map(function (field) {
+					let dir = 1;
+					if (direction === Direction.DOWN) dir = -1;
+					if (a[field] > b[field]) return dir;
+					if (a[field] < b[field]) return -dir;
+					return 0;
+				})
+				.reduce(function firstNonZeroValue(p, n) {
+					return p ? p : n;
+				}, 0);
+		};
+	}
+
+	constructor(
+		datasetId: string,
+		keys: Array<MField | SField | string>,
+		order: Array<MField | SField | string>,
+		dir: Direction
+	) {
 		this.datasetId = datasetId;
 		this.keys = keys;
 		this.order = order;
+		this.dir = dir;
 	}
 }
