@@ -682,6 +682,42 @@ describe("InsightFacade", function () {
 			await clearDisk();
 		});
 
+		//TRANSFORMATIONS and SORTING
+		it("[c2/validSimple.json] valid example simple", checkQuery);
+		it("[c2/validComplex.json] valid example complex", checkQuery);
+
+		it("[c2/invalidApplyDuplicateKey.json] Invalid APPLY duplicate key", checkQuery);
+		it("[c2/invalidApplyKey.json] invalid applykey", checkQuery);
+		it("[c2/invalidApplyKeyEmpty.json]  invalid applykey empty", checkQuery);
+		it("[c2/invalidApplyNotArray.json]  invalid APPLY not array", checkQuery);
+		it("[c2/invalidApplyToken.json]  invalid APPLYTOKEN", checkQuery);
+		it("[c2/invalidApplyTokenKeyEmpty.json] invalid APPLYTOKEN KEY empty", checkQuery);
+		it("[c2/invalidApplyAVGKeyType.json] invalid APPLYTOKEN KEY type", checkQuery);
+		it("[c2/invalidApplySUMKeyType.json] invalid APPLYTOKEN KEY type", checkQuery);
+		it("[c2/invalidApplyMINKeyType.json] invalid APPLYTOKEN KEY type", checkQuery);
+		it("[c2/invalidApplyMAXKeyType.json] invalid APPLYTOKEN KEY type", checkQuery);
+		it("[c2/invalidColumnKeyType.json] invalid COLUMNS key type", checkQuery);
+		it("[c2/invalidColumnsKey.json] invalid COLUMNS key", checkQuery);
+		it("[c2/invalidColumnsKeyEmptyString.json] invalid COLUMNS key empty string", checkQuery);
+
+		it("[c2/invalidGroupEmpty.json] invalid empty GROUP", checkQuery);
+		it("[c2/invalidOrder.json] invalid ORDER", checkQuery);
+		it("[c2/invalidOrderDirection.json] invalid direction", checkQuery);
+		it("[c2/invalidOrderEmpty.json] invalid empty ORDER", checkQuery);
+		it("[c2/invalidOrderKeyNotInColumn.json] invalid ORDER key not in COLUMN", checkQuery);
+		it("[c2/invalidOrderMissingDir.json] ORDER missing dir", checkQuery);
+		it("[c2/invalidOrderMissingKey.json] ORDER missing key", checkQuery);
+		it("[c2/invalidRoomKey.json] invalid room key", checkQuery);
+		it("[c2/validApplyAvg.json] AVG", checkQuery);
+		it("[c2/validApplyCountNumber.json] COUNT", checkQuery);
+		it("[c2/validApplyCountString.json] COUNT", checkQuery);
+		it("[c2/validApplyMax.json] MAX", checkQuery);
+		it("[c2/validApplyMin.json] MIN", checkQuery);
+		it("[c2/validApplyRuleMultiple.json] Multiple apply rule", checkQuery);
+		it("[c2/validApplySum.json] SUM", checkQuery);
+		it("[c2/validRoomAllFields.json] valid room all fields", checkQuery);
+
+		
 		// Examples demonstrating how to test performQuery using the JSON Test Queries.
 		// The relative path to the query file must be given in square brackets.
 		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery); //
