@@ -208,7 +208,7 @@ export class QueryParser {
 
 	private parseApply(rules: unknown): ApplyRule[] {
 		const res: ApplyRule[] = [];
-		const keysSoFar:Array<string> = [];//TO check for duplicates
+		const keysSoFar: Array<string> = []; //TO check for duplicates
 		for (const rule of rules as any) {
 			const [[applyKey, applyObj]] = Object.entries(rule);
 			const [[applyToken, key]] = Object.entries(applyObj as any);
@@ -216,12 +216,12 @@ export class QueryParser {
 
 			if (!(applyToken in ApplyToken)) throw new InsightError("Invalid Apply Token");
 			if (!(field in MField || field in SField)) throw new InsightError("Invalid field");
-			if (keysSoFar.includes(applyKey)) throw new InsightError("Duplicate Apply Keys found")
+			if (keysSoFar.includes(applyKey)) throw new InsightError("Duplicate Apply Keys found");
 			keysSoFar.push(applyKey);
 
 			res.push(new ApplyRule(applyKey, applyToken as ApplyToken, field as MField | SField));
 		}
-		this.transKeys = this.transKeys.concat(keysSoFar);// can use these keys for COLUMNS
+		this.transKeys = this.transKeys.concat(keysSoFar); // can use these keys for COLUMNS
 		return res;
 	}
 

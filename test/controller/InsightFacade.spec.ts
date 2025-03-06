@@ -11,7 +11,7 @@ import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import * as fs from "fs-extra";
-import { Apply, ApplyRule, Group } from "../../src/controller/Query/QueryPlus";
+import { Apply, ApplyRule, Group, Transformation } from "../../src/controller/Query/QueryPlus";
 import { Dataset } from "../../src/controller/Dataset/Dataset";
 import { QueryParser } from "../../src/controller/Query/QueryParser";
 import { Query } from "../../src/controller/Query/Query";
@@ -561,8 +561,41 @@ describe("InsightFacade", function () {
 		it("Should work with COUNT", async function () {
 			await checkApply("test5.json");
 		});
+
+		it("Should work with two groups", async function () {
+			await checkApply("test6.json");
+		});
 	});
 
+	describe("Transformations", async function () {
+		async function loadTransTest(filename: string): Promise<any> {
+			const data = await fs.readFile(`test/resources/queries/TransformationTest/${filename}`, "utf-8");
+			const transTest: any = JSON.parse(data);
+			return transTest;
+		}
+
+		async function checkTransformation(filename: string) {
+			const { keylist, rules, input, expected } = await loadTransTest(filename);
+			const rulesObj: ApplyRule[] = [];
+			rules.forEach((rule: any) => {
+				rulesObj.push(new ApplyRule(rule.applyKey, rule.applyToken, rule.key));
+			});
+
+			const trans: Transformation = new Transformation(new Group(keylist), new Apply(rulesObj));
+			const res = trans.transform(input);
+			expect(res).to.have.deep.members(expected);
+		}
+
+		it("Should pass a simple example", async function () {
+			await checkTransformation("test1.json");
+		});
+
+		it("Should pass a more complicated example", async function () {
+			await checkTransformation("test2.json");
+		});
+	});
+
+	//Fail for now
 	describe("QueryParser", async function () {
 		async function loadParseTest(filename: string): Promise<any> {
 			const data = await fs.readFile(`test/resources/queries/ParseTest/${filename}`, "utf-8");
@@ -570,12 +603,12 @@ describe("InsightFacade", function () {
 			return parseTest;
 		}
 
-		it ("Should parse simple query", async function(){
-			const {input} = await loadParseTest("test1.json");
+		it("Should parse simple query", async function () {
+			const { input } = await loadParseTest("test1.json");
 			const parser: QueryParser = new QueryParser();
 			const query: Query = parser.parseQuery(input);
 			expect(query).to.not.be.null;
-		})
+		});
 	});
 
 	describe("PerformQuery", function () {

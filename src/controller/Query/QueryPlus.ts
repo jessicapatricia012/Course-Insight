@@ -25,23 +25,22 @@ export class Transformation {
 		return res;
 	}
 
-	public transform(things:Things):Array<any>{
+	public transform(things: Things): Array<any> {
 		const groups = this.group.group(things);
 		const applyRes = this.apply.apply(groups);
 		return this.flattenGroups(applyRes, this.group.getKeyList());
 	}
 
-	private flattenGroups(applyResults :ApplyResult[], groupKeys : Array<MField | SField>):Array<any>{
-		const res = []
-		for (const appRes of applyResults){
-			const obj: any = {}
+	private flattenGroups(applyResults: ApplyResult[], groupKeys: Array<MField | SField>): Array<any> {
+		const res = [];
+		for (const appRes of applyResults) {
+			const obj: any = {};
 			const group = appRes.group;
-			for (const key of groupKeys){
+			for (const key of groupKeys) {
 				obj[key] = getKey(group[0], key);
 			}
-			for (const [key, value] of Object.entries(appRes)){
-				if (key === "group")
-					continue;
+			for (const [key, value] of Object.entries(appRes)) {
+				if (key === "group") continue;
 				obj[key] = value;
 			}
 			res.push(obj);
