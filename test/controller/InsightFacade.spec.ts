@@ -574,7 +574,7 @@ describe("InsightFacade", function () {
 			return transTest;
 		}
 
-		async function checkTransformation(filename: string) {
+		async function checkTransformation(filename: string): Promise<void> {
 			const { keylist, rules, input, expected } = await loadTransTest(filename);
 			const rulesObj: ApplyRule[] = [];
 			rules.forEach((rule: any) => {
@@ -595,7 +595,6 @@ describe("InsightFacade", function () {
 		});
 	});
 
-	//Fail for now
 	describe("QueryParser", async function () {
 		async function loadParseTest(filename: string): Promise<any> {
 			const data = await fs.readFile(`test/resources/queries/ParseTest/${filename}`, "utf-8");
@@ -604,10 +603,11 @@ describe("InsightFacade", function () {
 		}
 
 		it("Should parse simple query", async function () {
-			const { input } = await loadParseTest("test1.json");
+			const { input, query, expected } = await loadParseTest("test1.json");
 			const parser: QueryParser = new QueryParser();
-			const query: Query = parser.parseQuery(input);
-			expect(query).to.not.be.null;
+			const queryObj: Query = parser.parseQuery(query);
+			const res: Array<any> = queryObj.query(input);
+			expect(res).to.have.deep.members(expected);
 		});
 	});
 
@@ -677,6 +677,9 @@ describe("InsightFacade", function () {
 		// The relative path to the query file must be given in square brackets.
 		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery); //
 		it("[invalid/invalid.json] Query missing WHERE", checkQuery);
+
+		//New Ones with Transformation
+		it("[valid/transformation1.json] Simple Transformation", checkQuery);
 
 		it("[invalid/exceedResultLimit.json] Query exceeding result limit", checkQuery);
 		it("[invalid/emptyWhere.json] Query exceeding result limit empty WHERE", checkQuery);

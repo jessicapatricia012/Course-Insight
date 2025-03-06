@@ -1,6 +1,104 @@
 {
-	"name": "Parses simple query correctly",
-	"input": {
+	"name": "Simple Query",
+	"input": [
+		{
+			"uuid": "1",
+			"id":"Software Engineering"   ,
+			"title": "310",
+			"instructor": "Jean",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 90,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "2",
+			"id":"Software Engineering"   ,
+			"title": "310",
+			"instructor": "Jean",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 80,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "3",
+			"id":"Software Engineering"   ,
+			"title": "310",
+			"instructor": "Casey",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 95,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "4",
+			"id":"Software Engineering"   ,
+			"title": "310",
+			"instructor": "Casey",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 85,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "5",
+			"id":"Software Construction",
+			"title": "210",
+			"instructor": "Kelly",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 74,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "6",
+			"id":"Software Construction"   ,
+			"title": "210",
+			"instructor": "Kelly",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 78,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "7",
+			"id":"Software Construction",
+			"title": "210",
+			"instructor": "Kelly",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 72,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		},
+		{
+			"uuid": "8",
+			"id":"Software Construction",
+			"title": "210",
+			"instructor": "Eli",
+			"dept": "CPSC",
+			"year": 2000,
+			"avg": 85,
+			"pass": 20 ,
+			"fail": 30,
+			"audit": 10
+		}
+	],
+	"query": {
 		"WHERE": {},
 		"OPTIONS": {
 			"COLUMNS": ["sections_title", "overallAvg"]
@@ -14,5 +112,8 @@
 			}]
 		}
 	},
-	"expected": { }
+	"expected": [
+		{ "sections_title" : "310", "overallAvg": 87.5},
+		{ "sections_title" : "210", "overallAvg": 77.25}
+	]
 }

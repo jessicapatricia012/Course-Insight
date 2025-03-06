@@ -26,10 +26,14 @@ export class Query {
 	 * @param things - things to query
 	 */
 	public query(things: Section[] | Room[]): InsightResult[] {
-		const filteredThings: any = this.where.handleWhere(things);
+		let filteredThings: any = this.where.handleWhere(things);
 
 		if (filteredThings.length > this.MAX_RES) {
 			throw new ResultTooLargeError("Result exceed 5000");
+		}
+
+		if (this.transformation !== null) {
+			filteredThings = this.transformation.transform(filteredThings);
 		}
 		return this.options.handleOptions(filteredThings);
 	}
@@ -176,19 +180,20 @@ export class Negation extends Filter {
 
 export class Options {
 	private datasetId: string; //To append with keys in final object
-	private keys: Array<MField | SField>;
-	private order: MField | SField;
+	private keys: Array<MField | SField | string>;
+	private order: MField | SField | string;
 
 	//REQUIRES: sections is an array of valid sections
 	//EFFECTS: Returns an array of InsightResult with filtred fields and ordered accordingly
 	// (NOTE: This is the final result returned by performQuery)
-	public handleOptions(things: Section[] | Room[]): InsightResult[] {
+	public handleOptions(things: Array<any>): InsightResult[] {
 		let result: InsightResult[] = [];
 
 		for (const thing of things) {
 			const toPush: InsightResult = {};
 			for (const key of this.keys) {
-				toPush[this.datasetId + "_" + key] = getKey(thing, key);
+				if (!(key in MField || key in SField)) toPush[key] = thing[key];
+				else toPush[this.datasetId + "_" + key] = thing[key];
 			}
 			result.push(toPush);
 		}
@@ -196,7 +201,7 @@ export class Options {
 		return result;
 	}
 
-	private orderResultBy(result: InsightResult[], order: MField | SField): InsightResult[] {
+	private orderResultBy(result: InsightResult[], order: MField | SField | string): InsightResult[] {
 		const orderKey = this.datasetId + "_" + order;
 		// selection sort
 		let min: number;
@@ -216,7 +221,7 @@ export class Options {
 		return result;
 	}
 
-	constructor(datasetId: string, keys: Array<MField | SField>, order: MField | SField) {
+	constructor(datasetId: string, keys: Array<MField | SField | string>, order: MField | SField) {
 		this.datasetId = datasetId;
 		this.keys = keys;
 		this.order = order;

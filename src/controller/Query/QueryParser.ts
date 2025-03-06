@@ -85,7 +85,7 @@ export class QueryParser {
 	private getField(key: string): string {
 		const keyTokens = key.split("_");
 		if (keyTokens.length !== 2) {
-			throw new InsightError("Invalid format for MComparison key");
+			throw new InsightError("Invalid format for key");
 		}
 		this.updateId(keyTokens[0]);
 		const field: string = keyTokens[1];
@@ -148,27 +148,24 @@ export class QueryParser {
 		const { COLUMNS: columns, ORDER: order = null } = obj as any; //If ORDER doesn't exist, default value of null is assigned
 		if (!(columns instanceof Array) || columns.length < 1)
 			throw new InsightError("COLUMNS is not an array or COLUMNS is empty");
-		const fields: Array<MField | SField> = []; //List of fields in COLUMNS
+		const fields: Array<MField | SField | string> = []; //List of fields in COLUMNS
 		for (const key of columns) {
-			const keyTokens = key.split("_");
-			//if (keyTokens.length !== 2) throw new InsightError("Invalid format for COLUMNS");
-			this.updateId(keyTokens[0]);
-			const field: string = keyTokens[1];
-			if (field in MField) {
-				fields.push(field as MField);
-			} else if (field in SField) {
-				fields.push(field as SField);
-			} else {
-				throw new InsightError("invalid field type for COLUMNS");
-			}
+			let field: string;
+			if (key.includes("_")) {
+				//non-applykey
+				field = this.getField(key);
+				if (!(field in MField || field in SField)) throw new InsightError("Invalid COLUMNS field");
+			} else field = key; //applykey
+			if (this.transKeys.length !== 0)
+				if (!this.transKeys.includes(field))
+					// there's transformation
+					throw new InsightError("COLUMN Keys must be in GROUP or APPLY");
+			fields.push(field);
 		}
 		let orderField: string = "";
 		if (order !== null) {
 			if (!columns.includes(order)) throw new InsightError("ORDER key must be in COLUMNS");
-			const orderTokens = order.split("_");
-			if (orderTokens.length !== 2) throw new InsightError("Invalid format for ORDER");
-			this.updateId(orderTokens[0]);
-			orderField = orderTokens[1];
+			orderField = this.getField(order);
 		}
 		return new Options(this.datasetId, fields, orderField as MField | SField);
 	}
