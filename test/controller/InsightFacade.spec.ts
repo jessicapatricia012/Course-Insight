@@ -680,12 +680,16 @@ describe("InsightFacade", function () {
 		it("[invalid/invalid.json] Query missing WHERE", checkQuery);
 
 		//New Ones with Transformation on Sections
-		it("[valid/trans1.json] Simple Avg", checkQuery);
-		it("[valid/trans2.json] Simple Min", checkQuery);
-		it("[valid/trans3.json] Simple Room Avg", checkQuery);
+		it("[valid/trans1.json] Avg", checkQuery);
+		it("[valid/trans2.json] Min", checkQuery);
+		it("[valid/trans3.json] Min", checkQuery);
+		it("[valid/trans4.json] Sum", checkQuery);
+		it("[valid/trans5.json] Max Min Complex", checkQuery);
 
 		//With transformations on
 		it("[valid/transRoom1.json] Simple Room Avg", checkQuery);
+		it("[valid/transRoom2.json] Simple Room Avg", checkQuery);
+
 
 		it("[invalid/exceedResultLimit.json] Query exceeding result limit", checkQuery);
 		it("[invalid/emptyWhere.json] Query exceeding result limit empty WHERE", checkQuery);

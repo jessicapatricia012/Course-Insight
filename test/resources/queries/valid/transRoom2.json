@@ -1,0 +1,689 @@
+{
+	"title": "trans6",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"rooms_furniture": "*Chairs*"
+					}
+				},
+				{
+					"GT": {
+						"rooms_seats": 29
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_number",
+				"avgSeats"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_shortname",
+				"rooms_number"
+			],
+			"APPLY": [
+				{
+					"avgSeats": {
+						"AVG": "rooms_seats"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_number": "105",
+			"avgSeats": 94
+		},
+		{
+			"rooms_number": "121",
+			"avgSeats": 50
+		},
+		{
+			"rooms_number": "B101",
+			"avgSeats": 44
+		},
+		{
+			"rooms_number": "203",
+			"avgSeats": 33
+		},
+		{
+			"rooms_number": "205",
+			"avgSeats": 37
+		},
+		{
+			"rooms_number": "2200",
+			"avgSeats": 76
+		},
+		{
+			"rooms_number": "2365",
+			"avgSeats": 70
+		},
+		{
+			"rooms_number": "A202",
+			"avgSeats": 108
+		},
+		{
+			"rooms_number": "A203",
+			"avgSeats": 108
+		},
+		{
+			"rooms_number": "B141",
+			"avgSeats": 42
+		},
+		{
+			"rooms_number": "B208",
+			"avgSeats": 56
+		},
+		{
+			"rooms_number": "B213",
+			"avgSeats": 78
+		},
+		{
+			"rooms_number": "B215",
+			"avgSeats": 78
+		},
+		{
+			"rooms_number": "B313",
+			"avgSeats": 78
+		},
+		{
+			"rooms_number": "B315",
+			"avgSeats": 78
+		},
+		{
+			"rooms_number": "B318",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "D201",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "D204",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "D205",
+			"avgSeats": 30
+		},
+		{
+			"rooms_number": "D207",
+			"avgSeats": 30
+		},
+		{
+			"rooms_number": "D217",
+			"avgSeats": 65
+		},
+		{
+			"rooms_number": "D218",
+			"avgSeats": 65
+		},
+		{
+			"rooms_number": "D219",
+			"avgSeats": 65
+		},
+		{
+			"rooms_number": "D221",
+			"avgSeats": 30
+		},
+		{
+			"rooms_number": "D222",
+			"avgSeats": 65
+		},
+		{
+			"rooms_number": "D229",
+			"avgSeats": 30
+		},
+		{
+			"rooms_number": "D323",
+			"avgSeats": 31
+		},
+		{
+			"rooms_number": "101",
+			"avgSeats": 200
+		},
+		{
+			"rooms_number": "102",
+			"avgSeats": 94
+		},
+		{
+			"rooms_number": "103",
+			"avgSeats": 60
+		},
+		{
+			"rooms_number": "1202",
+			"avgSeats": 100
+		},
+		{
+			"rooms_number": "1204",
+			"avgSeats": 62
+		},
+		{
+			"rooms_number": "1212",
+			"avgSeats": 34
+		},
+		{
+			"rooms_number": "1215",
+			"avgSeats": 45
+		},
+		{
+			"rooms_number": "135",
+			"avgSeats": 50
+		},
+		{
+			"rooms_number": "2012",
+			"avgSeats": 80
+		},
+		{
+			"rooms_number": "1001",
+			"avgSeats": 65
+		},
+		{
+			"rooms_number": "1003",
+			"avgSeats": 65
+		},
+		{
+			"rooms_number": "1613",
+			"avgSeats": 36
+		},
+		{
+			"rooms_number": "303",
+			"avgSeats": 63
+		},
+		{
+			"rooms_number": "317",
+			"avgSeats": 44
+		},
+		{
+			"rooms_number": "519",
+			"avgSeats": 35
+		},
+		{
+			"rooms_number": "102",
+			"avgSeats": 80
+		},
+		{
+			"rooms_number": "153",
+			"avgSeats": 160
+		},
+		{
+			"rooms_number": "101",
+			"avgSeats": 60
+		},
+		{
+			"rooms_number": "147",
+			"avgSeats": 60
+		},
+		{
+			"rooms_number": "200",
+			"avgSeats": 100
+		},
+		{
+			"rooms_number": "201",
+			"avgSeats": 42
+		},
+		{
+			"rooms_number": "212",
+			"avgSeats": 72
+		},
+		{
+			"rooms_number": "214",
+			"avgSeats": 39
+		},
+		{
+			"rooms_number": "10",
+			"avgSeats": 54
+		},
+		{
+			"rooms_number": "100",
+			"avgSeats": 375
+		},
+		{
+			"rooms_number": "12",
+			"avgSeats": 54
+		},
+		{
+			"rooms_number": "13",
+			"avgSeats": 54
+		},
+		{
+			"rooms_number": "301",
+			"avgSeats": 30
+		},
+		{
+			"rooms_number": "302",
+			"avgSeats": 30
+		},
+		{
+			"rooms_number": "304",
+			"avgSeats": 36
+		},
+		{
+			"rooms_number": "037",
+			"avgSeats": 54
+		},
+		{
+			"rooms_number": "039",
+			"avgSeats": 54
+		},
+		{
+			"rooms_number": "098",
+			"avgSeats": 260
+		},
+		{
+			"rooms_number": "234",
+			"avgSeats": 60
+		},
+		{
+			"rooms_number": "235",
+			"avgSeats": 41
+		},
+		{
+			"rooms_number": "237",
+			"avgSeats": 41
+		},
+		{
+			"rooms_number": "241",
+			"avgSeats": 70
+		},
+		{
+			"rooms_number": "243",
+			"avgSeats": 68
+		},
+		{
+			"rooms_number": "254",
+			"avgSeats": 80
+		},
+		{
+			"rooms_number": "291",
+			"avgSeats": 54
+		},
+		{
+			"rooms_number": "292",
+			"avgSeats": 35
+		},
+		{
+			"rooms_number": "293",
+			"avgSeats": 32
+		},
+		{
+			"rooms_number": "295",
+			"avgSeats": 54
+		},
+		{
+			"rooms_number": "296",
+			"avgSeats": 37
+		},
+		{
+			"rooms_number": "334",
+			"avgSeats": 60
+		},
+		{
+			"rooms_number": "335",
+			"avgSeats": 41
+		},
+		{
+			"rooms_number": "343",
+			"avgSeats": 68
+		},
+		{
+			"rooms_number": "345",
+			"avgSeats": 68
+		},
+		{
+			"rooms_number": "347",
+			"avgSeats": 70
+		},
+		{
+			"rooms_number": "350",
+			"avgSeats": 58
+		},
+		{
+			"rooms_number": "354",
+			"avgSeats": 44
+		},
+		{
+			"rooms_number": "434",
+			"avgSeats": 44
+		},
+		{
+			"rooms_number": "435",
+			"avgSeats": 53
+		},
+		{
+			"rooms_number": "437",
+			"avgSeats": 32
+		},
+		{
+			"rooms_number": "101",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "110",
+			"avgSeats": 120
+		},
+		{
+			"rooms_number": "201",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "301",
+			"avgSeats": 80
+		},
+		{
+			"rooms_number": "310",
+			"avgSeats": 160
+		},
+		{
+			"rooms_number": "301",
+			"avgSeats": 100
+		},
+		{
+			"rooms_number": "633",
+			"avgSeats": 50
+		},
+		{
+			"rooms_number": "155",
+			"avgSeats": 50
+		},
+		{
+			"rooms_number": "182",
+			"avgSeats": 154
+		},
+		{
+			"rooms_number": "185",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "261",
+			"avgSeats": 112
+		},
+		{
+			"rooms_number": "200",
+			"avgSeats": 205
+		},
+		{
+			"rooms_number": "201",
+			"avgSeats": 183
+		},
+		{
+			"rooms_number": "460",
+			"avgSeats": 75
+		},
+		{
+			"rooms_number": "462",
+			"avgSeats": 42
+		},
+		{
+			"rooms_number": "1001",
+			"avgSeats": 350
+		},
+		{
+			"rooms_number": "1002",
+			"avgSeats": 350
+		},
+		{
+			"rooms_number": "1003",
+			"avgSeats": 125
+		},
+		{
+			"rooms_number": "202",
+			"avgSeats": 123
+		},
+		{
+			"rooms_number": "214",
+			"avgSeats": 60
+		},
+		{
+			"rooms_number": "220",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "228",
+			"avgSeats": 136
+		},
+		{
+			"rooms_number": "242",
+			"avgSeats": 60
+		},
+		{
+			"rooms_number": "254",
+			"avgSeats": 84
+		},
+		{
+			"rooms_number": "154",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "160",
+			"avgSeats": 72
+		},
+		{
+			"rooms_number": "256",
+			"avgSeats": 32
+		},
+		{
+			"rooms_number": "260",
+			"avgSeats": 32
+		},
+		{
+			"rooms_number": "102",
+			"avgSeats": 60
+		},
+		{
+			"rooms_number": "104",
+			"avgSeats": 48
+		},
+		{
+			"rooms_number": "203",
+			"avgSeats": 48
+		},
+		{
+			"rooms_number": "1003",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "1004",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "1005",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "1328",
+			"avgSeats": 38
+		},
+		{
+			"rooms_number": "200",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "201",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "202",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "203",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "204",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "205",
+			"avgSeats": 34
+		},
+		{
+			"rooms_number": "206",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "207",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "208",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "209",
+			"avgSeats": 60
+		},
+		{
+			"rooms_number": "3074",
+			"avgSeats": 72
+		},
+		{
+			"rooms_number": "1101",
+			"avgSeats": 236
+		},
+		{
+			"rooms_number": "1201",
+			"avgSeats": 167
+		},
+		{
+			"rooms_number": "3208",
+			"avgSeats": 72
+		},
+		{
+			"rooms_number": "1001",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "1002",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "1003",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "203A",
+			"avgSeats": 40
+		},
+		{
+			"rooms_number": "A",
+			"avgSeats": 442
+		},
+		{
+			"rooms_number": "B108",
+			"avgSeats": 30
+		},
+		{
+			"rooms_number": "B151",
+			"avgSeats": 66
+		},
+		{
+			"rooms_number": "220A",
+			"avgSeats": 299
+		},
+		{
+			"rooms_number": "220B",
+			"avgSeats": 299
+		},
+		{
+			"rooms_number": "220C",
+			"avgSeats": 299
+		},
+		{
+			"rooms_number": "101",
+			"avgSeats": 30
+		},
+		{
+			"rooms_number": "103",
+			"avgSeats": 55
+		},
+		{
+			"rooms_number": "107",
+			"avgSeats": 48
+		},
+		{
+			"rooms_number": "105",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "107",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "109",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "121",
+			"avgSeats": 187
+		},
+		{
+			"rooms_number": "122",
+			"avgSeats": 188
+		},
+		{
+			"rooms_number": "221",
+			"avgSeats": 190
+		},
+		{
+			"rooms_number": "222",
+			"avgSeats": 190
+		},
+		{
+			"rooms_number": "305",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "307",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "309",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "405",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "407",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "409",
+			"avgSeats": 47
+		},
+		{
+			"rooms_number": "1",
+			"avgSeats": 120
+		},
+		{
+			"rooms_number": "3",
+			"avgSeats": 88
+		},
+		{
+			"rooms_number": "4",
+			"avgSeats": 120
+		},
+		{
+			"rooms_number": "5",
+			"avgSeats": 120
+		},
+		{
+			"rooms_number": "B75",
+			"avgSeats": 30
+		},
+		{
+			"rooms_number": "G41",
+			"avgSeats": 30
+		}
+	]
+}
