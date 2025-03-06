@@ -1,6 +1,6 @@
-import { Filter, LComparison, MComparison, Negation, Query, SComparison, Where, Options } from "./Query";
+import { Filter, LComparison, MComparison, Negation, Options, Query, SComparison, Where } from "./Query";
 import { InsightError } from "../IInsightFacade";
-import { ApplyToken, Logic, MComparator, MField, SField } from "./enums";
+import { ApplyToken, Direction, Logic, MComparator, MField, SField } from "./enums";
 import { Apply, ApplyRule, Group, Transformation } from "./QueryPlus";
 
 export class QueryParser {
@@ -139,11 +139,8 @@ export class QueryParser {
 	//REQUIRES: obj is an object representing an OPTIONS clause
 	//EFFECTS: Returns an Options object representation of the clause
 	private parseOptions(obj: unknown): Options {
-		if (!this.isObject(obj) || Array.isArray(obj)) {
-			throw new InsightError("Invalid type for OPTIONS clause");
-		}
-		if (obj === null) {
-			throw new InsightError("OPTIONS is null");
+		if (!this.isObject(obj) || Array.isArray(obj) || obj === null) {
+			throw new InsightError("Invalid type for OPTIONS clause or is null");
 		}
 		if (!("COLUMNS" in (obj as Object))) throw new InsightError("Missing COLUMNS in OPTIONS");
 		const { COLUMNS: columns, ORDER: order = null } = obj as any; //If ORDER doesn't exist, default value of null is assigned
@@ -166,16 +163,34 @@ export class QueryParser {
 					throw new InsightError("COLUMN Keys must be in GROUP or APPLY");
 			fields.push(field);
 		}
-		let orderField: string = "";
+		const { orderFields, dir } = this.parseOrder(order, columns);
+		return new Options(this.datasetId, fields, orderFields, dir);
+	}
+
+	private parseOrder(order: any, columns: Array<string>): any {
+		const orderFields: Array<MField | SField | string> = [];
+		let dir: Direction = Direction.UP;
 		if (order !== null) {
-			if (!columns.includes(order)) throw new InsightError("ORDER key must be in COLUMNS");
-			if (order.includes("_")) {
-				//non-applykey
-				orderField = this.getField(order);
-			} else orderField = order;
-			//applykey
+			if (this.isObject(order)) {
+				//order is an object
+				let keys;
+				({ dir, keys } = order);
+				if (!(dir in Direction) || !Array.isArray(keys) || keys.length < 1)
+					throw new InsightError("Invalid ORDER Object");
+
+				keys.forEach((key: MField | SField | string) => {
+					if (!columns.includes(key)) throw new InsightError("ORDER key must be in COLUMNS");
+					if (key.includes("_")) orderFields.push(this.getField(key));
+					else orderFields.push(key);
+				});
+			} else {
+				if (typeof order !== "string") throw new InsightError("Invalid type for ORDER");
+				if (!columns.includes(order)) throw new InsightError("ORDER key must be in COLUMNS");
+				if (order.includes("_")) orderFields.push(this.getField(order));
+				else orderFields.push(order);
+			}
 		}
-		return new Options(this.datasetId, fields, orderField as MField | SField);
+		return { orderFields, dir };
 	}
 
 	/**

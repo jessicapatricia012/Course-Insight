@@ -717,7 +717,6 @@ describe("InsightFacade", function () {
 		it("[c2/validApplySum.json] SUM", checkQuery);
 		it("[c2/validRoomAllFields.json] valid room all fields", checkQuery);
 
-		
 		// Examples demonstrating how to test performQuery using the JSON Test Queries.
 		// The relative path to the query file must be given in square brackets.
 		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery); //
