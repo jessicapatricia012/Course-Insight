@@ -26,15 +26,21 @@ export class Query {
 	 * @param things - things to query
 	 */
 	public query(things: Section[] | Room[]): InsightResult[] {
+		console.time("handlewhere");
+
 		let filteredThings: any = this.where.handleWhere(things);
+		console.timeEnd("handlewhere");
+		console.time("transform");
+
+		if (this.transformation !== null) {
+			filteredThings = this.transformation.transform(filteredThings);
+		}
+		console.timeEnd("transform");
 
 		if (filteredThings.length > this.MAX_RES) {
 			throw new ResultTooLargeError("Result exceed 5000");
 		}
 
-		if (this.transformation !== null) {
-			filteredThings = this.transformation.transform(filteredThings);
-		}
 		return this.options.handleOptions(filteredThings);
 	}
 }

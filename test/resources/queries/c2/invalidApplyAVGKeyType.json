@@ -1,0 +1,25 @@
+{
+  "title": "Invalid key type in AVG",
+  "input": {
+    "WHERE": {},
+    "OPTIONS": {
+      "COLUMNS": [
+        "overallAvg"
+      ]
+    },
+    "TRANSFORMATIONS": {
+      "GROUP": [
+        "sections_title"
+      ],
+      "APPLY": [
+        {
+          "overallAvg": {
+            "AVG": "sections_title"
+          }
+        }
+      ]
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}

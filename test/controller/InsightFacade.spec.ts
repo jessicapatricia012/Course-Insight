@@ -628,8 +628,11 @@ describe("InsightFacade", function () {
 			// Destructuring assignment to reduce property accesses
 			const { input, expected, errorExpected } = await loadTestQuery(this.test.title);
 			let result: InsightResult[] = []; // dummy value before being reassigned
+			// console.time("logTimee");
+
 			try {
 				result = await facade.performQuery(input);
+
 				//////////
 				if (errorExpected) {
 					// If error was expected but no error occurred, fail the test
@@ -641,7 +644,7 @@ describe("InsightFacade", function () {
 				/////////////
 			} catch (err) {
 				if (!errorExpected) {
-					expect.fail(`performQuery threw unexpected error: ${err}`);
+					return expect.fail(`performQuery threw unexpected error: ${err}`);
 				} else if (expected === "ResultTooLargeError") {
 					expect(err).to.be.an.instanceOf(ResultTooLargeError);
 				} else if (expected === "InsightError") {
@@ -649,10 +652,15 @@ describe("InsightFacade", function () {
 				} else {
 					return expect.fail("Write your assertion(s) here.");
 				}
+				console.log("return");
+				// console.timeEnd("logTimee");
+
+				return;
 			}
 		}
 
 		before(async function () {
+			await clearDisk();
 			facade = new InsightFacade();
 
 			// Add the datasets to InsightFacade once.
@@ -673,6 +681,7 @@ describe("InsightFacade", function () {
 		after(async function () {
 			await clearDisk();
 		});
+
 
 		// Examples demonstrating how to test performQuery using the JSON Test Queries.
 		// The relative path to the query file must be given in square brackets.

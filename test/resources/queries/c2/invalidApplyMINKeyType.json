@@ -1,0 +1,25 @@
+{
+  "title": "Invalid key type in MIN",
+  "input": {
+    "WHERE": {},
+    "OPTIONS": {
+      "COLUMNS": [
+        "min"
+      ]
+    },
+    "TRANSFORMATIONS": {
+      "GROUP": [
+        "sections_title"
+      ],
+      "APPLY": [
+        {
+          "min": {
+            "MIN": "sections_title"
+          }
+        }
+      ]
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}

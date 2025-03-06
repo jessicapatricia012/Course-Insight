@@ -1,0 +1,30 @@
+{
+	"title": "Valid Sum",
+	"input":{
+    "WHERE": {
+      "IS": {
+        "rooms_address": "*East*"
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "rooms_address",
+        "sum"
+      ]
+    },
+    "TRANSFORMATIONS": {
+      "GROUP": [
+        "rooms_address",
+        "rooms_fullname"
+      ],
+      "APPLY": [
+        {
+          "sum": {
+            "SUM": "rooms_lon"
+          }
+        }
+      ]
+    }
+  },
+	"errorExpected": false,
+	"expected":[{"rooms_address":"1822 East Mall","sum":-616.27},{"rooms_address":"1874 East Mall","sum":-246.5},{"rooms_address":"2360 East Mall V6T 1Z3","sum":-369.74},{"rooms_address":"2205 East Mall","sum":-739.5},{"rooms_address":"2045 East Mall","sum":-493.01},{"rooms_address":"1961 East Mall V6T 1Z1","sum":-2218.54},{"rooms_address":"2206 East Mall","sum":-739.49}]}

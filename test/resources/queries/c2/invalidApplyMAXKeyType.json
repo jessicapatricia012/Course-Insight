@@ -1,0 +1,26 @@
+{
+  "title": "Invalid key type in MAX",
+  "input": {
+    "WHERE": {},
+    "OPTIONS": {
+      "COLUMNS": [
+        "max"
+      ]
+    },
+    "TRANSFORMATIONS": {
+      "GROUP": [
+        "rooms_address"
+      ],
+      "APPLY": [
+        {
+          "max": {
+            "MAX": "rooms_address"
+
+          }
+        }
+      ]
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}

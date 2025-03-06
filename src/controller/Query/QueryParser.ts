@@ -83,9 +83,10 @@ export class QueryParser {
 	 * @private
 	 */
 	private getField(key: string): string {
+		// console.log(key);
 		const keyTokens = key.split("_");
 		if (keyTokens.length !== 2) {
-			throw new InsightError("Invalid format for key");
+			throw new InsightError("Invalid format for key: " + key);
 		}
 		this.updateId(keyTokens[0]);
 		const field: string = keyTokens[1];
@@ -150,6 +151,9 @@ export class QueryParser {
 			throw new InsightError("COLUMNS is not an array or COLUMNS is empty");
 		const fields: Array<MField | SField | string> = []; //List of fields in COLUMNS
 		for (const key of columns) {
+			if (typeof key !== "string") {
+				throw new InsightError("COLUMNS field must be a string");
+			}
 			let field: string;
 			if (key.includes("_")) {
 				//non-applykey
@@ -165,7 +169,11 @@ export class QueryParser {
 		let orderField: string = "";
 		if (order !== null) {
 			if (!columns.includes(order)) throw new InsightError("ORDER key must be in COLUMNS");
-			orderField = this.getField(order);
+			if (order.includes("_")) {
+				//non-applykey
+				orderField = this.getField(order);
+			} else orderField = order;
+			//applykey
 		}
 		return new Options(this.datasetId, fields, orderField as MField | SField);
 	}
@@ -205,11 +213,27 @@ export class QueryParser {
 
 	private parseApply(rules: unknown): ApplyRule[] {
 		const res: ApplyRule[] = [];
-		const keysSoFar: Array<string> = []; //TO check for duplicates
+		const keysSoFar: Array<string> = [];
+		if (!Array.isArray(rules)) {
+			throw new InsightError("APPLY must be an array of rules");
+		}
 		for (const rule of rules as any) {
+			// if (typeof rule !== "object" || rule === null || Array.isArray(rule)) {
+			// 	throw new InsightError("APPLY rule must be an object");
+			// }
 			const [[applyKey, applyObj]] = Object.entries(rule);
 			const [[applyToken, key]] = Object.entries(applyObj as any);
-			const field = this.getField(key as string);
+			if (typeof applyKey !== "string" || applyKey === "") {
+				throw new InsightError("APPLY key must be a string and non-empty");
+			}
+			if (typeof key !== "string" || key === "") {
+				throw new InsightError("APPLYTOKEN key must be a string and non-empty");
+			}
+			let field: string;
+			if (key.includes("_")) {
+				//non-applykey
+				field = this.getField(key as string);
+			} else field = key as string; //applykey
 
 			if (!(applyToken in ApplyToken)) throw new InsightError("Invalid Apply Token");
 			if (!(field in MField || field in SField)) throw new InsightError("Invalid field");

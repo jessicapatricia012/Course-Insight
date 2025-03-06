@@ -1,0 +1,25 @@
+{
+    "title": "Invalid key room_title in IS",
+    "input": {
+      "WHERE": {
+        "IS": {
+            "room_title": "intro*"
+          }
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "rooms_shortname"
+        ]
+      },
+      "TRANSFORMATIONS": {
+        "GROUP": ["rooms_shortname"],
+       "APPLY": [{           
+          "maxSeats": {               
+              "MAX": "rooms_seats"           
+           }       
+      }]   
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }

@@ -1,0 +1,24 @@
+{
+    "title": "Invalid apply rule target key",
+    "input": {
+      "WHERE": {},
+      "OPTIONS": {
+        "COLUMNS": [
+          "sections_title"
+        ]
+      },
+      "TRANSFORMATIONS": {
+        "GROUP": ["sections_title"],
+        "APPLY": [
+          {
+            "overallAvg": {
+              "AVG": ""
+            }
+          }
+        ]
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

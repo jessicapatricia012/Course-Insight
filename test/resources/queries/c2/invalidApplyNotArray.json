@@ -1,0 +1,26 @@
+{
+    "title": "APPLY must be an array",
+    "input": {
+      "WHERE": {
+        "IS": {
+          "sections_dept": "A*"
+        }
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "sections_dept",
+          "sections_avg",
+          "avg"
+        ]
+      },
+      "TRANSFORMATIONS": {
+        "GROUP": [
+          "sections_dept"
+        ],
+        "APPLY": "avg"
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

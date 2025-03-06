@@ -1,0 +1,21 @@
+{
+    "title": "All ORDER keys must be in COLUMNS",
+    "input": {
+      "WHERE": {},
+      "OPTIONS": {
+        "COLUMNS": [
+          "sections_title",
+          "sections_avg"
+        ],
+        "ORDER": {
+          "dir": "DOWN",
+          "keys": [
+            "sections_dept"
+          ]
+        }
+      }
+    },
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

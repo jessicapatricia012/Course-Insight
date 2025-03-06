@@ -44,9 +44,6 @@ export default class InsightFacade implements IInsightFacade {
 		const dataset = await parser.parseContent(id, content, kind);
 		// if (kind === InsightDatasetKind.Rooms) console.log(dataset);
 		InsightFacade.datasets.push(dataset);
-		if (dataset.insightDataset.kind === InsightDatasetKind.Rooms) {
-			console.log(dataset);
-		}
 		await DatasetProcessor.addToDisk(id, dataset);
 		return InsightFacade.datasets.map((ds) => ds.insightDataset.id);
 	}
