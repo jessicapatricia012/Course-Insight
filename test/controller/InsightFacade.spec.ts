@@ -982,7 +982,39 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should successfully add list remove ", async function () {
+		it("should", async function () {
+			try {
+				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				await facade1.listDatasets();
+
+				const result = await facade2.removeDataset("ubc");
+				expect(result).to.equal("ubc");
+				await facade1.addDataset("ubc", campus, InsightDatasetKind.Rooms);
+				await facade1.removeDataset("ubc");
+			} catch (err) {
+				expect.fail("Should not have thrown: " + err);
+			}
+			try {
+				await facade2.removeDataset("ubc");
+
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(NotFoundError);
+			}
+			try {
+				await facade1.addDataset("ubc", campus, InsightDatasetKind.Rooms);
+			} catch (err) {
+				expect.fail("Should not have thrown: " + err);
+			}
+			try {
+				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should successfully complex", async function () {
 			try {
 				await facade1.addDataset("ubc", sections, InsightDatasetKind.Sections);
 				await facade1.listDatasets();
