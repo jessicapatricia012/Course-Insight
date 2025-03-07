@@ -175,7 +175,7 @@ export class QueryParser {
 				//order is an object
 				let keys;
 				({ dir, keys } = order);
-				if (!(dir in Direction) || !Array.isArray(keys) || keys.length < 1)
+				if (!Object.values(Direction).includes(dir) || !Array.isArray(keys) || keys.length < 1)
 					throw new InsightError("Invalid ORDER Object");
 
 				keys.forEach((key: MField | SField | string) => {
@@ -199,11 +199,10 @@ export class QueryParser {
 	 * @private
 	 */
 	private parseTransformations(obj: unknown): Transformation | null {
-		if (!this.isObject(obj) || Array.isArray(obj)) {
-			throw new InsightError("Invalid Transformation clause body");
-		}
-
 		if (obj === null) return null;
+		if (typeof obj !== "object" || Array.isArray(obj)) throw new InsightError("Invalid Transformation clause body");
+		if (!Object.hasOwn(obj as any, "GROUP") || !Object.hasOwn(obj as any, "APPLY"))
+			throw new InsightError("Missing clause in Transformations ");
 
 		const { GROUP: keylist, APPLY: rules } = obj as any;
 
@@ -238,8 +237,8 @@ export class QueryParser {
 			// }
 			const [[applyKey, applyObj]] = Object.entries(rule);
 			const [[applyToken, key]] = Object.entries(applyObj as any);
-			if (typeof applyKey !== "string" || applyKey === "") {
-				throw new InsightError("APPLY key must be a string and non-empty");
+			if (typeof applyKey !== "string" || applyKey === "" || applyKey.includes("_")) {
+				throw new InsightError("APPLY key must be a string and non-empty and not have underscore");
 			}
 			if (typeof key !== "string" || key === "") {
 				throw new InsightError("APPLYTOKEN key must be a string and non-empty");
