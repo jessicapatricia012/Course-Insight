@@ -61,11 +61,14 @@ export class DatasetProcessor {
 		await fs.ensureDir(DATA_DIR);
 		const datasetPath = path.join(DATA_DIR, `${id}.json`);
 		const content = await fs.readJson(datasetPath);
+		console.log(content);
+		console.log("content");
+
 		const insightDataset: InsightDataset = content.insightDataset;
 		const dataset = new Dataset(insightDataset);
 
-		for (const section of content.sections) {
-			dataset.data.push(section);
+		for (const data of content.data) {
+			dataset.data.push(data);
 		}
 
 		return dataset;

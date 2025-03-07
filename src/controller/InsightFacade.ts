@@ -30,6 +30,9 @@ export default class InsightFacade implements IInsightFacade {
 		// Check if dataset exists on disk
 		if (await DatasetProcessor.isInDisk(id)) {
 			throw new InsightError("Dataset with the same id already exists");
+		} // Check if dataset exists on memory
+		if (InsightFacade.datasets.some((dataset) => dataset.insightDataset.id === id)) {
+			throw new InsightError("Dataset with the same id already exists");
 		}
 
 		let parser: ZipParser;
@@ -54,11 +57,15 @@ export default class InsightFacade implements IInsightFacade {
 		// Check if dataset exists on disk
 		if (!(await DatasetProcessor.isInDisk(id))) {
 			throw new NotFoundError("Dataset not found");
-		}
+		} // Check if dataset exists on memory
+		// if (InsightFacade.datasets.some((dataset) => dataset.insightDataset.id === id)) {
+		// 	throw new InsightError("Dataset with the same id already exists");
+		// }
 
-		const index = InsightFacade.datasets.indexOf(Dataset.getDatasetWithId(id, InsightFacade.datasets));
-		InsightFacade.datasets.splice(index, 1); // Remove the dataset
-
+		try {
+			const index = InsightFacade.datasets.indexOf(Dataset.getDatasetWithId(id, InsightFacade.datasets));
+			InsightFacade.datasets.splice(index, 1); // Remove the dataset
+		} catch {}
 		await DatasetProcessor.deleteFromDisk(id);
 
 		return id;
