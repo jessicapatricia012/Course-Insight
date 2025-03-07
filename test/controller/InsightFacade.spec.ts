@@ -709,6 +709,7 @@ describe("InsightFacade", function () {
 		it("[c2/invalidOrderMissingDir.json] ORDER missing dir", checkQuery);
 		it("[c2/invalidOrderMissingKey.json] ORDER missing key", checkQuery);
 		it("[c2/invalidRoomKey.json] invalid room key", checkQuery);
+
 		it("[c2/validApplyAvg.json] AVG", checkQuery);
 		it("[c2/validApplyCountNumber.json] COUNT", checkQuery);
 		it("[c2/validApplyCountString.json] COUNT", checkQuery);
