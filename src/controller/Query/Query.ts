@@ -194,8 +194,8 @@ export class Options {
 	//EFFECTS: Returns an array of InsightResult with filtred fields and ordered accordingly
 	// (NOTE: This is the final result returned by performQuery)
 	public handleOptions(things: Array<any>): InsightResult[] {
-		let result: InsightResult[] = [];
-
+		const result: InsightResult[] = [];
+		things.sort(this.fieldSorter(this.order, this.dir));
 		for (const thing of things) {
 			const toPush: InsightResult = {};
 			for (const key of this.keys) {
@@ -205,7 +205,7 @@ export class Options {
 			result.push(toPush);
 		}
 		// if (this.order in MField || this.order in SField) result = this.orderResultBy(result, this.order);
-		result = this.sortArray(result, this.order, this.dir);
+		//result.sort(this.fieldSorter(this.order, this.dir));
 		return result;
 	}
 
@@ -244,7 +244,8 @@ export class Options {
 					return 0;
 				})
 				.reduce(function firstNonZeroValue(p, n) {
-					return p ? p : n;
+					if (p) return p;
+					else return n;
 				}, 0);
 		};
 	}
