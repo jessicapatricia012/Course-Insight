@@ -638,10 +638,7 @@ describe("InsightFacade", function () {
 					// If error was expected but no error occurred, fail the test
 					return expect.fail("performQuery resolved when it should have rejected with ${expected}");
 				}
-				// console.log(result);
-				// console.log(expected);
-				expect(result).to.have.deep.members(expected);
-				/////////////
+				expect(result).to.deep.equal(expected);
 			} catch (err) {
 				if (!errorExpected) {
 					return expect.fail(`performQuery threw unexpected error: ${err}`);
@@ -686,6 +683,7 @@ describe("InsightFacade", function () {
 		it("[c2/validComplex.json] valid example complex", checkQuery);
 		it("[c2/validComplex2.json] valid example complex 2", checkQuery);
 		it("[c2/validEmptyWhere.json] valid large data", checkQuery);
+		it("[c2/validSort.json] valid sort DOWN", checkQuery);
 
 		it("[c2/invalidApplyDuplicateKey.json] Invalid APPLY duplicate key", checkQuery);
 		it("[c2/invalidApplyKey.json] invalid applykey", checkQuery);
