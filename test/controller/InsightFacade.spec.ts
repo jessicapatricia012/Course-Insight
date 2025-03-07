@@ -652,7 +652,6 @@ describe("InsightFacade", function () {
 				} else {
 					return expect.fail("Write your assertion(s) here.");
 				}
-				console.log("return");
 				// console.timeEnd("logTimee");
 
 				return;
@@ -685,6 +684,8 @@ describe("InsightFacade", function () {
 		//TRANSFORMATIONS and SORTING
 		it("[c2/validSimple.json] valid example simple", checkQuery);
 		it("[c2/validComplex.json] valid example complex", checkQuery);
+		it("[c2/validComplex2.json] valid example complex 2", checkQuery);
+		it("[c2/validEmptyWhere.json] valid large data", checkQuery);
 
 		it("[c2/invalidApplyDuplicateKey.json] Invalid APPLY duplicate key", checkQuery);
 		it("[c2/invalidApplyKey.json] invalid applykey", checkQuery);
@@ -716,7 +717,27 @@ describe("InsightFacade", function () {
 		it("[c2/validApplyRuleMultiple.json] Multiple apply rule", checkQuery);
 		it("[c2/validApplySum.json] SUM", checkQuery);
 		it("[c2/validRoomAllFields.json] valid room all fields", checkQuery);
+		it("[c2/invalid2.json] invalid dir", checkQuery);
+		it("[c2/invalid3.json] empty transformations", checkQuery);
+		it("[c2/invalid5.json] transformations missing clause", checkQuery);
+		it("[c2/invalidApplyKey2.json] Apply Key contains underscore", checkQuery);
+		it("[c2/invalidColumns.json] Columns outside of Group or Apply", checkQuery);
 
+		it("[c2/validEmpty.json] valid empty", checkQuery);
+		it("[c2/validDirDown.json] valid DOWN", checkQuery);
+		it("[c2/validDirUp.json] valid UP", checkQuery);
+
+		it("[c2/valid1.json] valid", checkQuery);
+		it("[c2/valid2.json] valid", checkQuery);
+		it("[c2/valid3.json] valid", checkQuery);
+		it("[c2/valid4.json] valid", checkQuery);
+		it("[c2/valid5.json] valid", checkQuery);
+
+		it("[c2/invalid1.json] invalid", checkQuery);
+		it("[c2/invalid2.json] invalid", checkQuery);
+		it("[c2/invalid3.json] invalid", checkQuery);
+		it("[c2/invalid4.json] invalid", checkQuery);
+		it("[c2/invalid5.json] invalid", checkQuery);
 		// Examples demonstrating how to test performQuery using the JSON Test Queries.
 		// The relative path to the query file must be given in square brackets.
 		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery); //
@@ -862,6 +883,7 @@ describe("InsightFacade", function () {
 			await clearDisk();
 			facade1 = new InsightFacade();
 			facade2 = new InsightFacade();
+			facade = new InsightFacade();
 		});
 
 		afterEach(async function () {});
@@ -1049,6 +1071,46 @@ describe("InsightFacade", function () {
 				/////////////
 			} catch (err) {
 				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should fail to add room with same id as section", async function () {
+			try {
+				await facade1.addDataset("sections", sections, InsightDatasetKind.Sections);
+				await facade1.addDataset("sections", campus, InsightDatasetKind.Rooms);
+
+				expect.fail("should have thrown");
+				/////////////
+			} catch (err) {
+				expect(err).to.be.an.instanceOf(InsightError);
+			}
+		});
+
+		it("should successfully perform after added (room)", async function () {
+			await facade2.addDataset("rooms", campus, InsightDatasetKind.Rooms);
+			const { input, expected, errorExpected } = await loadTestQuery("[c2/validRoomAllFields.json] valid");
+			let result: InsightResult[] = [];
+			try {
+				result = await facade1.performQuery(input);
+				//////////
+				if (errorExpected) {
+					// If error was expected but no error occurred, fail the test
+					return expect.fail("performQuery resolved when it should have rejected with ${expected}");
+				}
+				// console.log(result);
+				// console.log(expected);
+				expect(result).to.have.deep.members(expected);
+				/////////////
+			} catch (err) {
+				if (!errorExpected) {
+					expect.fail(`performQuery threw unexpected error: ${err}`);
+				} else if (expected === "ResultTooLargeError") {
+					expect(err).to.be.an.instanceOf(ResultTooLargeError);
+				} else if (expected === "InsightError") {
+					expect(err).to.be.an.instanceOf(InsightError);
+				} else {
+					return expect.fail("Write your assertion(s) here.");
+				}
 			}
 		});
 	});

@@ -1,0 +1,24 @@
+{
+    "title": " invalid",
+      "input": {
+        "WHERE": {},
+        "OPTIONS": {
+          "COLUMNS": [
+            "rooms_furniture",
+            "avgSeats"
+          ],
+          "ORDER": {
+            "dir": "UP",
+            "keys": [
+              "rooms_number"
+            ]
+          }
+        },
+        "TRANSFORMATIONS": {
+        }
+      }
+      ,
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

@@ -1,0 +1,66 @@
+{
+    "title": " invalid",
+      "input":{
+        "WHERE": {},
+        "OPTIONS": {
+          "COLUMNS": [
+            {
+              "dir": "UP",
+              "keys": [
+                "avgSeats",
+                {
+                  "dir": "DOWN",
+                  "keys": [
+                    "totalSeats"
+                  ]
+                }
+              ]
+            }
+          ],
+          "ORDER": {
+            "dir": "DOWN",
+            "keys": [
+              {
+                "dir": "UP",
+                "keys": [
+                  "avgSeats",
+                  {
+                    "dir": "DOWN",
+                    "keys": [
+                      "totalSeats"
+                    ]
+                  }
+                ]
+              },
+              "maxSeats"
+            ]
+          }
+        },
+        "TRANSFORMATIONS": {
+          "GROUP": [
+            "rooms_furniture"
+          ],
+          "APPLY": [
+            {
+              "avgSeats": {
+                "AVG": "rooms_seats"
+              }
+            },
+            {
+              "totalSeats": {
+                "SUM": "rooms_seats"
+              }
+            },
+            {
+              "maxSeats": {
+                "MAX": "rooms_seats"
+              }
+            }
+          ]
+        }
+      }
+      ,
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

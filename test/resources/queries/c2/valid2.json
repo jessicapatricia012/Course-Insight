@@ -1,0 +1,30 @@
+{
+	"title": "Valid",
+	"input":{
+    "WHERE": {},
+    "OPTIONS": {
+      "COLUMNS": ["rooms_furniture", "avgSeats", "totalSeats"],
+      "ORDER": {
+        "dir": "DOWN",
+        "keys": ["avgSeats", "totalSeats"]
+      }
+    },
+    "TRANSFORMATIONS": {
+      "GROUP": ["rooms_furniture"],
+      "APPLY": [
+        {
+          "avgSeats": {
+            "AVG": "rooms_seats"
+          }
+        },
+        {
+          "totalSeats": {
+            "SUM": "rooms_seats"
+          }
+        }
+      ]
+    }
+  }
+  ,
+	"errorExpected": false,
+	"expected":[{"rooms_furniture":"Classroom-Fixed Tablets","avgSeats":191.88,"totalSeats":6332},{"rooms_furniture":"Classroom-Fixed Tables/Fixed Chairs","avgSeats":157.2,"totalSeats":1572},{"rooms_furniture":"Classroom-Fixed Tables/Movable Chairs","avgSeats":91.63,"totalSeats":6231},{"rooms_furniture":"Classroom-Moveable Tablets","avgSeats":90,"totalSeats":90},{"rooms_furniture":"Classroom-Fixed Tables/Moveable Chairs","avgSeats":70.67,"totalSeats":212},{"rooms_furniture":"Classroom-Learn Lab","avgSeats":50,"totalSeats":150},{"rooms_furniture":"Classroom-Hybrid Furniture","avgSeats":47.63,"totalSeats":381},{"rooms_furniture":"Classroom-Movable Tables & Chairs","avgSeats":39.27,"totalSeats":6479},{"rooms_furniture":"Classroom-Movable Tablets","avgSeats":34.45,"totalSeats":1516},{"rooms_furniture":"Classroom-Moveable Tables & Chairs","avgSeats":17.45,"totalSeats":506}]}

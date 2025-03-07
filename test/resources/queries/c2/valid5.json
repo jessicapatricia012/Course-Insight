@@ -1,0 +1,19 @@
+{
+	"title": "Valid",
+	"input":{
+    "WHERE": {
+      "IS": {
+        "rooms_fullname": "*all*"
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "rooms_fullname",
+        "rooms_number",
+        "rooms_seats"
+      ],
+      "ORDER": "rooms_fullname"
+    }
+  },
+	"errorExpected": false,
+	"expected":[{"rooms_fullname":"Allard Hall (LAW)","rooms_number":"105","rooms_seats":94},{"rooms_fullname":"Allard Hall (LAW)","rooms_number":"112","rooms_seats":20},{"rooms_fullname":"Allard Hall (LAW)","rooms_number":"113","rooms_seats":20},{"rooms_fullname":"Allard Hall (LAW)","rooms_number":"121","rooms_seats":50},{"rooms_fullname":"Allard Hall (LAW)","rooms_number":"B101","rooms_seats":44},{"rooms_fullname":"Brock Hall Annex","rooms_number":"2365","rooms_seats":70},{"rooms_fullname":"Brock Hall Annex","rooms_number":"2367","rooms_seats":24},{"rooms_fullname":"West Mall Swing Space","rooms_number":"105","rooms_seats":47},{"rooms_fullname":"West Mall Swing Space","rooms_number":"106","rooms_seats":27},{"rooms_fullname":"West Mall Swing Space","rooms_number":"107","rooms_seats":47},{"rooms_fullname":"West Mall Swing Space","rooms_number":"108","rooms_seats":27},{"rooms_fullname":"West Mall Swing Space","rooms_number":"109","rooms_seats":47},{"rooms_fullname":"West Mall Swing Space","rooms_number":"110","rooms_seats":27},{"rooms_fullname":"West Mall Swing Space","rooms_number":"121","rooms_seats":187},{"rooms_fullname":"West Mall Swing Space","rooms_number":"122","rooms_seats":188},{"rooms_fullname":"West Mall Swing Space","rooms_number":"221","rooms_seats":190},{"rooms_fullname":"West Mall Swing Space","rooms_number":"222","rooms_seats":190},{"rooms_fullname":"West Mall Swing Space","rooms_number":"305","rooms_seats":47},{"rooms_fullname":"West Mall Swing Space","rooms_number":"306","rooms_seats":27},{"rooms_fullname":"West Mall Swing Space","rooms_number":"307","rooms_seats":47},{"rooms_fullname":"West Mall Swing Space","rooms_number":"308","rooms_seats":27},{"rooms_fullname":"West Mall Swing Space","rooms_number":"309","rooms_seats":47},{"rooms_fullname":"West Mall Swing Space","rooms_number":"310","rooms_seats":27},{"rooms_fullname":"West Mall Swing Space","rooms_number":"405","rooms_seats":47},{"rooms_fullname":"West Mall Swing Space","rooms_number":"406","rooms_seats":27},{"rooms_fullname":"West Mall Swing Space","rooms_number":"407","rooms_seats":47},{"rooms_fullname":"West Mall Swing Space","rooms_number":"408","rooms_seats":27},{"rooms_fullname":"West Mall Swing Space","rooms_number":"409","rooms_seats":47},{"rooms_fullname":"West Mall Swing Space","rooms_number":"410","rooms_seats":27}]}

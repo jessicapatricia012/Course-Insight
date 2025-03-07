@@ -1,0 +1,45 @@
+{
+	"title": "Valid Simple",
+	"input": {
+        "WHERE": {
+          "AND": [
+            {
+              "IS": {
+                "rooms_furniture": "*Tables*"
+              }
+            },
+            {
+              "GT": {
+                "rooms_seats": 300
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "rooms_fullname",
+            "maxSeats"
+          ],
+          "ORDER": {
+            "dir": "UP",
+            "keys": [
+              "maxSeats"
+            ]
+          }
+        },
+        "TRANSFORMATIONS": {
+          "GROUP": [
+            "rooms_fullname"
+          ],
+          "APPLY": [
+            {
+              "maxSeats": {
+                "MAX": "rooms_seats"
+              }
+            }
+          ]
+        }
+      },
+	"errorExpected": false,
+	"expected":[{"rooms_fullname":"Life Sciences Centre","maxSeats":350},{"rooms_fullname":"Hebb","maxSeats":375},{"rooms_fullname":"Robert F. Osborne Centre","maxSeats":442}]
+}
