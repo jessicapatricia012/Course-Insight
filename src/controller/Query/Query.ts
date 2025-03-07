@@ -233,20 +233,16 @@ export class Options {
 		return arr.sort(this.fieldSorter(order, dir));
 	}
 
-	private fieldSorter(fields: Array<any>, direction: Direction) {
-		return function (a: any, b: any): number {
-			return fields
-				.map(function (field) {
-					let dir = 1;
-					if (direction === Direction.DOWN) dir = -1;
-					if (a[field] > b[field]) return dir;
-					if (a[field] < b[field]) return -dir;
-					return 0;
-				})
-				.reduce(function firstNonZeroValue(p, n) {
-					if (p) return p;
-					else return n;
-				}, 0);
+	private fieldSorter(fields: Array<string>, direction: Direction) {
+		return function (a: Record<string, any>, b: Record<string, any>): number {
+			const dir = direction === Direction.DOWN ? -1 : 1;
+			for (const field of fields) {
+				const aValue = a[field] ?? ""; // Handle undefined/null values safely
+				const bValue = b[field] ?? "";
+				if (aValue > bValue) return dir;
+				if (aValue < bValue) return -dir;
+			}
+			return 0;
 		};
 	}
 

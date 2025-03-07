@@ -677,13 +677,19 @@ describe("InsightFacade", function () {
 		after(async function () {
 			await clearDisk();
 		});
+		//SORTING
+		it("[c2/validSort.json] valid sort DOWN", checkQuery);
+		it("[c2/valid1.json] valid", checkQuery);
+		it("[c2/valid2.json] valid", checkQuery);
+		it("[c2/valid3.json] valid", checkQuery);
+		it("[c2/valid4.json] valid", checkQuery);
+		it("[c2/valid5.json] valid", checkQuery);
 
 		//TRANSFORMATIONS and SORTING
 		it("[c2/validSimple.json] valid example simple", checkQuery);
 		it("[c2/validComplex.json] valid example complex", checkQuery);
 		it("[c2/validComplex2.json] valid example complex 2", checkQuery);
 		it("[c2/validEmptyWhere.json] valid large data", checkQuery);
-		it("[c2/validSort.json] valid sort DOWN", checkQuery);
 
 		it("[c2/invalidApplyDuplicateKey.json] Invalid APPLY duplicate key", checkQuery);
 		it("[c2/invalidApplyKey.json] invalid applykey", checkQuery);
@@ -725,12 +731,6 @@ describe("InsightFacade", function () {
 		it("[c2/validEmpty.json] valid empty", checkQuery);
 		it("[c2/validDirDown.json] valid DOWN", checkQuery);
 		it("[c2/validDirUp.json] valid UP", checkQuery);
-
-		it("[c2/valid1.json] valid", checkQuery);
-		it("[c2/valid2.json] valid", checkQuery);
-		it("[c2/valid3.json] valid", checkQuery);
-		it("[c2/valid4.json] valid", checkQuery);
-		it("[c2/valid5.json] valid", checkQuery);
 
 		it("[c2/invalid1.json] invalid", checkQuery);
 		it("[c2/invalid2.json] invalid", checkQuery);
