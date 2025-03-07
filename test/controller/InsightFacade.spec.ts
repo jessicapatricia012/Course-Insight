@@ -684,6 +684,8 @@ describe("InsightFacade", function () {
 		it("[c2/valid3.json] valid", checkQuery);
 		it("[c2/valid4.json] valid", checkQuery);
 		it("[c2/valid5.json] valid", checkQuery);
+		it("[c2/negativeLon.json] check negative lon", checkQuery);
+		it("[c2/negativeLon.json] check names", checkQuery);
 
 		//TRANSFORMATIONS and SORTING
 		it("[c2/validSimple.json] valid example simple", checkQuery);
