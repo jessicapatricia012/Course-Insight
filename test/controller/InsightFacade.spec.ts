@@ -707,6 +707,7 @@ describe("InsightFacade", function () {
 		it("[c2/invalidColumnKeyType.json] invalid COLUMNS key type", checkQuery);
 		it("[c2/invalidColumnsKey.json] invalid COLUMNS key", checkQuery);
 		it("[c2/invalidColumnsKeyEmptyString.json] invalid COLUMNS key empty string", checkQuery);
+		it("[c2/invalidColGroup.json] invalid COLUMNS key empty string", checkQuery);
 
 		it("[c2/invalidGroupEmpty.json] invalid empty GROUP", checkQuery);
 		it("[c2/invalidOrder.json] invalid ORDER", checkQuery);
