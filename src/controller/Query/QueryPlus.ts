@@ -27,11 +27,7 @@ export class Transformation {
 	}
 
 	public transform(things: Things): Array<any> {
-		console.time("group");
-
 		const groups = this.group.group(things);
-		console.timeEnd("group");
-
 		const applyRes = this.apply.apply(groups);
 		return this.flattenGroups(applyRes, this.group.getKeyList());
 	}
