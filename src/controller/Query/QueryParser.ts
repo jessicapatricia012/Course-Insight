@@ -158,7 +158,7 @@ export class QueryParser {
 				if (!(field in MField || field in SField)) throw new InsightError("Invalid COLUMNS field");
 			} else field = key; //applykey
 			if (this.transKeys.length !== 0)
-				if (!this.transKeys.includes(field))
+				if (!this.transKeys.includes(key))
 					// there's transformation
 					throw new InsightError("COLUMN Keys must be in GROUP or APPLY");
 			fields.push(field);
@@ -221,9 +221,9 @@ export class QueryParser {
 			const field: string = this.getField(key);
 			if (!(field in MField || field in SField)) throw new InsightError("Invalid key in GROUP");
 
+			this.transKeys.push(key);
 			res.push(field);
 		}
-		this.transKeys = this.transKeys.concat(res);
 		return res;
 	}
 
@@ -246,11 +246,7 @@ export class QueryParser {
 			if (typeof key !== "string" || key === "") {
 				throw new InsightError("APPLYTOKEN key must be a string and non-empty");
 			}
-			let field: string;
-			if (key.includes("_")) {
-				//non-applykey
-				field = this.getField(key as string);
-			} else field = key as string; //applykey
+			const field: string = this.getField(key as string);
 
 			if (!(applyToken in ApplyToken)) throw new InsightError("Invalid Apply Token");
 			if (!(field in MField || field in SField)) throw new InsightError("Invalid field");
