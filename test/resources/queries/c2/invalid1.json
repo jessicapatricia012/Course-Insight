@@ -1,26 +1,28 @@
 {
     "title": " invalid",
       "input":{
-        "WHERE": {},
-        "OPTIONS": {
-          "COLUMNS": [
-            "sections_dept",
-            "maxAvg"
-          ],
-          "ORDER": {
-            "dir": "DOWN",
-            "keys": [
-              "maxAvg",
-              "sections_dept"
-            ]
+        "WHERE": {
+          "GT": {
+            "rooms_seats": 300
           }
         },
+        "OPTIONS": {
+          "COLUMNS": [
+            "rooms_shortname",
+            "maxSeats"
+          ]
+        },
         "TRANSFORMATIONS": {
-          "GROUP": {},
+          "GROUP": [
+            "rooms_shortname"
+          ],
           "APPLY": [
             {
-              "maxAvg": {
-                "MAX": "sections_avg"
+              "maxSeats": {
+                "MAX": "rooms_lon"
+              },
+              "minSeats": {
+                "MIN": "rooms_lat"
               }
             }
           ]

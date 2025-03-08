@@ -2,30 +2,16 @@
 	"title": "Valid",
 	"input":{
     "WHERE": {
-      "AND": [
-        {
-          "IS": {
-            "rooms_furniture": "*Tables*"
-          }
-        },
-        {
-          "GT": {
-            "rooms_seats": 300
-          }
-        }
-      ]
+      "GT": {
+        "rooms_seats": 300
+      }
     },
     "OPTIONS": {
       "COLUMNS": [
         "rooms_shortname",
-        "maxSeats"
-      ],
-      "ORDER": {
-        "dir": "DOWN",
-        "keys": [
-          "maxSeats"
-        ]
-      }
+        "maxSeats",
+        "minSeats"
+      ]
     },
     "TRANSFORMATIONS": {
       "GROUP": [
@@ -34,7 +20,12 @@
       "APPLY": [
         {
           "maxSeats": {
-            "MAX": "rooms_seats"
+            "MAX": "rooms_lon"
+          }
+        },
+        {
+          "minSeats": {
+            "MIN": "rooms_lat"
           }
         }
       ]
@@ -42,4 +33,4 @@
   }
       ,
 	"errorExpected": false,
-	"expected":[{"rooms_shortname":"OSBO","maxSeats":442},{"rooms_shortname":"HEBB","maxSeats":375},{"rooms_shortname":"LSC","maxSeats":350}]}
+	"expected":[{"rooms_shortname":"CIRS","maxSeats":-123.25314,"minSeats":49.26207},{"rooms_shortname":"ESB","maxSeats":-123.25224,"minSeats":49.26274},{"rooms_shortname":"HEBB","maxSeats":-123.25165,"minSeats":49.2661},{"rooms_shortname":"LSC","maxSeats":-123.24494,"minSeats":49.26236},{"rooms_shortname":"OSBO","maxSeats":-123.24467,"minSeats":49.26047},{"rooms_shortname":"WESB","maxSeats":-123.24937,"minSeats":49.26517},{"rooms_shortname":"WOOD","maxSeats":-123.24673,"minSeats":49.26478}]}

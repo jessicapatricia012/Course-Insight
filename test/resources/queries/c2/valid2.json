@@ -1,25 +1,35 @@
 {
 	"title": "Valid",
 	"input":{
-    "WHERE": {},
+    "WHERE": {
+      "GT": {
+        "rooms_seats": 300
+      }
+    },
     "OPTIONS": {
-      "COLUMNS": ["rooms_furniture", "avgSeats", "totalSeats"],
+      "COLUMNS": [
+        "rooms_shortname",
+        "maxSeats",
+        "minSeats"
+      ],
       "ORDER": {
         "dir": "DOWN",
-        "keys": ["avgSeats", "totalSeats"]
+        "keys": ["minSeats"]
       }
     },
     "TRANSFORMATIONS": {
-      "GROUP": ["rooms_furniture"],
+      "GROUP": [
+        "rooms_shortname"
+      ],
       "APPLY": [
         {
-          "avgSeats": {
-            "AVG": "rooms_seats"
+          "maxSeats": {
+            "MAX": "rooms_lon"
           }
         },
         {
-          "totalSeats": {
-            "SUM": "rooms_seats"
+          "minSeats": {
+            "MIN": "rooms_lat"
           }
         }
       ]
@@ -27,4 +37,4 @@
   }
   ,
 	"errorExpected": false,
-	"expected":[{"rooms_furniture":"Classroom-Fixed Tablets","avgSeats":191.88,"totalSeats":6332},{"rooms_furniture":"Classroom-Fixed Tables/Fixed Chairs","avgSeats":157.2,"totalSeats":1572},{"rooms_furniture":"Classroom-Fixed Tables/Movable Chairs","avgSeats":91.63,"totalSeats":6231},{"rooms_furniture":"Classroom-Moveable Tablets","avgSeats":90,"totalSeats":90},{"rooms_furniture":"Classroom-Fixed Tables/Moveable Chairs","avgSeats":70.67,"totalSeats":212},{"rooms_furniture":"Classroom-Learn Lab","avgSeats":50,"totalSeats":150},{"rooms_furniture":"Classroom-Hybrid Furniture","avgSeats":47.63,"totalSeats":381},{"rooms_furniture":"Classroom-Movable Tables & Chairs","avgSeats":39.27,"totalSeats":6479},{"rooms_furniture":"Classroom-Movable Tablets","avgSeats":34.45,"totalSeats":1516},{"rooms_furniture":"Classroom-Moveable Tables & Chairs","avgSeats":17.45,"totalSeats":506}]}
+	"expected":[{"rooms_shortname":"HEBB","maxSeats":-123.25165,"minSeats":49.2661},{"rooms_shortname":"WESB","maxSeats":-123.24937,"minSeats":49.26517},{"rooms_shortname":"WOOD","maxSeats":-123.24673,"minSeats":49.26478},{"rooms_shortname":"ESB","maxSeats":-123.25224,"minSeats":49.26274},{"rooms_shortname":"LSC","maxSeats":-123.24494,"minSeats":49.26236},{"rooms_shortname":"CIRS","maxSeats":-123.25314,"minSeats":49.26207},{"rooms_shortname":"OSBO","maxSeats":-123.24467,"minSeats":49.26047}]}
