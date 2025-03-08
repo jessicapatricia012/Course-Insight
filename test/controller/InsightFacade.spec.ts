@@ -677,7 +677,10 @@ describe("InsightFacade", function () {
 		after(async function () {
 			await clearDisk();
 		});
-		//SORTING
+		//Max
+		it("[c2/maxTest.json] valid", checkQuery);
+		it("[c2/maxTest2.json] valid", checkQuery);
+
 		// it("[c2/validSort.json] valid sort DOWN", checkQuery);
 		it("[c2/valid1.json] valid", checkQuery);
 		it("[c2/valid2.json] valid", checkQuery);

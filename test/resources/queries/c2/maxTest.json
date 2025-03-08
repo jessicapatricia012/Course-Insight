@@ -1,0 +1,90 @@
+{
+	"title": "No Title Specified",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_furniture",
+				"maxSeats",
+				"totalSeats"
+			],
+			"ORDER": {
+				"dir": "DOWN",
+				"keys": [
+					"maxSeats",
+					"totalSeats"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_furniture"
+			],
+			"APPLY": [
+				{
+					"maxSeats": {
+						"MAX": "rooms_seats"
+					}
+				},
+				{
+					"totalSeats": {
+						"SUM": "rooms_seats"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"maxSeats": 503,
+			"totalSeats": 6332
+		},
+		{
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"maxSeats": 442,
+			"totalSeats": 6479
+		},
+		{
+			"rooms_furniture": "Classroom-Fixed Tables/Fixed Chairs",
+			"maxSeats": 375,
+			"totalSeats": 1572
+		},
+		{
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"maxSeats": 350,
+			"totalSeats": 6231
+		},
+		{
+			"rooms_furniture": "Classroom-Hybrid Furniture",
+			"maxSeats": 150,
+			"totalSeats": 381
+		},
+		{
+			"rooms_furniture": "Classroom-Moveable Tablets",
+			"maxSeats": 90,
+			"totalSeats": 90
+		},
+		{
+			"rooms_furniture": "Classroom-Fixed Tables/Moveable Chairs",
+			"maxSeats": 78,
+			"totalSeats": 212
+		},
+		{
+			"rooms_furniture": "Classroom-Learn Lab",
+			"maxSeats": 72,
+			"totalSeats": 150
+		},
+		{
+			"rooms_furniture": "Classroom-Movable Tablets",
+			"maxSeats": 68,
+			"totalSeats": 1516
+		},
+		{
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"maxSeats": 40,
+			"totalSeats": 506
+		}
+	]
+}

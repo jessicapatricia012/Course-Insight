@@ -1,0 +1,33 @@
+{
+    "title": " invalid",
+      "input":{
+        "WHERE": {},
+        "OPTIONS": {
+          "COLUMNS": [
+            "sections_dept",
+            "maxAvg"
+          ],
+          "ORDER": {
+            "dir": "DOWN",
+            "keys": [
+              "maxAvg",
+              "sections_dept"
+            ]
+          }
+        },
+        "TRANSFORMATIONS": {
+          "GROUP": [
+            "sections_dept"
+          ],
+          "APPLY": [
+            {
+              "maxAvg": {}
+            }
+          ]
+        }
+      }
+      ,
+    "errorExpected": true,
+    "expected": "InsightError"
+  }
+  

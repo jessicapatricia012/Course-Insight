@@ -1,0 +1,106 @@
+{
+	"title": "maxTest2.json",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_furniture",
+				"maxSeats",
+				"totalSeats",
+				"maxLat"
+			],
+			"ORDER": {
+				"dir": "DOWN",
+				"keys": [
+					"maxSeats",
+					"totalSeats"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_furniture"
+			],
+			"APPLY": [
+				{
+					"maxSeats": {
+						"MAX": "rooms_seats"
+					}
+				},
+				{
+					"totalSeats": {
+						"SUM": "rooms_seats"
+					}
+				},
+				{
+					"maxLat": {
+						"MAX": "rooms_lat"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"maxSeats": 503,
+			"totalSeats": 6332,
+			"maxLat": 49.26826
+		},
+		{
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"maxSeats": 442,
+			"totalSeats": 6479,
+			"maxLat": 49.27106
+		},
+		{
+			"rooms_furniture": "Classroom-Fixed Tables/Fixed Chairs",
+			"maxSeats": 375,
+			"totalSeats": 1572,
+			"maxLat": 49.26826
+		},
+		{
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"maxSeats": 350,
+			"totalSeats": 6231,
+			"maxLat": 49.27106
+		},
+		{
+			"rooms_furniture": "Classroom-Hybrid Furniture",
+			"maxSeats": 150,
+			"totalSeats": 381,
+			"maxLat": 49.26274
+		},
+		{
+			"rooms_furniture": "Classroom-Moveable Tablets",
+			"maxSeats": 90,
+			"totalSeats": 90,
+			"maxLat": 49.26958
+		},
+		{
+			"rooms_furniture": "Classroom-Fixed Tables/Moveable Chairs",
+			"maxSeats": 78,
+			"totalSeats": 212,
+			"maxLat": 49.26826
+		},
+		{
+			"rooms_furniture": "Classroom-Learn Lab",
+			"maxSeats": 72,
+			"totalSeats": 150,
+			"maxLat": 49.26867
+		},
+		{
+			"rooms_furniture": "Classroom-Movable Tablets",
+			"maxSeats": 68,
+			"totalSeats": 1516,
+			"maxLat": 49.26826
+		},
+		{
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"maxSeats": 40,
+			"totalSeats": 506,
+			"maxLat": 49.26958
+		}
+	]
+}
