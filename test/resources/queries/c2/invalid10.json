@@ -6,22 +6,21 @@
           "COLUMNS": [
             "sections_dept",
             "maxAvg"
-          ], 
+          ],
           "ORDER": {
             "dir": "DOWN",
             "keys": [
-              "maxAvg",
-              "sections_dept"
+              {
+                "maxAvg": {
+                  "MAX": "sections_avg"
+                }
+              }
             ]
           }
         },
         "TRANSFORMATIONS": {
           "GROUP": [
-            {
-              "maxAvg": {
-                "MAX": "sections_avg"
-              }
-            }
+            "sections_dept"
           ],
           "APPLY": [
             {

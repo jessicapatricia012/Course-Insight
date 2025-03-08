@@ -4,56 +4,23 @@
         "WHERE": {},
         "OPTIONS": {
           "COLUMNS": [
-            {
-              "dir": "UP",
-              "keys": [
-                "avgSeats",
-                {
-                  "dir": "DOWN",
-                  "keys": [
-                    "totalSeats"
-                  ]
-                }
-              ]
-            }
+            "sections_dept",
+            "maxAvg"
           ],
           "ORDER": {
             "dir": "DOWN",
             "keys": [
-              {
-                "dir": "UP",
-                "keys": [
-                  "avgSeats",
-                  {
-                    "dir": "DOWN",
-                    "keys": [
-                      "totalSeats"
-                    ]
-                  }
-                ]
-              },
-              "maxSeats"
+              "maxAvg",
+              "sections_dept"
             ]
           }
         },
         "TRANSFORMATIONS": {
-          "GROUP": [
-            "rooms_furniture"
-          ],
+          "GROUP": {},
           "APPLY": [
             {
-              "avgSeats": {
-                "AVG": "rooms_seats"
-              }
-            },
-            {
-              "totalSeats": {
-                "SUM": "rooms_seats"
-              }
-            },
-            {
-              "maxSeats": {
-                "MAX": "rooms_seats"
+              "maxAvg": {
+                "MAX": "sections_avg"
               }
             }
           ]

@@ -4,33 +4,22 @@
         "WHERE": {},
         "OPTIONS": {
           "COLUMNS": [
-            "rooms_furniture",
-            "avgSeats",
-            "totalSeats"
+            "sections_dept",
+            "maxAvg"
           ],
           "ORDER": {
-            "dir": ["UP"],
+            "dir": "DOWN",
             "keys": [
-              "avgSeats"
+              "maxAvg",
+              "sections_dept"
             ]
           }
         },
         "TRANSFORMATIONS": {
           "GROUP": [
-            "rooms_furniture"
+            "sections_dept"
           ],
-          "APPLY": [
-            {
-              "avgSeats": {
-                "AVG": "rooms_seats"
-              }
-            },
-            {
-              "totalSeats": {
-                "SUM": "rooms_seats"
-              }
-            }
-          ]
+          "APPLY": {}
         }
       },
     "errorExpected": true,
