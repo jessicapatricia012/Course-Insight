@@ -6,9 +6,12 @@
           "COLUMNS": [
             "sections_dept",
             "maxAvg"
-          ], 
+          ],
           "ORDER": {
-            "dir": "DOWN",
+            "dir": [
+              "maxAvg",
+              "sections_dept"
+            ],
             "keys": [
               "maxAvg",
               "sections_dept"
@@ -17,11 +20,7 @@
         },
         "TRANSFORMATIONS": {
           "GROUP": [
-            {
-              "maxAvg": {
-                "MAX": "sections_avg"
-              }
-            }
+            "sections_dept"
           ],
           "APPLY": [
             {
@@ -31,8 +30,7 @@
             }
           ]
         }
-      }
-      ,
+      },
     "errorExpected": true,
     "expected": "InsightError"
   }

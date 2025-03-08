@@ -212,10 +212,12 @@ export class QueryParser {
 	}
 
 	private parseGroup(keylist: any): Array<any> {
-		if (keylist === null || keylist.length === 0) throw new InsightError("GROUP CLAUSE IS EMPTY OR MISSING");
+		if (keylist === null || keylist.length === 0 || !Array.isArray(keylist))
+			throw new InsightError("GROUP CLAUSE IS EMPTY OR MISSING");
 
 		const res = [];
 		for (const key of keylist) {
+			if (typeof key !== "string") throw new InsightError("GROUP keys must be a string");
 			const field: string = this.getField(key);
 			if (!(field in MField || field in SField)) throw new InsightError("Invalid key in GROUP");
 
@@ -236,6 +238,7 @@ export class QueryParser {
 			// 	throw new InsightError("APPLY rule must be an object");
 			// }
 			const [[applyKey, applyObj]] = Object.entries(rule);
+			if (Object.entries(applyObj as any).length !== 1) throw new InsightError("Apply rule is empty");
 			const [[applyToken, key]] = Object.entries(applyObj as any);
 			if (typeof applyKey !== "string" || applyKey === "" || applyKey.includes("_")) {
 				throw new InsightError("APPLY key must be a string and non-empty and not have underscore");

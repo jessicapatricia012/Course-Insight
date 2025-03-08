@@ -1,20 +1,29 @@
 {
     "title": " invalid",
-      "input": {
+      "input":{
         "WHERE": {},
         "OPTIONS": {
           "COLUMNS": [
-            "rooms_furniture",
-            "avgSeats"
+            "sections_dept",
+            "maxAvg"
           ],
           "ORDER": {
-            "dir": "UP",
+            "dir": "DOWN",
             "keys": [
-              "rooms_number"
+              "maxAvg",
+              "sections_dept"
             ]
           }
         },
         "TRANSFORMATIONS": {
+          "GROUP": [
+            "sections_dept"
+          ],
+          "APPLY": [
+            {
+              "maxAvg": {}
+            }
+          ]
         }
       }
       ,
