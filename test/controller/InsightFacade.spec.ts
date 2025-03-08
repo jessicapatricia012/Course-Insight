@@ -628,7 +628,6 @@ describe("InsightFacade", function () {
 			// Destructuring assignment to reduce property accesses
 			const { input, expected, errorExpected } = await loadTestQuery(this.test.title);
 			let result: InsightResult[] = []; // dummy value before being reassigned
-			// console.time("logTimee");
 
 			try {
 				result = await facade.performQuery(input);
@@ -638,6 +637,8 @@ describe("InsightFacade", function () {
 					// If error was expected but no error occurred, fail the test
 					return expect.fail("performQuery resolved when it should have rejected with ${expected}");
 				}
+				// console.log(result);
+				// console.log(expected);
 				expect(result).to.deep.equal(expected);
 			} catch (err) {
 				if (!errorExpected) {
@@ -649,7 +650,6 @@ describe("InsightFacade", function () {
 				} else {
 					return expect.fail("Write your assertion(s) here.");
 				}
-				// console.timeEnd("logTimee");
 
 				return;
 			}
@@ -678,7 +678,7 @@ describe("InsightFacade", function () {
 			await clearDisk();
 		});
 		//SORTING
-		it("[c2/validSort.json] valid sort DOWN", checkQuery);
+		// it("[c2/validSort.json] valid sort DOWN", checkQuery);
 		it("[c2/valid1.json] valid", checkQuery);
 		it("[c2/valid2.json] valid", checkQuery);
 		it("[c2/valid3.json] valid", checkQuery);

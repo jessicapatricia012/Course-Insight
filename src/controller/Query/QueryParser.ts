@@ -234,9 +234,9 @@ export class QueryParser {
 			throw new InsightError("APPLY must be an array of rules");
 		}
 		for (const rule of rules as any) {
-			// if (typeof rule !== "object" || rule === null || Array.isArray(rule)) {
-			// 	throw new InsightError("APPLY rule must be an object");
-			// }
+			if (typeof rule !== "object" || rule === null || Array.isArray(rule) || Object.entries(rule).length !== 1) {
+				throw new InsightError("APPLY rule must be an object");
+			}
 			const [[applyKey, applyObj]] = Object.entries(rule);
 			if (Object.entries(applyObj as any).length !== 1) throw new InsightError("Apply rule is empty");
 			const [[applyToken, key]] = Object.entries(applyObj as any);
