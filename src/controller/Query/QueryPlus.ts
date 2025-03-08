@@ -219,12 +219,11 @@ export class Apply {
 		if (!(key in MField)) {
 			throw new InsightError("Invalid key for MAX: A key of type number is required");
 		}
-		let max: number = getKey(group[0], key) as number;
+		const val: Array<number> = [];
 		for (const thing of group) {
-			const val: number = getKey(thing, key) as number;
-			if (val > max) max = val;
+			val.push(getKey(thing, key) as number);
 		}
-		return max;
+		return Math.max(...val);
 	}
 
 	/**
