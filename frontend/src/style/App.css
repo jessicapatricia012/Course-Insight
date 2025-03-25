@@ -19,14 +19,13 @@ html, body {
   display: flex;
   width: 100vw;
   height: 100vh;
-  transition: transform 0.3s ease; 
   overflow: hidden;
-  padding-left: 100px;
-
+  padding-left: 190px;
+  transition: 0.3s ease; 
 }
 
 #contentWrapper.shifted {
-  transform: translateX(12vw); 
+  transform: translateX(7vw); 
 }
 
 

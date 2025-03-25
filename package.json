@@ -59,8 +59,5 @@
 		"prettier:check": "prettier src/**/*.ts test/**/*.ts --check",
 		"prettier:fix": "prettier src/**/*.ts test/**/*.ts --write",
 		"start": "ts-node src/App.ts",
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview"
 	}
 }
