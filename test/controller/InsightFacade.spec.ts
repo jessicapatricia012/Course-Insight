@@ -89,527 +89,527 @@ describe("InsightFacade", function () {
 		await clearDisk();
 	});
 
-	describe("AddDataset", function () {
-		beforeEach(async function () {
-			await clearDisk();
-			facade = new InsightFacade();
-		});
-
-		// ROOM /////////////////////////
-		it("should successfully add a room datasets", async function () {
-			const result = await facade.addDataset("ubc room", campus, InsightDatasetKind.Rooms);
-			expect(result).to.have.members(["ubc room"]);
-		});
-
-		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
-		it("should reject adding with  an empty dataset id", async function () {
-			try {
-				await facade.addDataset("", sections, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should successfully add a dataset (first)", async function () {
-			const result = await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
-			expect(result).to.have.members(["ubc"]);
-		});
-
-		it("should successfully add two datasets", async function () {
-			await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
-			const result = await facade.addDataset("ubc2", smallPair, InsightDatasetKind.Sections);
-			expect(result).to.have.members(["ubc1", "ubc2"]);
-		});
-
-		it("should successfully add more than two datasets", async function () {
-			await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
-			await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
-			const result = await facade.addDataset("ubc3", sections, InsightDatasetKind.Sections);
-			expect(result).to.have.members(["ubc1", "ubc2", "ubc3"]);
-		});
-
-		it("should reject adding with id that starts with _", async function () {
-			try {
-				await facade.addDataset("_ubc", sections, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with id that ends with _", async function () {
-			try {
-				await facade.addDataset("ubc_", sections, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with id that has _ in between", async function () {
-			try {
-				await facade.addDataset("u_bc", sections, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with id that is only whitespace", async function () {
-			try {
-				await facade.addDataset(" ", sections, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with id that is only whitespace (second)", async function () {
-			try {
-				await facade.addDataset("            ", sections, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should successfully add a dataset with whitespace and other character", async function () {
-			const result = await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
-			expect(result).to.have.members(["ubc ubc"]);
-		});
-
-		it("should successfully add a dataset with whitespace and other character (second)", async function () {
-			const result = await facade.addDataset(" ubc ubc ", sections, InsightDatasetKind.Sections);
-			expect(result).to.have.members([" ubc ubc "]);
-		});
-
-		it("should reject with id that is the same as the id of an already added dataset", async function () {
-			try {
-				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
-				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
-
-		// TESTS FOR CONTENT ///////////////////////////////////////////////////////////////
-		it("should reject adding with no valid section", async function () {
-			try {
-				await facade.addDataset("ubc", noSection, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with no valid section (2)", async function () {
-			try {
-				await facade.addDataset("ubc", noSectionTwo, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with invalid course (not json format)", async function () {
-			try {
-				await facade.addDataset("ubc", notJson, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with empty zip (no course/ folder)", async function () {
-			try {
-				await facade.addDataset("ubc", empty, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with no result key", async function () {
-			try {
-				await facade.addDataset("ubc", noResult, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with blank file", async function () {
-			try {
-				await facade.addDataset("ubc", blank, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with empty Course folder", async function () {
-			try {
-				await facade.addDataset("ubc", emptyFolder, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with non-zip file format", async function () {
-			try {
-				await facade.addDataset("ubc", nonZip, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with missing field (invalid section)", async function () {
-			try {
-				await facade.addDataset("ubc", missingField, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with missing field (invalid section) 2", async function () {
-			try {
-				await facade.addDataset("ubc", missingFieldTwo, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with no content", async function () {
-			try {
-				await facade.addDataset("ubc", "", InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with other format", async function () {
-			try {
-				await facade.addDataset("ubc", txtFormat, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject adding with wrong folder name (not /courses)", async function () {
-			try {
-				await facade.addDataset("ubc", wrongFolderName, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should successfully add a dataset with one valid section", async function () {
-			const result = await facade.addDataset("ubc", oneValidSection, InsightDatasetKind.Sections);
-			expect(result).to.have.members(["ubc"]);
-		});
-
-		it("should reject adding with no folder (straight to jsons)", async function () {
-			try {
-				await facade.addDataset("ubc", skipFolder, InsightDatasetKind.Sections);
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-	});
-
-	describe("removeDataset", function () {
-		beforeEach(async function () {
-			await clearDisk();
-			facade = new InsightFacade();
-		});
-
-		// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
-		it("should reject removing with  an empty dataset id", async function () {
-			try {
-				await facade.removeDataset("");
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should successfully remove a dataset (first)", async function () {
-			await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
-			const result = await facade.removeDataset("ubc");
-			expect(result).to.equal("ubc");
-		});
-
-		it("should reject removing a dataset id that has been removed", async function () {
-			try {
-				await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
-				await facade.removeDataset("ubc");
-				await facade.removeDataset("ubc");
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(NotFoundError);
-			}
-		});
-
-		it("should reject removing with id that has _", async function () {
-			try {
-				await facade.removeDataset("_ubc");
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-
-			try {
-				await facade.removeDataset("ubc_");
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-
-			try {
-				await facade.removeDataset("u_bc");
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should reject with id that is only whitespace", async function () {
-			facade = new InsightFacade();
-
-			try {
-				await facade.removeDataset(" ");
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(InsightError);
-			}
-		});
-
-		it("should successfully remove a dataset with whitespace and other character", async function () {
-			await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
-			const result = await facade.removeDataset("ubc ubc");
-			expect(result).to.equal("ubc ubc");
-		});
-
-		it("should reject with id that is not yet added", async function () {
-			facade = new InsightFacade();
-
-			try {
-				await facade.removeDataset("notyetadded");
-				expect.fail("Should have thrown!");
-			} catch (err) {
-				expect(err).to.be.an.instanceOf(NotFoundError);
-			}
-		});
-		// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
-	});
-
-	describe("listDatasets", function () {
-		beforeEach(async function () {
-			await clearDisk();
-			facade = new InsightFacade();
-		});
-		it("should successfully list a dataset", async function () {
-			await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
-			const result = await facade.listDatasets();
-			const expected = [
-				{
-					id: "ubc",
-					kind: InsightDatasetKind.Sections,
-					numRows: 64612,
-				},
-			];
-			expect(result).to.deep.equal(expected);
-		});
-
-		it("should successfully list two datasets", async function () {
-			await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
-			await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
-			const result = await facade.listDatasets();
-			const expected = [
-				{
-					id: "ubc1",
-					kind: InsightDatasetKind.Sections,
-					numRows: 64612,
-				},
-				{
-					id: "ubc2",
-					kind: InsightDatasetKind.Sections,
-					numRows: 64612,
-				},
-			];
-			expect(result).to.deep.equal(expected);
-		});
-
-		it("should successfully list when no dataset has been added", async function () {
-			const result = await facade.listDatasets();
-			expect(result).to.deep.equal([]);
-		});
-	});
-
-	describe("Group", function () {
-		/**
-		 * Loads group test
-		 * @param filename - name of file
-		 */
-		async function loadGroupTest(filename: string): Promise<GroupTest> {
-			const data = await fs.readFile(`test/resources/queries/GroupTest/${filename}`, "utf-8");
-			const groupTest: any = JSON.parse(data);
-			assertGroupTest(groupTest);
-			return groupTest;
-		}
-
-		/**
-		 * Type check groupTest
-		 * @param groupTest
-		 */
-		function assertGroupTest(groupTest: any): asserts groupTest is GroupTest {
-			if (Array.isArray(groupTest)) {
-				throw new Error("ValidationError: Test Group must be an object not an array.");
-			}
-			if (!Object.hasOwn(groupTest, "input")) {
-				throw new Error("ValidationError: Test Group is missing required field 'input'.");
-			}
-			if (!Object.hasOwn(groupTest, "expected")) {
-				throw new Error("ValidationError: Test Group is missing required field 'expected'.");
-			}
-			if (!Object.hasOwn(groupTest, "keylist")) {
-				throw new Error("ValidationError: Test Group is missing required field 'keylist'.");
-			}
-		}
-
-		/**
-		 * Tests the group function from the Group class
-		 * @param filename
-		 */
-		async function checkGroup(filename: string): Promise<void> {
-			const { keylist, input, expected } = await loadGroupTest(filename);
-			const group = new Group(keylist);
-
-			const res = group.group(input);
-			expect(res).to.have.deep.members(expected);
-		}
-
-		it("Should group by one key", async function () {
-			await checkGroup("test1.json");
-		});
-
-		it("should group by two keys", async function () {
-			await checkGroup("test2.json");
-		});
-	});
-
-	describe("Apply", async function () {
-		async function loadApplyTest(filename: string): Promise<ApplyTest> {
-			const data = await fs.readFile(`test/resources/queries/ApplyTest/${filename}`, "utf-8");
-			const applyTest: any = JSON.parse(data);
-			assertApplyTest(applyTest);
-			return applyTest;
-		}
-
-		function assertApplyTest(applyTest: any): asserts applyTest is ApplyTest {
-			if (Array.isArray(applyTest)) {
-				throw new Error("ValidationError: Test Apply must be an object not an array.");
-			}
-			if (!Object.hasOwn(applyTest, "input")) {
-				throw new Error("ValidationError: Test Apply is missing required field 'input'.");
-			}
-			if (!Object.hasOwn(applyTest, "expected")) {
-				throw new Error("ValidationError: Test Apply is missing required field 'expected'.");
-			}
-			if (!Object.hasOwn(applyTest, "rules")) {
-				throw new Error("ValidationError: Test Apply is missing required field 'rules'.");
-			}
-		}
-
-		async function checkApply(filename: string): Promise<void> {
-			const { rules, input, expected } = await loadApplyTest(filename);
-			const rulesObj: ApplyRule[] = [];
-			rules.forEach((rule: any) => {
-				rulesObj.push(new ApplyRule(rule.applyKey, rule.applyToken, rule.key));
-			});
-			const apply: Apply = new Apply(rulesObj);
-			const res = apply.apply(input);
-			expect(res).to.have.deep.members(expected);
-		}
-		it("Should work with MAX", async function () {
-			await checkApply("test1.json");
-		});
-
-		it("Should work with MIN", async function () {
-			await checkApply("test2.json");
-		});
-
-		it("Should work with AVG", async function () {
-			await checkApply("test3.json");
-		});
-
-		it("Should work with SUM", async function () {
-			await checkApply("test4.json");
-		});
-
-		it("Should work with COUNT", async function () {
-			await checkApply("test5.json");
-		});
-
-		it("Should work with two groups", async function () {
-			await checkApply("test6.json");
-		});
-	});
-
-	describe("Transformations", async function () {
-		async function loadTransTest(filename: string): Promise<any> {
-			const data = await fs.readFile(`test/resources/queries/TransformationTest/${filename}`, "utf-8");
-			const transTest: any = JSON.parse(data);
-			return transTest;
-		}
-
-		async function checkTransformation(filename: string): Promise<void> {
-			const { keylist, rules, input, expected } = await loadTransTest(filename);
-			const rulesObj: ApplyRule[] = [];
-			rules.forEach((rule: any) => {
-				rulesObj.push(new ApplyRule(rule.applyKey, rule.applyToken, rule.key));
-			});
-
-			const trans: Transformation = new Transformation(new Group(keylist), new Apply(rulesObj));
-			const res = trans.transform(input);
-			expect(res).to.have.deep.members(expected);
-		}
-
-		it("Should pass a simple example", async function () {
-			await checkTransformation("test1.json");
-		});
-
-		it("Should pass a more complicated example", async function () {
-			await checkTransformation("test2.json");
-		});
-	});
-
-	describe("QueryParser", async function () {
-		async function loadParseTest(filename: string): Promise<any> {
-			const data = await fs.readFile(`test/resources/queries/ParseTest/${filename}`, "utf-8");
-			const parseTest: any = JSON.parse(data);
-			return parseTest;
-		}
-
-		it("Should parse simple query", async function () {
-			const { input, query, expected } = await loadParseTest("test1.json");
-			const parser: QueryParser = new QueryParser();
-			const queryObj: Query = parser.parseQuery(query);
-			const res: Array<any> = queryObj.query(input);
-			expect(res).to.have.deep.members(expected);
-		});
-	});
+	// describe("AddDataset", function () {
+	// 	beforeEach(async function () {
+	// 		await clearDisk();
+	// 		facade = new InsightFacade();
+	// 	});
+
+	// 	// ROOM /////////////////////////
+	// 	it("should successfully add a room datasets", async function () {
+	// 		const result = await facade.addDataset("ubc room", campus, InsightDatasetKind.Rooms);
+	// 		expect(result).to.have.members(["ubc room"]);
+	// 	});
+
+	// 	// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
+	// 	it("should reject adding with  an empty dataset id", async function () {
+	// 		try {
+	// 			await facade.addDataset("", sections, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should successfully add a dataset (first)", async function () {
+	// 		const result = await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+	// 		expect(result).to.have.members(["ubc"]);
+	// 	});
+
+	// 	it("should successfully add two datasets", async function () {
+	// 		await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.addDataset("ubc2", smallPair, InsightDatasetKind.Sections);
+	// 		expect(result).to.have.members(["ubc1", "ubc2"]);
+	// 	});
+
+	// 	it("should successfully add more than two datasets", async function () {
+	// 		await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
+	// 		await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.addDataset("ubc3", sections, InsightDatasetKind.Sections);
+	// 		expect(result).to.have.members(["ubc1", "ubc2", "ubc3"]);
+	// 	});
+
+	// 	it("should reject adding with id that starts with _", async function () {
+	// 		try {
+	// 			await facade.addDataset("_ubc", sections, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with id that ends with _", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc_", sections, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with id that has _ in between", async function () {
+	// 		try {
+	// 			await facade.addDataset("u_bc", sections, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with id that is only whitespace", async function () {
+	// 		try {
+	// 			await facade.addDataset(" ", sections, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with id that is only whitespace (second)", async function () {
+	// 		try {
+	// 			await facade.addDataset("            ", sections, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should successfully add a dataset with whitespace and other character", async function () {
+	// 		const result = await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
+	// 		expect(result).to.have.members(["ubc ubc"]);
+	// 	});
+
+	// 	it("should successfully add a dataset with whitespace and other character (second)", async function () {
+	// 		const result = await facade.addDataset(" ubc ubc ", sections, InsightDatasetKind.Sections);
+	// 		expect(result).to.have.members([" ubc ubc "]);
+	// 	});
+
+	// 	it("should reject with id that is the same as the id of an already added dataset", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+	// 			await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+	// 	// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
+
+	// 	// TESTS FOR CONTENT ///////////////////////////////////////////////////////////////
+	// 	it("should reject adding with no valid section", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", noSection, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with no valid section (2)", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", noSectionTwo, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with invalid course (not json format)", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", notJson, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with empty zip (no course/ folder)", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", empty, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with no result key", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", noResult, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with blank file", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", blank, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with empty Course folder", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", emptyFolder, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with non-zip file format", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", nonZip, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with missing field (invalid section)", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", missingField, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with missing field (invalid section) 2", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", missingFieldTwo, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with no content", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", "", InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with other format", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", txtFormat, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject adding with wrong folder name (not /courses)", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", wrongFolderName, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should successfully add a dataset with one valid section", async function () {
+	// 		const result = await facade.addDataset("ubc", oneValidSection, InsightDatasetKind.Sections);
+	// 		expect(result).to.have.members(["ubc"]);
+	// 	});
+
+	// 	it("should reject adding with no folder (straight to jsons)", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", skipFolder, InsightDatasetKind.Sections);
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+	// });
+
+	// describe("removeDataset", function () {
+	// 	beforeEach(async function () {
+	// 		await clearDisk();
+	// 		facade = new InsightFacade();
+	// 	});
+
+	// 	// TESTS FOR ID ///////////////////////////////////////////////////////////////////////////
+	// 	it("should reject removing with  an empty dataset id", async function () {
+	// 		try {
+	// 			await facade.removeDataset("");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should successfully remove a dataset (first)", async function () {
+	// 		await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.removeDataset("ubc");
+	// 		expect(result).to.equal("ubc");
+	// 	});
+
+	// 	it("should reject removing a dataset id that has been removed", async function () {
+	// 		try {
+	// 			await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+	// 			await facade.removeDataset("ubc");
+	// 			await facade.removeDataset("ubc");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(NotFoundError);
+	// 		}
+	// 	});
+
+	// 	it("should reject removing with id that has _", async function () {
+	// 		try {
+	// 			await facade.removeDataset("_ubc");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+
+	// 		try {
+	// 			await facade.removeDataset("ubc_");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+
+	// 		try {
+	// 			await facade.removeDataset("u_bc");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should reject with id that is only whitespace", async function () {
+	// 		facade = new InsightFacade();
+
+	// 		try {
+	// 			await facade.removeDataset(" ");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(InsightError);
+	// 		}
+	// 	});
+
+	// 	it("should successfully remove a dataset with whitespace and other character", async function () {
+	// 		await facade.addDataset("ubc ubc", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.removeDataset("ubc ubc");
+	// 		expect(result).to.equal("ubc ubc");
+	// 	});
+
+	// 	it("should reject with id that is not yet added", async function () {
+	// 		facade = new InsightFacade();
+
+	// 		try {
+	// 			await facade.removeDataset("notyetadded");
+	// 			expect.fail("Should have thrown!");
+	// 		} catch (err) {
+	// 			expect(err).to.be.an.instanceOf(NotFoundError);
+	// 		}
+	// 	});
+	// 	// END OF TESTS FOR ID /////////////////////////////////////////////////////////////////
+	// });
+
+	// describe("listDatasets", function () {
+	// 	beforeEach(async function () {
+	// 		await clearDisk();
+	// 		facade = new InsightFacade();
+	// 	});
+	// 	it("should successfully list a dataset", async function () {
+	// 		await facade.addDataset("ubc", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.listDatasets();
+	// 		const expected = [
+	// 			{
+	// 				id: "ubc",
+	// 				kind: InsightDatasetKind.Sections,
+	// 				numRows: 64612,
+	// 			},
+	// 		];
+	// 		expect(result).to.deep.equal(expected);
+	// 	});
+
+	// 	it("should successfully list two datasets", async function () {
+	// 		await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
+	// 		await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
+	// 		const result = await facade.listDatasets();
+	// 		const expected = [
+	// 			{
+	// 				id: "ubc1",
+	// 				kind: InsightDatasetKind.Sections,
+	// 				numRows: 64612,
+	// 			},
+	// 			{
+	// 				id: "ubc2",
+	// 				kind: InsightDatasetKind.Sections,
+	// 				numRows: 64612,
+	// 			},
+	// 		];
+	// 		expect(result).to.deep.equal(expected);
+	// 	});
+
+	// 	it("should successfully list when no dataset has been added", async function () {
+	// 		const result = await facade.listDatasets();
+	// 		expect(result).to.deep.equal([]);
+	// 	});
+	// });
+
+	// describe("Group", function () {
+	// 	/**
+	// 	 * Loads group test
+	// 	 * @param filename - name of file
+	// 	 */
+	// 	async function loadGroupTest(filename: string): Promise<GroupTest> {
+	// 		const data = await fs.readFile(`test/resources/queries/GroupTest/${filename}`, "utf-8");
+	// 		const groupTest: any = JSON.parse(data);
+	// 		assertGroupTest(groupTest);
+	// 		return groupTest;
+	// 	}
+
+	// 	/**
+	// 	 * Type check groupTest
+	// 	 * @param groupTest
+	// 	 */
+	// 	function assertGroupTest(groupTest: any): asserts groupTest is GroupTest {
+	// 		if (Array.isArray(groupTest)) {
+	// 			throw new Error("ValidationError: Test Group must be an object not an array.");
+	// 		}
+	// 		if (!Object.hasOwn(groupTest, "input")) {
+	// 			throw new Error("ValidationError: Test Group is missing required field 'input'.");
+	// 		}
+	// 		if (!Object.hasOwn(groupTest, "expected")) {
+	// 			throw new Error("ValidationError: Test Group is missing required field 'expected'.");
+	// 		}
+	// 		if (!Object.hasOwn(groupTest, "keylist")) {
+	// 			throw new Error("ValidationError: Test Group is missing required field 'keylist'.");
+	// 		}
+	// 	}
+
+	// 	/**
+	// 	 * Tests the group function from the Group class
+	// 	 * @param filename
+	// 	 */
+	// 	async function checkGroup(filename: string): Promise<void> {
+	// 		const { keylist, input, expected } = await loadGroupTest(filename);
+	// 		const group = new Group(keylist);
+
+	// 		const res = group.group(input);
+	// 		expect(res).to.have.deep.members(expected);
+	// 	}
+
+	// 	it("Should group by one key", async function () {
+	// 		await checkGroup("test1.json");
+	// 	});
+
+	// 	it("should group by two keys", async function () {
+	// 		await checkGroup("test2.json");
+	// 	});
+	// });
+
+	// describe("Apply", async function () {
+	// 	async function loadApplyTest(filename: string): Promise<ApplyTest> {
+	// 		const data = await fs.readFile(`test/resources/queries/ApplyTest/${filename}`, "utf-8");
+	// 		const applyTest: any = JSON.parse(data);
+	// 		assertApplyTest(applyTest);
+	// 		return applyTest;
+	// 	}
+
+	// 	function assertApplyTest(applyTest: any): asserts applyTest is ApplyTest {
+	// 		if (Array.isArray(applyTest)) {
+	// 			throw new Error("ValidationError: Test Apply must be an object not an array.");
+	// 		}
+	// 		if (!Object.hasOwn(applyTest, "input")) {
+	// 			throw new Error("ValidationError: Test Apply is missing required field 'input'.");
+	// 		}
+	// 		if (!Object.hasOwn(applyTest, "expected")) {
+	// 			throw new Error("ValidationError: Test Apply is missing required field 'expected'.");
+	// 		}
+	// 		if (!Object.hasOwn(applyTest, "rules")) {
+	// 			throw new Error("ValidationError: Test Apply is missing required field 'rules'.");
+	// 		}
+	// 	}
+
+	// 	async function checkApply(filename: string): Promise<void> {
+	// 		const { rules, input, expected } = await loadApplyTest(filename);
+	// 		const rulesObj: ApplyRule[] = [];
+	// 		rules.forEach((rule: any) => {
+	// 			rulesObj.push(new ApplyRule(rule.applyKey, rule.applyToken, rule.key));
+	// 		});
+	// 		const apply: Apply = new Apply(rulesObj);
+	// 		const res = apply.apply(input);
+	// 		expect(res).to.have.deep.members(expected);
+	// 	}
+	// 	it("Should work with MAX", async function () {
+	// 		await checkApply("test1.json");
+	// 	});
+
+	// 	it("Should work with MIN", async function () {
+	// 		await checkApply("test2.json");
+	// 	});
+
+	// 	it("Should work with AVG", async function () {
+	// 		await checkApply("test3.json");
+	// 	});
+
+	// 	it("Should work with SUM", async function () {
+	// 		await checkApply("test4.json");
+	// 	});
+
+	// 	it("Should work with COUNT", async function () {
+	// 		await checkApply("test5.json");
+	// 	});
+
+	// 	it("Should work with two groups", async function () {
+	// 		await checkApply("test6.json");
+	// 	});
+	// });
+
+	// describe("Transformations", async function () {
+	// 	async function loadTransTest(filename: string): Promise<any> {
+	// 		const data = await fs.readFile(`test/resources/queries/TransformationTest/${filename}`, "utf-8");
+	// 		const transTest: any = JSON.parse(data);
+	// 		return transTest;
+	// 	}
+
+	// 	async function checkTransformation(filename: string): Promise<void> {
+	// 		const { keylist, rules, input, expected } = await loadTransTest(filename);
+	// 		const rulesObj: ApplyRule[] = [];
+	// 		rules.forEach((rule: any) => {
+	// 			rulesObj.push(new ApplyRule(rule.applyKey, rule.applyToken, rule.key));
+	// 		});
+
+	// 		const trans: Transformation = new Transformation(new Group(keylist), new Apply(rulesObj));
+	// 		const res = trans.transform(input);
+	// 		expect(res).to.have.deep.members(expected);
+	// 	}
+
+	// 	it("Should pass a simple example", async function () {
+	// 		await checkTransformation("test1.json");
+	// 	});
+
+	// 	it("Should pass a more complicated example", async function () {
+	// 		await checkTransformation("test2.json");
+	// 	});
+	// });
+
+	// describe("QueryParser", async function () {
+	// 	async function loadParseTest(filename: string): Promise<any> {
+	// 		const data = await fs.readFile(`test/resources/queries/ParseTest/${filename}`, "utf-8");
+	// 		const parseTest: any = JSON.parse(data);
+	// 		return parseTest;
+	// 	}
+
+	// 	it("Should parse simple query", async function () {
+	// 		const { input, query, expected } = await loadParseTest("test1.json");
+	// 		const parser: QueryParser = new QueryParser();
+	// 		const queryObj: Query = parser.parseQuery(query);
+	// 		const res: Array<any> = queryObj.query(input);
+	// 		expect(res).to.have.deep.members(expected);
+	// 	});
+	// });
 
 	describe("PerformQuery", function () {
 		/**
@@ -681,7 +681,7 @@ describe("InsightFacade", function () {
 		it("[c2/maxTest.json] valid", checkQuery);
 		it("[c2/maxTest2.json] valid", checkQuery);
 
-		// it("[c2/validSort.json] valid sort DOWN", checkQuery);
+		it("[c2/validSort.json] valid sort DOWN", checkQuery);
 		it("[c2/valid1.json] valid", checkQuery);
 		it("[c2/valid2.json] valid", checkQuery);
 		it("[c2/valid3.json] valid", checkQuery);
@@ -785,7 +785,7 @@ describe("InsightFacade", function () {
 		it("[invalid/orderEmpty.json] ORDER Empty", checkQuery);
 		it("[invalid/orderNotInCol.json] ORDER not in COLUMN", checkQuery);
 		it("[valid/orderEmptyResult.json] ORDER empty result", checkQuery);
-		// it("[valid/order1.json] ORDER by mfield (avg)", checkQuery);
+		it("[valid/order1.json] ORDER by mfield (avg)", checkQuery);
 		it("[valid/order2.json] ORDER by sfield (title)", checkQuery);
 		it("[valid/orderExist.json] ORDER exists", checkQuery);
 		it("[valid/orderNone.json] ORDER doesnt exist", checkQuery);
@@ -835,7 +835,7 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidField2.json] Invalid field in COLUMNS", checkQuery);
 
 		// VALID COMPLEX
-		//it("[valid/validComplex.json] Complex valid", checkQuery);
+		it("[valid/validComplex.json] Complex valid", checkQuery);
 		it("[valid/EBNF1.json] EBNF with NOT", checkQuery);
 		it("[valid/EBNF2.json] EBNF with double NOT", checkQuery);
 		it("[valid/EBNF3.json] EBNF 3", checkQuery);
@@ -866,7 +866,7 @@ describe("InsightFacade", function () {
 		it("[validNew/LT4.json] LT4", checkQuery);
 		it("[validNew/LT5.json] LT5", checkQuery);
 
-		it("[validNew/IS1.json] IS1", checkQuery); //
+		it("[validNew/IS1.json] IS1", checkQuery);
 		it("[validNew/IS2.json] IS2", checkQuery);
 		it("[validNew/IS3.json] IS3", checkQuery);
 		it("[validNew/IS32.json] IS32", checkQuery);

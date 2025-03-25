@@ -1,0 +1,114 @@
+#App {
+  background-color: #27293b;
+  color: white;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  font-family:'Lucida Sans';
+}
+
+html, body {
+    margin: 0; 
+    padding: 0; 
+    height: 100%;
+    overflow: hidden;
+}
+
+
+#contentWrapper {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  transition: transform 0.3s ease; 
+  overflow: hidden;
+  padding-left: 100px;
+
+}
+
+#contentWrapper.shifted {
+  transform: translateX(12vw); 
+}
+
+
+.slidePanel {
+  position: fixed;
+  width: 15vw;
+  height: 100%;
+  color: green;
+  left: -12vw; 
+  transition: left 0.3s ease; 
+  z-index: 1000; 
+  background-color: #67eaf1;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
+}
+
+.slidePanel.shifted {
+  left: 0;
+}
+
+.page{
+  width: 80vw;
+}
+
+
+
+
+
+
+
+
+
+
+hr{
+  color: #fff36a;
+}
+
+
+
+
+
+button {
+  color: white;
+  font-family:'Lucida Sans';
+  width: 120px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #e6aaff;
+  border: none;
+  font-family:'Lucida Sans';
+}
+button:hover {
+  background-color: #fff36a;
+  color: #e6aaff;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+button:active {
+  background-color: transparent;
+  border: solid 2px;
+  border-color: #fff36a;
+}
+
+.fa-solid {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  transform: rotate(-90deg);
+  color: #fff36a;
+  font-size: 22px;
+  z-index: 10001;
+  transition: left 0.3s ease; 
+
+} 
+
+.fa-solid:hover {
+  color: #e6aaff;
+  transform: scale(1.05) rotate(-90deg);
+  cursor: pointer;
+}
+
+.fa-solid.shifted {
+  transform: rotate(90deg);
+  left: 13vw; 
+  transition: left 0.3s ease; 
+} 
