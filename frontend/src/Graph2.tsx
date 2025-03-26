@@ -4,104 +4,154 @@ import GraphComponent from "./GraphComponent";
 
 
 const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
-    const [courses, setCourses] = useState<string[]>([]);
-    const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
-    const [selectedYear, setSelectedYear] = useState<string>("");
+    const [departmentOptions, setDepartmentOptions] = useState<string[]>([]);
+    const [selectedDepartment, setSelectedDepartment] = useState<string>("");
+
+    const [courseOptions, setCourseOptions] = useState<{ id: string; title: string }[]>([]);
+    const [selectedCourse, setSelectedCourse] = useState<string>("");
+    const [selectedYear1, setSelectedYear1] = useState<string>("");
+    const [selectedYear2, setSelectedYear2] = useState<string>("");
 
     const [data, setData] = useState<any>(null);
     
 
-    const years: string[] = [];
-    for (let year = 1990; year <= 2024; year++) {
-      years.push(year.toString());
+    const years1: string[] = [];
+    for (let year = 1990; year <= 2023; year++) {
+      years1.push(year.toString());
     }
 
-    const handleYearSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedYear(event.target.value);
-    };
+    const years2: string[] = [];
+    for (let year = parseInt(selectedYear1)+1; year <= Math.min(parseInt(selectedYear1)+10,2024); year++) {
+      years2.push(year.toString());
+    }
+
 
     useEffect(() => {
-        const fetchCourses = async () => {
-            const query = {
-                WHERE: {},
-                OPTIONS: {
-                  COLUMNS: [`${datasetId}_dept`]
+               const fetchDepartmentOptions = async () => {
+                   const query = {
+                       "WHERE": {},
+                       "OPTIONS": {
+                           "COLUMNS": [`${datasetId}_dept`]
+                       },
+                       "TRANSFORMATIONS": {
+                           "GROUP": [`${datasetId}_dept`],
+                           "APPLY": []
+                       }
+                   };
+       
+                   try {
+                       // TODO: fetch department and set to departmentOptions
+                       const results = [];
+                       setDepartmentOptions(results);
+                   } catch (error) {
+                       console.error("Error fetching departments:", error);
+                   }
+               };
+               fetchDepartmentOptions();
+    
+           }, [datasetId]);
+
+
+
+    useEffect(() => {
+        const fetchCoursesOptions = async () => {
+            const query ={
+                "WHERE": {
+                  "IS": {
+                    [`${datasetId}_dept`]: selectedDepartment
+                  }
                 },
-                TRANSFORMATIONS: {
-                  GROUP: [`${datasetId}_dept`],
-                  APPLY: []
+                "OPTIONS": {
+                  "COLUMNS": [
+                    `${datasetId}_id`,
+                    `${datasetId}_title`
+                  ]
+                },
+                "TRANSFORMATIONS": {
+                  "GROUP": [
+                    `${datasetId}_id`,
+                    `${datasetId}_title`
+                  ],
+                  "APPLY": []
                 }
               };
             try {
                // TODO: FETCH COURSES
             } catch (error) {
-                console.error("Error fetching departments:", error);
+                console.error("Error fetching courses:", error);
             }
-            //TODO: SET DEPARTMENT LIST HERE
-            // setDepartments(departmentList);
+            //TODO: SET COURSE LIST HERE
+            const results =  [
+                { id: "210", title: "a" },
+                { id: "310", title: "b" }
+            ];
+
+            setCourseOptions(results);
         };
 
-        fetchCourses();
-    }, []); 
+        fetchCoursesOptions();
+    }, [selectedDepartment,datasetId]);
 
-    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const options = event.target.options;
-        const selectedValues: string[] = [];
-        for (let i = 0; i < options.length; i++) {
-        if (options[i].selected) {
-            selectedValues.push(options[i].value);
-        }
-        }
-        setSelectedCourses(selectedValues);
-    };
+
 
     const getDataForGraph = async () => {
         const query = {
             "WHERE": {
-                "OR": selectedInstructors.map((instructor) => ({
-                    "IS": {
-                        [`${datasetId}_instructor`]: instructor
-                    }
-                }))
-            },
-            "OPTIONS": {
-                "COLUMNS": [
-                    `${datasetId}_instructor`,
-                    "totalFail",
-                    "totalPass"
-                ]
-            },
-            "TRANSFORMATIONS": {
-                "GROUP": [
-                    `${datasetId}_instructor`
-                ],
-                "APPLY": [
+              "AND": [
                 {
-                    "totalFail": {
-                    "SUM": `${datasetId}_fail`
+                  "AND": [
+                    {
+                      "GT": {
+                        [`${datasetId}_year`]: selectedYear1
+                      }
+                    },
+                    {
+                      "LT": {
+                        [`${datasetId}_year`]: selectedYear2
+                      }
                     }
+                  ]
                 },
                 {
-                    "totalPass": {
-                    "SUM": `${datasetId}_pass`
-                    }
+                  "IS": {
+                    [`${datasetId}_dept`]: selectedDepartment
+                  }
+                },
+                {
+                  "IS": {
+                    [`${datasetId}_id`]: selectedCourse
+                  }
                 }
-                ]
+              ]
+            },
+            "OPTIONS": {
+              "COLUMNS": [
+                `${datasetId}_year`,
+                "average"
+              ],
+              "ORDER": `${datasetId}_year`
+            },
+            "TRANSFORMATIONS": {
+              "GROUP": [
+                `${datasetId}_year`
+              ],
+              "APPLY": [
+                {
+                  "average": {
+                    "AVG": `${datasetId}_avg`
+                  }
+                }
+              ]
             }
-
-        };
+          };
         try {
             // TODO: fetch data set to result
             const result = [
-                { instructor: "Instructor A", fail: 3, pass: 70 },
-                { instructor: "Instructor B", fail: 1, pass: 90 }
+                { year: 2000 , avg: 76 },
+                { year: 1001 , avg: 88 }
             ];  
-                   
-            const data = result.map(item => ({
-                instructor: item.instructor,
-                percentageFail: (item.fail * 100) / (item.pass + item.fail)  // Calculate percentage of failure
-            }));
-            setData(data);
+     
+            setData(result);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -111,31 +161,59 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     return (
         <div className="inputsWrapper">
 
-            <div className="inputWrapper">   
-                <label htmlFor="instructorSelect">Courses:</label>      
-                <select className="dropdown instructorSelect" multiple value={selectedCourses} onChange={handleSelectChange}>
-                    {courses.length > 0 ? (
-                    courses.map((dept, index) => (
-                        <option key={index} value={dept}>
-                        {dept}
-                        </option>
-                    ))
+            <div className="inputWrapper">
+                <label htmlFor="departmentOptionSelect">Department:</label>
+                <select className="dropdown departmentOptionSelect" value={selectedDepartment} onChange={(e)=> setSelectedDepartment(e.target.value)}>
+                <option value="" disabled>Select a department</option>
+                    {departmentOptions.length > 0 ? (
+                        departmentOptions.map((dept, index) => (
+                            <option key={index} value={dept}>
+                            {dept}
+                            </option>
+                        ))
                     ) : (
-                    <option disabled>Loading...</option>
+                        <option disabled>Loading...</option>
+                    )}
+                </select>
+            </div>
+
+            <div className="inputWrapper">   
+                <label htmlFor="instructorSelect">Course:</label>      
+                <select className="dropdown instructorSelect" value={selectedCourse} onChange={(e)=> setSelectedCourse(e.target.value)}>
+                <option value="" disabled>Select a course</option>
+                {courseOptions.length > 0 ? (
+                        courseOptions.map((course) => (
+                            <option key={course.id} value={course.id}>
+                                {course.id}-{course.title}
+                            </option>
+                        ))
+                    ) : (
+                        <option disabled>Loading...</option>
                     )}
                 </select>
             </div>
 
             <div className="inputWrapper">    
-                <label htmlFor="yearSelect">Year:</label>           
-                <select className="dropdown yearselect" value={selectedYear} onChange={handleYearSelect}>
-                    <option value="" disabled>Select a year</option>
-                    {years.map((year) => (
+                <label htmlFor="yearSelect">Year:</label>      
+                <div className="years">   
+                <select className="dropdown yearselect" value={selectedYear1} onChange={(e)=> setSelectedYear1(e.target.value)}>
+                    <option value="" disabled>Start year</option>
+                    {years1.map((year) => (
                     <option key={year} value={year}>
                         {year}
                     </option>
                     ))}
                 </select>
+                <p>to</p>
+                <select className="dropdown yearselect" value={selectedYear2} onChange={(e)=> setSelectedYear2(e.target.value)}>
+                    <option value="" disabled>End Year</option>
+                    {years2.map((year) => (
+                    <option key={year} value={year}>
+                        {year}
+                    </option>
+                    ))}
+                </select>
+                </div>  
             </div>
 
             <button className="generateGraphBtn btn" onClick={getDataForGraph}>See Average</button>

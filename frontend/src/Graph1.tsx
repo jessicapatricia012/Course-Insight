@@ -16,7 +16,6 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     }
 
     useEffect(() => {
-           console.log("called");
            const fetchDepartmentOptions = async () => {
                const query = {
                    "WHERE": {},
@@ -31,8 +30,8 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
    
                try {
                    // TODO: fetch department and set to departmentOptions
-                   const departmentOptions = [];
-                   setDepartmentOptions(departmentOptions);
+                   const results = [];
+                   setDepartmentOptions(results);
                } catch (error) {
                    console.error("Error fetching departments:", error);
                }
@@ -134,7 +133,6 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
             <button className="generateGraphBtn btn" onClick={getDataForGraph}>See Average</button>
       
-              {/* TODO: style */}
               {data !== null && <GraphComponent data={data} />}
       </div>
     );

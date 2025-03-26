@@ -29,8 +29,8 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
             try {
                 // TODO: fetch department and set to departmentOptions
-                const departmentOptions = [];
-                setDepartmentOptions(departmentOptions);
+                const results = [];
+                setDepartmentOptions(results);
             } catch (error) {
                 console.error("Error fetching departments:", error);
             }
@@ -59,8 +59,8 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
             try {
                 // TODO: fetch instructor and set to instructor
-                const instructorOptions = [];
-                setInstructorOptions(instructorOptions);
+                const results = [];
+                setInstructorOptions(results);
             } catch (error) {
                 console.error("Error fetching instructors:", error);
             }
@@ -169,7 +169,6 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
         <button className="generateGraphBtn btn" onClick={getDataForGraph}>See Failing</button>
 
-        {/* TODO: style */}
         {data !== null && <GraphComponent data={data} />}
 
 

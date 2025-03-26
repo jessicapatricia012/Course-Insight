@@ -11,7 +11,7 @@ const App: React.FC = () => {
     const [datasetIds, setDatasetIds] = useState<string[]>([]);
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
     const sidePanelRef = useRef<HTMLDivElement | null>(null);
-    const [activePage, setActivePage] = useState("Graph3");
+    const [activePage, setActivePage] = useState("Graph2");
 
     const openSidePanel = () => {
         if (isSidePanelOpen)
