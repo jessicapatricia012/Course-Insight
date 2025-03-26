@@ -79,31 +79,9 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
         setSelectedInstructors(selectedValues);
     };
 
-    const generateGraph = async () => {
-        try{
-            const result = await getDataForGraph();
-            //TODO: GENERATE GRAPH
-
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-    };
-
     const getDataForGraph = async () => {
         const query = {
             "WHERE": {
-                // "OR": [
-                // {
-                //     "IS": {
-                //     [`${datasetId}_instructor`]: selectedInstructors[0]
-                //     }
-                // },
-                // {
-                //     "IS": {
-                //         [`${datasetId}_instructor`]: selectedInstructors[1]
-                //     }
-                // }
-                // ]
                 "OR": selectedInstructors.map((instructor) => ({
                     "IS": {
                         [`${datasetId}_instructor`]: instructor
@@ -137,19 +115,17 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
         };
         try {
-            // TODO: fetch instructor and set to instructor
-            const result = {
-                instructor:"",
-                fail:"",
-                pass:"",
-                percentageFail: function() {
-                    return (this.fail * 100) / (this.pass + this.fail);
-                }            
-            };
-            setData({
-                instructor: result.instructor,
-                percentage: result.percentageFail()
-            })
+            // TODO: fetch data set to result
+            const result = [
+                { instructor: "Instructor A", fail: 3, pass: 70 },
+                { instructor: "Instructor B", fail: 1, pass: 90 }
+            ];  
+                   
+            const data = result.map(item => ({
+                instructor: item.instructor,
+                percentageFail: (item.fail * 100) / (item.pass + item.fail)  // Calculate percentage of failure
+            }));
+            setData(data);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -191,8 +167,9 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             </select>
         </div>
 
-        <button className="generateGraphBtn btn" onClick={generateGraph}>See Failing</button>
+        <button className="generateGraphBtn btn" onClick={getDataForGraph}>See Failing</button>
 
+        {/* TODO: style */}
         {data !== null && <GraphComponent data={data} />}
 
 

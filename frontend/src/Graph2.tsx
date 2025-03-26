@@ -55,24 +55,57 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
         setSelectedCourses(selectedValues);
     };
 
-    const generateGraph = async () => {
+    const getDataForGraph = async () => {
         const query = {
-            WHERE: {},
-            OPTIONS: {
-                COLUMNS: ["sections_dept"]
+            "WHERE": {
+                "OR": selectedInstructors.map((instructor) => ({
+                    "IS": {
+                        [`${datasetId}_instructor`]: instructor
+                    }
+                }))
             },
-            TRANSFORMATIONS: {
-                GROUP: ["sections_dept"],
-                APPLY: []
+            "OPTIONS": {
+                "COLUMNS": [
+                    `${datasetId}_instructor`,
+                    "totalFail",
+                    "totalPass"
+                ]
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": [
+                    `${datasetId}_instructor`
+                ],
+                "APPLY": [
+                {
+                    "totalFail": {
+                    "SUM": `${datasetId}_fail`
+                    }
+                },
+                {
+                    "totalPass": {
+                    "SUM": `${datasetId}_pass`
+                    }
+                }
+                ]
             }
+
         };
-         try {
-            // TODO: FETCH AVERAGE
+        try {
+            // TODO: fetch data set to result
+            const result = [
+                { instructor: "Instructor A", fail: 3, pass: 70 },
+                { instructor: "Instructor B", fail: 1, pass: 90 }
+            ];  
+                   
+            const data = result.map(item => ({
+                instructor: item.instructor,
+                percentageFail: (item.fail * 100) / (item.pass + item.fail)  // Calculate percentage of failure
+            }));
+            setData(data);
         } catch (error) {
-            console.error("Error fetching average:", error);
+            console.error("Error fetching data:", error);
         }
-        //TODO: GENERATE GRAPH
-    };
+    }
 
   
     return (
@@ -105,7 +138,7 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                 </select>
             </div>
 
-            <button className="generateGraphBtn btn" onClick={generateGraph}>See Average</button>
+            <button className="generateGraphBtn btn" onClick={getDataForGraph}>See Average</button>
         
             {data !== null && <GraphComponent data={data} />}
         
