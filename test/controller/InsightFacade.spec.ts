@@ -95,6 +95,7 @@ describe("InsightFacade", function () {
 			facade = new InsightFacade();
 		});
 
+
 		// ROOM /////////////////////////
 		it("should successfully add a room datasets", async function () {
 			const result = await facade.addDataset("ubc room", campus, InsightDatasetKind.Rooms);
