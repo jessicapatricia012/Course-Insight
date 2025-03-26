@@ -133,46 +133,53 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
   
     return (
-      <div className="inputsWrapper">
+        <div>
+            <div className="inputsWrapper">
 
-        <div className="inputWrapper">
-            <label htmlFor="departmentOptionSelect">Department:</label>
-            <select className="dropdown departmentOptionSelect" value={selectedDepartment} onChange={(e)=> setSelectedDepartment(e.target.value)}>
-            <option value="" disabled>Select a department</option>
-                {departmentOptions.length > 0 ? (
-                    departmentOptions.map((dept, index) => (
-                        <option key={index} value={dept}>
-                        {dept}
-                        </option>
-                    ))
-                ) : (
-                    <option disabled>Loading...</option>
-                )}
-            </select>
+                <div className="inputWrapper">
+                    <label htmlFor="departmentOptionSelect">Department:</label>
+                    <select className="dropdown departmentOptionSelect" value={selectedDepartment} onChange={(e)=> setSelectedDepartment(e.target.value)}>
+                    <option value="" disabled>Select a department</option>
+                        {departmentOptions.length > 0 ? (
+                            departmentOptions.map((dept, index) => (
+                                <option key={index} value={dept}>
+                                {dept}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Loading...</option>
+                        )}
+                    </select>
+                </div>
+
+                <div className="inputWrapper">
+                    <label htmlFor="instructorSelect">Instructors:</label>
+                    <select multiple className="dropdown instructorSelect" value={selectedInstructors} onChange={handleSelectInstructors}>
+                    <option value="" disabled>Select instructors</option>
+                        {instructorOptions.length > 0 ? (
+                        instructorOptions.map((instructor, index) => (
+                            <option key={index} value={instructor}>
+                                {instructor}
+                            </option>
+                        ))
+                        ) : (
+                            <option disabled>Loading...</option>
+                        )}
+                    </select>
+                </div>
+            </div>
+
+            <button 
+                className={`generateGraphBtn ${!selectedInstructors || !selectedDepartment? "disabledBtn" : "btn"}`} 
+                disabled={!selectedInstructors || !selectedDepartment} 
+                onClick={getDataForGraph}>
+                    See Failing
+            </button>
+
+            {data !== null && <GraphComponent data={data} />}
+
+
         </div>
-
-        <div className="inputWrapper">
-            <label htmlFor="instructorSelect">Instructors:</label>
-            <select multiple className="dropdown instructorSelect" value={selectedInstructors} onChange={handleSelectInstructors}>
-            <option value="" disabled>Select instructors</option>
-                {instructorOptions.length > 0 ? (
-                instructorOptions.map((instructor, index) => (
-                    <option key={index} value={instructor}>
-                        {instructor}
-                    </option>
-                ))
-                ) : (
-                    <option disabled>Loading...</option>
-                )}
-            </select>
-        </div>
-
-        <button className="generateGraphBtn btn" onClick={getDataForGraph}>See Failing</button>
-
-        {data !== null && <GraphComponent data={data} />}
-
-
-      </div>
     );
   };
 

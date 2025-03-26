@@ -158,64 +158,71 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     }
 
     return (
-        <div className="inputsWrapper">
+        <div>
+            <div className="inputsWrapper">
 
-            <div className="inputWrapper">
-                <label htmlFor="departmentOptionSelect">Department:</label>
-                <select className="dropdown departmentOptionSelect" value={selectedDepartment} onChange={(e)=> setSelectedDepartment(e.target.value)}>
-                <option value="" disabled>Select a department</option>
-                    {departmentOptions.length > 0 ? (
-                        departmentOptions.map((dept, index) => (
-                            <option key={index} value={dept}>
-                            {dept}
-                            </option>
-                        ))
-                    ) : (
-                        <option disabled>Loading...</option>
-                    )}
-                </select>
+                <div className="inputWrapper">
+                    <label htmlFor="departmentOptionSelect">Department:</label>
+                    <select className="dropdown departmentOptionSelect" value={selectedDepartment} onChange={(e)=> setSelectedDepartment(e.target.value)}>
+                    <option value="" disabled>Select a department</option>
+                        {departmentOptions.length > 0 ? (
+                            departmentOptions.map((dept, index) => (
+                                <option key={index} value={dept}>
+                                {dept}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Loading...</option>
+                        )}
+                    </select>
+                </div>
+
+                <div className="inputWrapper">   
+                    <label htmlFor="instructorSelect">Course:</label>      
+                    <select className="dropdown instructorSelect" value={selectedCourse} onChange={(e)=> setSelectedCourse(e.target.value)}>
+                    <option value="" disabled>Select a course</option>
+                    {courseOptions.length > 0 ? (
+                            courseOptions.map((course) => (
+                                <option key={course.id} value={course.id}>
+                                    {course.id}-{course.title}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Loading...</option>
+                        )}
+                    </select>
+                </div>
+
+                <div className="inputWrapper">    
+                    <label htmlFor="yearSelect">Year:</label>      
+                    <div className="years">   
+                    <select className="dropdown yearselect" value={selectedYear1} onChange={(e)=> setSelectedYear1(e.target.value)}>
+                        <option value="" disabled>Start year</option>
+                        {years1.map((year) => (
+                        <option key={year} value={year}>
+                            {year}
+                        </option>
+                        ))}
+                    </select>
+                    <p>to</p>
+                    <select className="dropdown yearselect" value={selectedYear2} onChange={(e)=> setSelectedYear2(e.target.value)}>
+                        <option value="" disabled>End Year</option>
+                        {years2.map((year) => (
+                        <option key={year} value={year}>
+                            {year}
+                        </option>
+                        ))}
+                    </select>
+                    </div>  
+                </div>
             </div>
 
-            <div className="inputWrapper">   
-                <label htmlFor="instructorSelect">Course:</label>      
-                <select className="dropdown instructorSelect" value={selectedCourse} onChange={(e)=> setSelectedCourse(e.target.value)}>
-                <option value="" disabled>Select a course</option>
-                {courseOptions.length > 0 ? (
-                        courseOptions.map((course) => (
-                            <option key={course.id} value={course.id}>
-                                {course.id}-{course.title}
-                            </option>
-                        ))
-                    ) : (
-                        <option disabled>Loading...</option>
-                    )}
-                </select>
-            </div>
-
-            <div className="inputWrapper">    
-                <label htmlFor="yearSelect">Year:</label>      
-                <div className="years">   
-                <select className="dropdown yearselect" value={selectedYear1} onChange={(e)=> setSelectedYear1(e.target.value)}>
-                    <option value="" disabled>Start year</option>
-                    {years1.map((year) => (
-                    <option key={year} value={year}>
-                        {year}
-                    </option>
-                    ))}
-                </select>
-                <p>to</p>
-                <select className="dropdown yearselect" value={selectedYear2} onChange={(e)=> setSelectedYear2(e.target.value)}>
-                    <option value="" disabled>End Year</option>
-                    {years2.map((year) => (
-                    <option key={year} value={year}>
-                        {year}
-                    </option>
-                    ))}
-                </select>
-                </div>  
-            </div>
-
-            <button className="generateGraphBtn btn" onClick={getDataForGraph}>See Average</button>
+            <button 
+                className={`generateGraphBtn ${!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2? "disabledBtn" : "btn"}`} 
+                disabled={!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2}  
+                onClick={getDataForGraph}>
+                    See Average
+            </button>
         
             {data !== null && <GraphComponent data={data} />}
         

@@ -102,39 +102,47 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     }
   
     return (
-        <div className="inputsWrapper">
+        <div>
+            <div className="inputsWrapper">
 
-            <div className="inputWrapper">        
-                <label htmlFor="departmentSelect">Department:</label>
-                <select className="dropdown departmentSelect" multiple value={selectedDepartments} onChange={handleSelectDepartments}>
-                    {departmentOptions.length > 0 ? (
-                        departmentOptions.map((dept, index) => (
-                            <option key={index} value={dept}>
-                                {dept}
+                <div className="inputWrapper">        
+                    <label htmlFor="departmentSelect">Department:</label>
+                    <select className="dropdown departmentSelect" multiple value={selectedDepartments} onChange={handleSelectDepartments}>
+                    <option value="" disabled>Select a department</option>
+                        {departmentOptions.length > 0 ? (
+                            departmentOptions.map((dept, index) => (
+                                <option key={index} value={dept}>
+                                    {dept}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Loading...</option>
+                        )}
+                    </select>
+                </div>
+
+                <div className="inputWrapper">        
+                    <label htmlFor="yearSelect">Year:</label>
+                    <select className="dropdown yearSelect" value={selectedYear} onChange={(e)=> setSelectedYear(e.target.value)}>
+                        <option value="" disabled>Select a year</option>
+                        {years.map((year) => (
+                            <option key={year} value={year}>
+                                {year}
                             </option>
-                        ))
-                    ) : (
-                        <option disabled>Loading...</option>
-                    )}
+                        ))}
                 </select>
+                </div>
+            
             </div>
-
-            <div className="inputWrapper">        
-                <label htmlFor="yearSelect">Year:</label>
-                <select className="dropdown yearSelect" value={selectedYear} onChange={(e)=> setSelectedYear(e.target.value)}>
-                    <option value="" disabled>Select a year</option>
-                    {years.map((year) => (
-                        <option key={year} value={year}>
-                            {year}
-                        </option>
-                    ))}
-            </select>
-            </div>
-
-            <button className="generateGraphBtn btn" onClick={getDataForGraph}>See Average</button>
+            <button 
+                className={`generateGraphBtn ${!selectedYear || !selectedDepartments? "disabledBtn" : "btn"}`} 
+                disabled={!selectedYear || !selectedDepartments} 
+                onClick={getDataForGraph}>
+                    See Average
+            </button>
       
-              {data !== null && <GraphComponent data={data} />}
-      </div>
+            {data !== null && <GraphComponent data={data} />}
+        </div>
     );
   };
 

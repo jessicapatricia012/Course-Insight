@@ -39,8 +39,10 @@ const Home: React.FC<{ datasetIds: string[]; onAddDataset: (id: string, file: Fi
             <div className="inputsWrapper">
                 <input className="textInput" type="text" value={datasetId} onChange={(e) => setDatasetId(e.target.value)} placeholder="Enter dataset ID" />
                 <input className="fileInput" type="file" onChange={handleFileChange} />
-                <button className="btn" onClick={handleSubmit}>Add Dataset</button>
-                {feedback && <div className="feedback">{feedback}</div>}
+                <div  className="buttonDiv">                
+                    <button className={`${!datasetId || !file? "disabledBtn" : "btn"}`} disabled={!datasetId || !file} onClick={handleSubmit}>Add Dataset</button>
+                    {feedback && <div className="feedback">{feedback}</div>}
+                </div>
             </div>
 
 

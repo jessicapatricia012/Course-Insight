@@ -14,8 +14,16 @@ input{
 }
 
 
-
-
+.addBtn{
+    
+}
+.buttonDiv{
+    position: absolute;
+    left: 40%;
+    display: flex;
+    align-items: center; 
+    gap: 10px;
+}
 
 
 .datasetsWrapper{

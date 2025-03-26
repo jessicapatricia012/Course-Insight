@@ -1,12 +1,12 @@
 .inputsWrapper{
     display: flex;
-    gap: 200px; 
     align-items: center; 
 }
 
 .inputWrapper{
     display: flex;
     flex-direction: column;
+    padding-left: 50px;
 }
 
 .dropdown {
@@ -29,6 +29,9 @@
     height: 40px;
     border-radius: 100px;
     font-size: 16px;
+    position: absolute;
+    top: 21%;
+    left: 14.7%;
 }
 
 label{

@@ -84,6 +84,15 @@ button{
 
 }
 
+.disabledBtn{
+  color: white;
+  width: 125px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #e6aaff;
+  cursor: initial;
+  opacity: 0.5;
+}
 
 .btn {
   color: white;
@@ -92,6 +101,8 @@ button{
   border-radius: 15px;
   background-color: #e6aaff;
 }
+
+
 .btn:hover {
   background-color: #fff36a;
   color: #e6aaff;
@@ -102,6 +113,8 @@ button{
   border: solid 2px;
   border-color: #fff36a;
 }
+
+
 
 .fa-chevron-down {
   position: absolute;
