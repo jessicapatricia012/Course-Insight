@@ -1,13 +1,16 @@
 import express, { Application, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Log } from "@ubccpsc310/project-support";
+import { IInsightFacade, InsightError } from "../controller/IInsightFacade";
 import * as http from "http";
 import cors from "cors";
+import InsightFacade from "../controller/InsightFacade";
 
 export default class Server {
 	private readonly port: number;
 	private express: Application;
 	private server: http.Server | undefined;
+	private static facade: IInsightFacade;
 
 	constructor(port: number) {
 		Log.info(`Server::<init>( ${port} )`);
@@ -16,11 +19,12 @@ export default class Server {
 
 		this.registerMiddleware();
 		this.registerRoutes();
+		Server.facade = new InsightFacade();
 
 		// NOTE: you can serve static frontend files in from your express server
 		// by uncommenting the line below. This makes files in ./frontend/public
 		// accessible at http://localhost:<port>/
-		// this.express.use(express.static("./frontend/public"))
+		//this.express.use(express.static("./frontend/public"))
 	}
 
 	/**
@@ -87,8 +91,10 @@ export default class Server {
 		// This is an example endpoint this you can invoke by accessing this URL in your browser:
 		// http://localhost:4321/echo/hello
 		this.express.get("/echo/:msg", Server.echo);
-
-		// TODO: your other endpoints should go here
+		this.express.put("/dataset/:id/:kind", Server.put);
+		this.express.delete("/dataset/:id", Server.delete);
+		this.express.post("/query", Server.post);
+		this.express.get("/datasets", Server.get);
 	}
 
 	// The next two methods handle the echo service.
@@ -110,5 +116,59 @@ export default class Server {
 		} else {
 			return "Message not provided";
 		}
+	}
+
+	/**
+	 * Handler for put requests
+	 * @private
+	 */
+	private static async put(req: Request, res: Response): Promise<void> {
+		const content = req.body.toString("base64");
+		const kind = req.params.kind as any;
+		const id = req.params.id as any;
+		try {
+			const ret = await Server.facade.addDataset(id, content, kind);
+			res.status(StatusCodes.OK).send({ result: ret });
+		} catch (err) {
+			res.status(StatusCodes.BAD_REQUEST).send({ err: (err as Error).message });
+		}
+	}
+
+	/**
+	 * Handler for delete requests
+	 * @private
+	 */
+	private static async delete(req: Request, res: Response): Promise<void> {
+		const id = req.params.id as any;
+		try {
+			const ret = await Server.facade.removeDataset(id);
+			res.status(StatusCodes.OK).send({ result: ret });
+		} catch (err) {
+			if (err instanceof InsightError) res.status(StatusCodes.BAD_REQUEST).send({ err: (err as Error).message });
+			else res.status(StatusCodes.NOT_FOUND).send({ err: (err as Error).message });
+		}
+	}
+
+	/**
+	 * Handler for POST requests
+	 * @private
+	 */
+	private static async post(req: Request, res: Response): Promise<void> {
+		const query = req.body;
+		try {
+			const ret = await Server.facade.performQuery(query);
+			res.status(StatusCodes.OK).send({ result: ret });
+		} catch (err) {
+			res.status(StatusCodes.BAD_REQUEST).send({ err: (err as Error).message });
+		}
+	}
+
+	/**
+	 * Handler for GET Requests
+	 * @private
+	 */
+	private static async get(req: Request, res: Response): Promise<void> {
+		const ret = await Server.facade.listDatasets();
+		res.status(StatusCodes.OK).send({ result: ret });
 	}
 }
