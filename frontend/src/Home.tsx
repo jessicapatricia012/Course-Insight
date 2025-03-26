@@ -7,13 +7,7 @@ const Home: React.FC<{ datasetIds: string[]; onAddDataset: (id: string, file: Fi
     const [file, setFile] = useState<File | null>(null);
     const [feedback, setFeedback] = useState<string>("");
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            setFile(e.target.files[0]);
-        }
-    };
-
-    const handleSubmit = () => {
+    const handleAdd = () => {
         if (!datasetId || !file) {
             setFeedback("Please provide an ID and select a file.");
             return;
@@ -38,9 +32,14 @@ const Home: React.FC<{ datasetIds: string[]; onAddDataset: (id: string, file: Fi
 
             <div className="inputsWrapper">
                 <input className="textInput" type="text" value={datasetId} onChange={(e) => setDatasetId(e.target.value)} placeholder="Enter dataset ID" />
-                <input className="fileInput" type="file" onChange={handleFileChange} />
+                <input className="fileInput" type="file"onChange={(e) => e.target.files? setFile(e.target.files[0]) : setFile(null)} />
                 <div  className="buttonDiv">                
-                    <button className={`${!datasetId || !file? "disabledBtn" : "btn"}`} disabled={!datasetId || !file} onClick={handleSubmit}>Add Dataset</button>
+                    <button 
+                        className={`${!datasetId || !file? "disabledBtn" : "btn"}`} 
+                        disabled={!datasetId || !file} 
+                        onClick={handleAdd}>
+                            Add Dataset
+                    </button>
                     {feedback && <div className="feedback">{feedback}</div>}
                 </div>
             </div>
