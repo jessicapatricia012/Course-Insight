@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./style/GraphPage.css";
+import GraphComponent from "./GraphComponent";
 
 
 const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     const [departments, setDepartments] = useState<string[]>([]);
     const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
     const [selectedYear, setSelectedYear] = useState<string>("");
+
+    const [data, setData] = useState<any>(null);
+    
 
     const years: string[] = [];
     for (let year = 1990; year <= 2024; year++) {
@@ -101,8 +105,10 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             </select>
             </div>
 
+            {data !== null && <GraphComponent data={data} />}
 
-            <button className="generateGraphBtn" onClick={doQuery}>See Average</button>
+
+            <button className="generateGraphBtn btn" onClick={doQuery}>See Average</button>
       </div>
     );
   };

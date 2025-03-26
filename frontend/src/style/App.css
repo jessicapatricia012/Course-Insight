@@ -5,6 +5,7 @@
   height: 100vh;
   display: flex;
   font-family:'Lucida Sans';
+  position: fixed;
 }
 
 html, body {
@@ -33,7 +34,6 @@ html, body {
   position: fixed;
   width: 15vw;
   height: 100%;
-  color: green;
   left: -12vw; 
   transition: left 0.3s ease; 
   z-index: 1000; 
@@ -50,10 +50,22 @@ html, body {
 }
 
 
+.selectedDatasetDropdown{
+  position: absolute;
 
-
-
-
+  font-family:'Lucida Sans';
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  height: 30px;
+  right: 150px;
+  top:25px;
+  background: #fff36a;
+  color: #e6aaff;
+  border-radius: 5px;
+  border: none;
+  font-weight: bold;
+}
 
 
 
@@ -63,32 +75,35 @@ hr{
 }
 
 
-
-
-
-button {
-  color: white;
+button{
   font-family:'Lucida Sans';
-  width: 120px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+
+}
+
+
+.btn {
+  color: white;
+  width: 125px;
   height: 30px;
   border-radius: 15px;
   background-color: #e6aaff;
-  border: none;
-  font-family:'Lucida Sans';
 }
-button:hover {
+.btn:hover {
   background-color: #fff36a;
   color: #e6aaff;
   transform: scale(1.05);
-  cursor: pointer;
 }
-button:active {
+.btn:active {
   background-color: transparent;
   border: solid 2px;
   border-color: #fff36a;
 }
 
-.fa-solid {
+.fa-chevron-down {
   position: absolute;
   left: 12px;
   top: 10px;
@@ -100,13 +115,13 @@ button:active {
 
 } 
 
-.fa-solid:hover {
+.fa-chevron-down:hover {
   color: #e6aaff;
   transform: scale(1.05) rotate(-90deg);
   cursor: pointer;
 }
 
-.fa-solid.shifted {
+.fa-chevron-down.shifted {
   transform: rotate(90deg);
   left: 13vw; 
   transition: left 0.3s ease; 

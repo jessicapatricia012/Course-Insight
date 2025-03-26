@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import "./style/GraphPage.css";
-
+import GraphComponent from "./GraphComponent";
 
 const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
-    const [departments, setDepartments] = useState<string[]>([]);
+    const [departmentOptions, setDepartmentOptions] = useState<string[]>([]);
     const [selectedDepartment, setSelectedDepartment] = useState<string>("");
 
-    const [instructors, setInstructors] = useState<string[]>([]);
+    const [instructorOptions, setInstructorOptions] = useState<string[]>([]);
     const [selectedInstructors, setSelectedInstructors] = useState<string[]>([]);
-    
+
+    const [data, setData] = useState<any>(null);
+
+    console.log(datasetId);
+
     useEffect(() => {
-        // Fetch departments based on datasetId
-        const fetchDepartments = async () => {
+        console.log("called");
+        const fetchDepartmentOptions = async () => {
             const query = {
                 "WHERE": {},
                 "OPTIONS": {
@@ -24,17 +28,20 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             };
 
             try {
-                // TODO: fetch department
+                // TODO: fetch department and set to departmentOptions
+                const departmentOptions = [];
+                setDepartmentOptions(departmentOptions);
             } catch (error) {
                 console.error("Error fetching departments:", error);
             }
         };
-        fetchDepartments();
+        fetchDepartmentOptions();
+
+
     }, [datasetId]);
 
     useEffect(() => {
-        // Fetch departments based on datasetId
-        const fetchInstructors = async () => {
+        const fetchInstructorOptions = async () => {
             const query = {
                 "WHERE": {
                     "IS": {
@@ -51,19 +58,15 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             };
 
             try {
-                // TODO: fetch department
+                // TODO: fetch instructor and set to instructor
+                const instructorOptions = [];
+                setInstructorOptions(instructorOptions);
             } catch (error) {
-                console.error("Error fetching departments:", error);
+                console.error("Error fetching instructors:", error);
             }
         };
-        fetchInstructors();
-    }, [selectedDepartment]);
-
-   
-
-    const handleSelectDepartment = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedDepartment(event.target.value);
-    };
+        fetchInstructorOptions();
+    }, [selectedDepartment,datasetId]);
     
     const handleSelectInstructors = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const options = event.target.options;
@@ -77,40 +80,97 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     };
 
     const generateGraph = async () => {
-        const query = {
-            WHERE: {},
-            OPTIONS: {
-                COLUMNS: ["sections_dept"]
-            },
-            TRANSFORMATIONS: {
-                GROUP: ["sections_dept"],
-                APPLY: []
-            }
-        };
-         try {
-            // TODO: FETCH AVERAGE
+        try{
+            const result = await getDataForGraph();
+            //TODO: GENERATE GRAPH
+
         } catch (error) {
-            console.error("Error fetching average:", error);
+            console.error("Error fetching data:", error);
         }
-        //TODO: GENERATE GRAPH
     };
+
+    const getDataForGraph = async () => {
+        const query = {
+            "WHERE": {
+                // "OR": [
+                // {
+                //     "IS": {
+                //     [`${datasetId}_instructor`]: selectedInstructors[0]
+                //     }
+                // },
+                // {
+                //     "IS": {
+                //         [`${datasetId}_instructor`]: selectedInstructors[1]
+                //     }
+                // }
+                // ]
+                "OR": selectedInstructors.map((instructor) => ({
+                    "IS": {
+                        [`${datasetId}_instructor`]: instructor
+                    }
+                }))
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    `${datasetId}_instructor`,
+                    "totalFail",
+                    "totalPass"
+                ]
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": [
+                    `${datasetId}_instructor`
+                ],
+                "APPLY": [
+                {
+                    "totalFail": {
+                    "SUM": `${datasetId}_fail`
+                    }
+                },
+                {
+                    "totalPass": {
+                    "SUM": `${datasetId}_pass`
+                    }
+                }
+                ]
+            }
+
+        };
+        try {
+            // TODO: fetch instructor and set to instructor
+            const result = {
+                instructor:"",
+                fail:"",
+                pass:"",
+                percentageFail: function() {
+                    return (this.fail * 100) / (this.pass + this.fail);
+                }            
+            };
+            setData({
+                instructor: result.instructor,
+                percentage: result.percentageFail()
+            })
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
 
   
     return (
       <div className="inputsWrapper">
 
         <div className="inputWrapper">
-            <label htmlFor="departmentSelect">Department:</label>
-            <select className="dropdown departmentSelect" value={selectedDepartment} onChange={handleSelectDepartment}>
+            <label htmlFor="departmentOptionSelect">Department:</label>
+            <select className="dropdown departmentOptionSelect" value={selectedDepartment} onChange={(e)=> setSelectedDepartment(e.target.value)}>
             <option value="" disabled>Select a department</option>
-                {departments.length > 0 ? (
-                    departments.map((dept, index) => (
+                {departmentOptions.length > 0 ? (
+                    departmentOptions.map((dept, index) => (
                         <option key={index} value={dept}>
                         {dept}
                         </option>
                     ))
                 ) : (
-                    <option disabled>Loading departments...</option>
+                    <option disabled>Loading...</option>
                 )}
             </select>
         </div>
@@ -119,19 +179,23 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             <label htmlFor="instructorSelect">Instructors:</label>
             <select multiple className="dropdown instructorSelect" value={selectedInstructors} onChange={handleSelectInstructors}>
             <option value="" disabled>Select instructors</option>
-                {instructors.length > 0 ? (
-                instructors.map((instructor, index) => (
+                {instructorOptions.length > 0 ? (
+                instructorOptions.map((instructor, index) => (
                     <option key={index} value={instructor}>
                         {instructor}
                     </option>
                 ))
                 ) : (
-                    <option disabled>Loading instructors...</option>
+                    <option disabled>Loading...</option>
                 )}
             </select>
         </div>
 
-        <button className="generateGraphBtn" onClick={generateGraph}>See Failing</button>
+        <button className="generateGraphBtn btn" onClick={generateGraph}>See Failing</button>
+
+        {data !== null && <GraphComponent data={data} />}
+
+
       </div>
     );
   };

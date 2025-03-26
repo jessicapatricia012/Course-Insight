@@ -1,0 +1,82 @@
+import React, { useState, useEffect } from "react";
+import "./style/Home.css";
+
+
+const Home: React.FC<{ datasetIds: string[]; onAddDataset: (id: string, file: File) => void; onRemoveDataset: (id: string) => void }> = ({ datasetIds, onAddDataset, onRemoveDataset }) => {
+    const [datasetId, setDatasetId] = useState<string>("");
+    const [file, setFile] = useState<File | null>(null);
+    const [feedback, setFeedback] = useState<string>("");
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const handleSubmit = () => {
+        if (!datasetId || !file) {
+            setFeedback("Please provide a valid ID and select a file.");
+            return;
+        }
+
+        if (!file.name.endsWith(".zip")) {
+            setFeedback("The file must be a .zip");
+            return;
+        }
+
+        // Validating ID (you can add more validation if necessary)
+        if (datasetId.trim() === "") {
+            setFeedback("Dataset ID cannot be empty.");
+            return;
+        }
+
+        // Send the dataset to parent component or backend
+        onAddDataset(datasetId, file);
+        setFeedback("Dataset added successfully!");
+
+        setDatasetId("");
+        setFile(null);
+        const fileInput = document.querySelector(".fileInput") as HTMLInputElement;
+        if (fileInput) fileInput.value = "";
+    };
+
+    const removeDataset = () => {
+        
+    };
+
+    return (
+        <div className="homePage">
+            <h2>My datasets</h2>
+            {/* <button onClick={onAddDataset}>Add Dataset</button> */}
+
+            <div className="inputsWrapper">
+                <input className="textInput" type="text" value={datasetId} onChange={(e) => setDatasetId(e.target.value)} placeholder="Enter dataset ID" />
+                <input className="fileInput" type="file" onChange={handleFileChange} />
+                <button className="btn" onClick={handleSubmit}>Add Dataset</button>
+                {feedback && <div className="feedback">{feedback}</div>}
+            </div>
+
+
+
+            <div className="datasetsWrapper">
+                {datasetIds.map((id) => (
+                    <div key={id} className="datasetDiv">
+                        <p><strong>ID:</strong> {id}</p>
+                        <p className="dateAdded"><strong>Date Added:</strong> {new Date().toLocaleString()}</p>
+                        {/* <button className="setBtn" onClick={removeDataset}>
+                            Set Default
+                        </button> */}
+                        <button className="removeBtn" onClick={() => onRemoveDataset(id)}>
+                            <i className ="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+
+        </div>
+    );
+  };
+
+
+export default Home;
