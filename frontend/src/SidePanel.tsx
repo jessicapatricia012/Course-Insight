@@ -7,10 +7,10 @@ const SidePanel: React.FC<{ setActivePage: (page: string) => void }> = ({ setAct
   return (
         <div>
       <ul className="clickable-list">
-        <li className="clickable-item" onClick={() => setActivePage("Home")}>Home</li>
-        <li className="clickable-item" onClick={() => setActivePage("Graph1")}>Graph 1</li>
-        <li className="clickable-item" onClick={() => setActivePage("Graph2")}>Graph 2</li>
-        <li className="clickable-item" onClick={() => setActivePage("Graph3")}>Graph 3</li>
+        <li className="clickable-item home" onClick={() => setActivePage("Home")}>Home</li>
+        <li className="clickable-item" onClick={() => setActivePage("Graph1")}>Average by Department</li>
+        <li className="clickable-item" onClick={() => setActivePage("Graph2")}>Course Average throughout the Year</li>
+        <li className="clickable-item" onClick={() => setActivePage("Graph3")}>Percentage Failing by Instructor</li>
       </ul>
     </div>
   );

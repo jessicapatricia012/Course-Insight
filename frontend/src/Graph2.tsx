@@ -157,7 +157,6 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
         }
     }
 
-  
     return (
         <div className="inputsWrapper">
 

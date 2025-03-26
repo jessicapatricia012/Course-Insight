@@ -47,8 +47,6 @@ const App: React.FC = () => {
     <div id="App">
         <i className={`fa-solid fa-chevron-down ${isSidePanelOpen ? "shifted" : ""}`} onClick={openSidePanel}></i>
 
-
-
         <div className={`slidePanel ${isSidePanelOpen ? "shifted" : ""}`} ref={sidePanelRef}>
           <SidePanel setActivePage={setActivePage} />
         </div>
@@ -56,7 +54,6 @@ const App: React.FC = () => {
         <div id="contentWrapper" className={isSidePanelOpen ? "shifted" : ""}>
             {activePage !== "Home" && (
               <div>
-              {/* <label htmlFor="selectedDatasetDropdown">Dataset: </label> */}
               <select className="selectedDatasetDropdown" value={selectedDatasetId} onChange={(e) => setSelectedDatasetId(e.target.value)}>
                   <option value="" disabled>Dataset Selected</option>
                   {datasetIds.map((id) => (
