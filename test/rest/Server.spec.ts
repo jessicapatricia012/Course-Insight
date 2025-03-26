@@ -4,9 +4,8 @@ import { StatusCodes } from "http-status-codes";
 import { Log } from "@ubccpsc310/project-support";
 import Server from "../../src/rest/Server";
 import fs from "fs-extra";
-import { clearDisk, loadTestQuery } from "../TestUtil";
-import {InsightDatasetKind} from "../../src/controller/IInsightFacade";
-
+import { loadTestQuery } from "../TestUtil";
+import { InsightDatasetKind } from "../../src/controller/IInsightFacade";
 
 describe("Facade C3", function () {
 	const port = 4321;
@@ -61,7 +60,6 @@ describe("Facade C3", function () {
 			expect(res.status).to.be.equal(StatusCodes.OK);
 			// TODO add assertions that check res.body
 			expect(res.body.result).to.have.members(["sections"]);
-
 		} catch (err) {
 			Log.error(err);
 			expect.fail();

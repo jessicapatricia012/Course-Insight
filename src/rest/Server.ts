@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Log } from "@ubccpsc310/project-support";
-import {IInsightFacade, InsightError} from "../controller/IInsightFacade";
+import { IInsightFacade, InsightError } from "../controller/IInsightFacade";
 import * as http from "http";
 import cors from "cors";
 import InsightFacade from "../controller/InsightFacade";
@@ -24,7 +24,7 @@ export default class Server {
 		// NOTE: you can serve static frontend files in from your express server
 		// by uncommenting the line below. This makes files in ./frontend/public
 		// accessible at http://localhost:<port>/
-		 //this.express.use(express.static("./frontend/public"))
+		//this.express.use(express.static("./frontend/public"))
 	}
 
 	/**
@@ -124,13 +124,13 @@ export default class Server {
 	 */
 	private static async put(req: Request, res: Response): Promise<void> {
 		const content = req.body.toString("base64");
-		const kind = (req.params.kind as any);
-		const id = (req.params.id as any);
-		try{
-			const ret = await Server.facade.addDataset(id, content,kind);
-			res.status(StatusCodes.OK).send({result: ret});
-		} catch(err){
-			res.status(StatusCodes.BAD_REQUEST).send({err: (err as Error).message});
+		const kind = req.params.kind as any;
+		const id = req.params.id as any;
+		try {
+			const ret = await Server.facade.addDataset(id, content, kind);
+			res.status(StatusCodes.OK).send({ result: ret });
+		} catch (err) {
+			res.status(StatusCodes.BAD_REQUEST).send({ err: (err as Error).message });
 		}
 	}
 
@@ -138,16 +138,14 @@ export default class Server {
 	 * Handler for delete requests
 	 * @private
 	 */
-	private static async delete(req: Request, res: Response): Promise<void>{
-		const id = (req.params.id as any);
-		try{
+	private static async delete(req: Request, res: Response): Promise<void> {
+		const id = req.params.id as any;
+		try {
 			const ret = await Server.facade.removeDataset(id);
-			res.status(StatusCodes.OK).send({result:ret});
-		} catch (err){
-			if (err instanceof  InsightError)
-				res.status(StatusCodes.BAD_REQUEST).send({err: (err as Error).message});
-			else
-				res.status(StatusCodes.NOT_FOUND).send({err: (err as Error).message});
+			res.status(StatusCodes.OK).send({ result: ret });
+		} catch (err) {
+			if (err instanceof InsightError) res.status(StatusCodes.BAD_REQUEST).send({ err: (err as Error).message });
+			else res.status(StatusCodes.NOT_FOUND).send({ err: (err as Error).message });
 		}
 	}
 
@@ -155,13 +153,13 @@ export default class Server {
 	 * Handler for POST requests
 	 * @private
 	 */
-	private static async post(req: Request, res: Response): Promise<void>{
+	private static async post(req: Request, res: Response): Promise<void> {
 		const query = req.body;
-		try{
+		try {
 			const ret = await Server.facade.performQuery(query);
-			res.status(StatusCodes.OK).send({result:ret});
-		} catch (err){
-			res.status(StatusCodes.BAD_REQUEST).send({err: (err as Error).message});
+			res.status(StatusCodes.OK).send({ result: ret });
+		} catch (err) {
+			res.status(StatusCodes.BAD_REQUEST).send({ err: (err as Error).message });
 		}
 	}
 
@@ -169,8 +167,8 @@ export default class Server {
 	 * Handler for GET Requests
 	 * @private
 	 */
-	private static async get(req: Request, res: Response): Promise<void>{
-			const ret = await Server.facade.listDatasets();
-			res.status(StatusCodes.OK).send({result:ret});
+	private static async get(req: Request, res: Response): Promise<void> {
+		const ret = await Server.facade.listDatasets();
+		res.status(StatusCodes.OK).send({ result: ret });
 	}
 }
