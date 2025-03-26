@@ -230,16 +230,279 @@ describe("Facade C3", function () {
 		}
 	});
 
+	it("should POST valid rooms Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/rooms/rooms";
+		const ENDPOINT_URL = "/query";
+		const { input, expected } = await loadTestQuery("[c2/valid1.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(campus)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["rooms"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.OK);
+			expect(res.body.result).to.have.deep.members(expected);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should POST valid2 rooms Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/rooms/rooms";
+		const ENDPOINT_URL = "/query";
+		const { input, expected } = await loadTestQuery("[c2/valid2.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(campus)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["rooms"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.OK);
+			expect(res.body.result).to.have.deep.members(expected);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should POST valid3 rooms Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/sections/sections";
+		const ENDPOINT_URL = "/query";
+		const { input, expected } = await loadTestQuery("[c2/valid3.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(sections)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["sections"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.OK);
+			expect(res.body.result).to.have.deep.members(expected);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should POST valid4 rooms Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/rooms/rooms";
+		const ENDPOINT_URL = "/query";
+		const { input, expected } = await loadTestQuery("[c2/valid4.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(campus)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["rooms"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.OK);
+			expect(res.body.result).to.have.deep.members(expected);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should POST valid5 rooms Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/rooms/rooms";
+		const ENDPOINT_URL = "/query";
+		const { input, expected } = await loadTestQuery("[c2/valid5.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(campus)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["rooms"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.OK);
+			expect(res.body.result).to.have.deep.members(expected);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should POST validApplyAvg rooms Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/rooms/rooms";
+		const ENDPOINT_URL = "/query";
+		const { input, expected } = await loadTestQuery("[c2/validApplyAvg.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(campus)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["rooms"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.OK);
+			expect(res.body.result).to.have.deep.members(expected);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should POST validApplyCountNumber rooms Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/rooms/rooms";
+		const ENDPOINT_URL = "/query";
+		const { input, expected } = await loadTestQuery("[c2/validApplyCountNumber.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(campus)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["rooms"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.OK);
+			expect(res.body.result).to.have.deep.members(expected);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
 	it("should NOT POST invalid Query", async function () {
 		const ENDPOINT_URL_SETUP = "/dataset/sections/sections";
 		const ENDPOINT_URL = "/query";
-		const ZIP_FILE_DATA = sections;
 		const { input } = await loadTestQuery("[invalid/invalid.json]");
 
 		try {
 			const setup = await request(SERVER_URL)
 				.put(ENDPOINT_URL_SETUP)
-				.send(ZIP_FILE_DATA)
+				.send(sections)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["sections"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
+			Log.test(`Successful invalid POST request with err body: ${res.body.err}`);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should NOT POST invalidApplyAVGKeyType Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/sections/sections";
+		const ENDPOINT_URL = "/query";
+		const { input } = await loadTestQuery("[c2/invalidApplyAVGKeyType.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(sections)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["sections"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
+			Log.test(`Successful invalid POST request with err body: ${res.body.err}`);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should NOT POST invalidApplyDuplicateKey Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/sections/sections";
+		const ENDPOINT_URL = "/query";
+		const { input } = await loadTestQuery("[c2/invalidApplyDuplicateKey.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(sections)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["sections"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
+			Log.test(`Successful invalid POST request with err body: ${res.body.err}`);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should NOT POST invalidApplyKey Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/sections/sections";
+		const ENDPOINT_URL = "/query";
+		const { input } = await loadTestQuery("[c2/invalidApplyKey.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(sections)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["sections"]);
+
+			const res = await request(SERVER_URL)
+				.post(ENDPOINT_URL)
+				.send(input as object);
+			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
+			Log.test(`Successful invalid POST request with err body: ${res.body.err}`);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should NOT POST invalidApplyKey2 Query", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/sections/sections";
+		const ENDPOINT_URL = "/query";
+		const { input } = await loadTestQuery("[c2/invalidApplyKey2.json]");
+
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(sections)
 				.set("Content-Type", "application/x-zip-compressed");
 			expect(setup.status).to.be.equal(StatusCodes.OK);
 			expect(setup.body.result).to.have.members(["sections"]);
