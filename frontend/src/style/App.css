@@ -29,7 +29,6 @@ html, body {
   transform: translateX(12vw); 
 }
 
-
 .slidePanel {
   position: fixed;
   width: 20vw;
@@ -58,7 +57,7 @@ html, body {
   font-weight: bold;
   cursor: pointer;
   height: 30px;
-  right: 220px;
+  right: 280px;
   top:30px;
   background: #fff36a;
   color: #e6aaff;
