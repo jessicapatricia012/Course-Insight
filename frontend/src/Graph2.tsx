@@ -148,10 +148,23 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             // TODO: fetch data set to result
             const result = [
                 { year: 2000 , avg: 76 },
-                { year: 1001 , avg: 88 }
+                { year: 2001 , avg: 88 }
             ];  
+
+            const data = {
+              labels: result.map(item => item.year),
+              datasets: [
+                {
+                  label: 'Course Average',
+                  data: result.map(item => item.avg),
+                  backgroundColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                  }
+              ],
+          };
      
-            setData(result);
+            setData(data);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -219,13 +232,15 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
             <button 
                 className={`generateGraphBtn ${!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2? "disabledBtn" : "btn"}`} 
-                disabled={!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2}  
+                // Commented out to allow for generating graph with mock data
+                // disabled={!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2}  
                 onClick={getDataForGraph}>
                     See Average
             </button>
-        
-            {data !== null && <GraphComponent data={data} />}
-        
+
+            <div className="chartDiv">
+                {data !== null && <GraphComponent data={data} isBar={false}/>}
+            </div>
         </div>
     );
   };

@@ -9,10 +9,10 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     const [instructorOptions, setInstructorOptions] = useState<string[]>([]);
     const [selectedInstructors, setSelectedInstructors] = useState<string[]>([]);
 
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<any>(null)
 
     console.log(datasetId);
-
+    
     useEffect(() => {
         console.log("called");
         const fetchDepartmentOptions = async () => {
@@ -121,10 +121,23 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                 { instructor: "Instructor B", fail: 1, pass: 90 }
             ];  
                    
-            const data = result.map(item => ({
-                instructor: item.instructor,
-                percentageFail: (item.fail * 100) / (item.pass + item.fail)  // Calculate percentage of failure
-            }));
+            const data = {
+                labels: result.map(item => item.instructor),
+                datasets: [
+                  {
+                    label: 'Percentage Failure',
+                    data: result.map(item => (item.fail * 100) / (item.pass + item.fail)),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                      ],
+                    }
+                ],
+            };
+
             setData(data);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -170,14 +183,16 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             </div>
 
             <button 
-                className={`generateGraphBtn ${!selectedInstructors || !selectedDepartment? "disabledBtn" : "btn"}`} 
-                disabled={!selectedInstructors || !selectedDepartment} 
+                className={`generateGraphBtn ${selectedInstructors.length === 0 || !selectedDepartment? "disabledBtn" : "btn"}`} 
+                // Commented out to allow for generating graph with mock data
+                // disabled={selectedInstructors.length === 0 || !selectedDepartment}
                 onClick={getDataForGraph}>
                     See Failing
             </button>
 
-            {data !== null && <GraphComponent data={data} />}
-
+            <div className="chartDiv">
+                {data && data.labels && data.datasets && <GraphComponent data={data} isBar = {true} />}
+            </div>
 
         </div>
     );
