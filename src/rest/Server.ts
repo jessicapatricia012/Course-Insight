@@ -144,8 +144,11 @@ export default class Server {
 			const ret = await Server.facade.removeDataset(id);
 			res.status(StatusCodes.OK).send({ result: ret });
 		} catch (err) {
-			if (err instanceof InsightError) res.status(StatusCodes.BAD_REQUEST).send({ error: (err as Error).message });
-			else res.status(StatusCodes.NOT_FOUND).send({ error: (err as Error).message });
+			if (err instanceof InsightError) {
+				res.status(StatusCodes.BAD_REQUEST).send({ error: (err as Error).message });
+			} else {
+				res.status(StatusCodes.NOT_FOUND).send({ error: (err as Error).message });
+			}
 		}
 	}
 
