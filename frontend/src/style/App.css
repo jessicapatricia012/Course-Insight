@@ -1,0 +1,140 @@
+#App {
+  background-color: #27293b;
+  color: white;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  font-family:'Lucida Sans';
+  position: fixed;
+}
+
+html, body {
+    margin: 0; 
+    padding: 0; 
+    height: 100%;
+    overflow: hidden;
+}
+
+
+#contentWrapper {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  padding-left: 190px;
+  transition: 0.3s ease; 
+}
+
+#contentWrapper.shifted {
+  transform: translateX(12vw); 
+}
+
+.slidePanel {
+  position: fixed;
+  width: 20vw;
+  height: 100%;
+  left: -17vw; 
+  transition: left 0.3s ease; 
+  z-index: 1000; 
+  background-color: #67eaf1;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
+}
+
+.slidePanel.shifted {
+  left: 0;
+}
+
+.page{
+  width: 73vw;
+}
+
+
+.selectedDatasetDropdown{
+  position: absolute;
+
+  font-family:'Lucida Sans';
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  height: 30px;
+  right: 280px;
+  top:30px;
+  background: #fff36a;
+  color: #e6aaff;
+  border-radius: 5px;
+  border: none;
+  font-weight: bold;
+}
+
+
+
+
+hr{
+  color: #fff36a;
+}
+
+
+button{
+  font-family:'Lucida Sans';
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+
+}
+
+.disabledBtn{
+  color: white;
+  width: 125px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #e6aaff;
+  cursor: initial;
+  opacity: 0.5;
+}
+
+.btn {
+  color: white;
+  width: 125px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #e6aaff;
+}
+
+
+.btn:hover {
+  background-color: #fff36a;
+  color: #e6aaff;
+  transform: scale(1.05);
+}
+.btn:active {
+  background-color: transparent;
+  border: solid 2px;
+  border-color: #fff36a;
+}
+
+
+
+.fa-chevron-down {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  transform: rotate(-90deg);
+  color: #fff36a;
+  font-size: 22px;
+  z-index: 10001;
+  transition: left 0.3s ease; 
+
+} 
+
+.fa-chevron-down:hover {
+  color: #e6aaff;
+  transform: scale(1.05) rotate(-90deg);
+  cursor: pointer;
+}
+
+.fa-chevron-down.shifted {
+  transform: rotate(90deg);
+  left: 17vw; 
+  transition: left 0.3s ease; 
+} 

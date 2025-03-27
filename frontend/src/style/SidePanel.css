@@ -1,0 +1,27 @@
+.clickable-list{
+    color: white;
+    list-style: none;
+    font-size: 22px;
+    padding-top: 40px;
+    padding-left: 0px;
+    width: auto;
+}
+
+.clickable-list .home{
+    font-size: 28px;
+
+}
+.clickable-item{
+    position: relative;
+    width: auto;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 40px;
+
+
+}
+.clickable-item:hover{
+    background-color:#fff36a;
+    color: #e6aaff;
+}

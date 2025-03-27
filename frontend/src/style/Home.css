@@ -1,0 +1,113 @@
+.homePage{
+}
+
+.inputsWrapper{
+    width: fit-content;
+    gap: 10px;
+    padding-left: 10px;
+
+}
+
+input{
+    font-family: 'Lucida Sans';
+    font-size: 16px;
+}
+
+
+.addBtn{
+    
+}
+.buttonDiv{
+    position: absolute;
+    left: 50%;
+    display: flex;
+    align-items: center; 
+    gap: 10px;
+}
+
+
+.datasetsWrapper{
+    margin-top: 20px;
+    overflow-y: scroll;
+    height: 70vh;
+    width: 70%;
+}
+
+.datasetsWrapper::-webkit-scrollbar {
+    width: 0px;    
+}
+
+.datasetDiv {
+    position: relative; 
+}
+
+.dateAdded {
+    position: absolute;
+    bottom: -8px;
+    right: 12px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.datasetDiv {
+    background-color: #596a7c;
+    height: 50px;
+    margin: 10px;
+    padding-top: 5px;
+    padding-left: 20px;
+    border-radius: 15px;
+    transition:  0.2s ease-in-out;
+
+}
+
+.datasetDiv:hover {
+    transition:  0.2s ease-in-out;
+    /* background-color:#fff36a; */
+    /* color: #67eaf1; */
+    height: 70px;
+    padding-top: 15px;
+}
+
+
+.datasetDiv button {
+    opacity: 0;
+    transform: translateY(-50%);
+    height: 25px;
+    top: 22px;
+    position: absolute;
+    font-weight: 100;
+    border-radius: 10px;
+    transition: 0.2s ease-in-out;
+
+}
+
+.datasetDiv:hover button {
+    opacity: 1;
+}
+.removeBtn {
+    background-color:rgb(235, 73, 73);
+    color: white;
+    width: 50px;
+
+    font-size: 14px;
+    right: 10px;
+}
+
+.removeBtn:hover {
+    background-color:rgb(255, 124, 124);
+
+
+}
+
+/* .setBtn {
+    background-color:#ffffff;
+    color: #27293b;
+    right: 70px;
+    width: 100px;
+}
+
+.setBtn:hover {
+    background-color:#67eaf1;
+    color: #ffffff;
+
+} */
