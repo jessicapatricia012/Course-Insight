@@ -45,7 +45,8 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 				   }
 
 				   const {result} = await res.json();//result is an array of {datasetId_dept: val }
-                   setDepartmentOptions(result);
+				   const depts =  result.map(item => item[`${datasetId}_dept`]);
+                   setDepartmentOptions(depts);
                } catch (error) {
                    console.error("Error fetching departments:", error);
                }
@@ -115,7 +116,7 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 				const {error} = await res.json();
 				throw new Error (`${res.status}: ${error}`);
 			}
-			const {result} = await res.json();
+			const {result} = await res.json();// check COLUMNS in the query above to see key names
 
             const data = {
               labels: result.map(item => item[`${datasetId}_dept`]),

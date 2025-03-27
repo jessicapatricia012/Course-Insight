@@ -42,14 +42,13 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 				}
 
 				const {result} = await res.json();//result is an array of {datasetId_dept: val }
-				setDepartmentOptions(result);
+				const depts =  result.map(item => item[`${datasetId}_dept`]);
+				setDepartmentOptions(depts);
             } catch (error) {
                 console.error("Error fetching departments:", error);
             }
         };
         fetchDepartmentOptions();
-
-
     }, [datasetId]);
 
     useEffect(() => {
@@ -84,7 +83,8 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 				}
 
 				const {result} = await res.json();//result is an array of {datasetId_instructor: val }
-                setInstructorOptions(result);
+				const instructors =  result.map(item => item[`${datasetId}_instructor`]);
+                setInstructorOptions(instructors);
             } catch (error) {
                 console.error("Error fetching instructors:", error);
             }
@@ -152,15 +152,9 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 				throw new Error (`${res.status}: ${error}`);
 			}
 
-			const {result} = await res.json();//result is an array of {datasetId_dept: val }
-
-            // const result = [
-            //     { instructor: "Instructor A", fail: 3, pass: 70 },
-            //     { instructor: "Instructor B", fail: 1, pass: 90 }
-            // ];
-
+			const {result} = await res.json();
             const data = {
-                labels: result.map(item => item['${datasetId}_instructor']),
+                labels: result.map(item => item[`${datasetId}_instructor`]),
                 datasets: [
                   {
                     label: 'Percentage Failure',
@@ -175,7 +169,6 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                     }
                 ],
             };
-
             setData(data);
         } catch (error) {
             console.error("Error fetching data:", error);

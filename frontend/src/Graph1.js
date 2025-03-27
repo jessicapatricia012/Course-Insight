@@ -51,7 +51,7 @@ var Graph1 = function (_a) {
     }
     (0, react_1.useEffect)(function () {
         var fetchDepartmentOptions = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var query, url, res, error, result, error_1;
+            var query, url, res, error, result, depts, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -84,7 +84,8 @@ var Graph1 = function (_a) {
                     case 4: return [4 /*yield*/, res.json()];
                     case 5:
                         result = (_a.sent()).result;
-                        setDepartmentOptions(result);
+                        depts = result.map(function (item) { return item["".concat(datasetId, "_dept")]; });
+                        setDepartmentOptions(depts);
                         return [3 /*break*/, 7];
                     case 6:
                         error_1 = _a.sent();

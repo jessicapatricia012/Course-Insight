@@ -53,7 +53,8 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 						   throw new Error (`${res.status}: ${error}`);
 					   }
 					   const {result} = await res.json();
-                       setDepartmentOptions(result);
+					   const depts =  result.map(item => item[`${datasetId}_dept`]);
+					   setDepartmentOptions(depts);
                    } catch (error) {
                        console.error("Error fetching departments:", error);
                    }
@@ -109,21 +110,14 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 					Object.getOwnPropertyDescriptor(section, `${datasetId}_title`));
 					delete section[ `${datasetId}_title`];
 				})
-
 				setCourseOptions(result);
             } catch (error) {
                 console.error("Error fetching courses:", error);
             }
-            //TODO: SET COURSE LIST HERE
-            // const results =  [
-            //     { id: "210", title: "a" },
-            //     { id: "310", title: "b" }
-            // ];
         };
 
         fetchCoursesOptions();
     }, [selectedDepartment,datasetId]);
-
 
 
     const getDataForGraph = async () => {
@@ -190,12 +184,6 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 				throw new Error (`${res.status}: ${error}`);
 			}
 			const {result} = await res.json();
-
-            // const result = [
-            //     { year: 2000 , avg: 76 },
-            //     { year: 2001 , avg: 88 }
-            // ];
-
             const data = {
               labels: result.map(item => item[`${datasetId}_year`]),
               datasets: [
@@ -208,7 +196,6 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                   }
               ],
           };
-
             setData(data);
         } catch (error) {
             console.error("Error fetching data:", error);
