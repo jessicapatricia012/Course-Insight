@@ -125,7 +125,7 @@ describe("Facade C3", function () {
 				.send(sections)
 				.set("Content-Type", "application/x-zip-compressed");
 			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
-			Log.test(`Successful invalid PUT request with err body: ${res.body.err}`);
+			Log.test(`Successful invalid PUT request with err body: ${res.body.erroror}`);
 		} catch (err) {
 			Log.error(err);
 			expect.fail();
@@ -161,7 +161,7 @@ describe("Facade C3", function () {
 		try {
 			const res = await request(SERVER_URL).delete(ENDPOINT_URL);
 			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
-			Log.test(`Successful invalid DELETE request with err body: ${res.body.err}`);
+			Log.test(`Successful invalid DELETE request with err body: ${res.body.error}`);
 		} catch (err) {
 			Log.error(err);
 			expect.fail();
@@ -174,7 +174,7 @@ describe("Facade C3", function () {
 		try {
 			const res = await request(SERVER_URL).delete(ENDPOINT_URL);
 			expect(res.status).to.be.equal(StatusCodes.NOT_FOUND);
-			Log.test(`Successful invalid DELETE request with err body: ${res.body.err}`);
+			Log.test(`Successful invalid DELETE request with err body: ${res.body.error}`);
 		} catch (err) {
 			Log.error(err);
 			expect.fail();
@@ -415,7 +415,7 @@ describe("Facade C3", function () {
 				.post(ENDPOINT_URL)
 				.send(input as object);
 			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
-			Log.test(`Successful invalid POST request with err body: ${res.body.err}`);
+			Log.test(`Successful invalid POST request with err body: ${res.body.error}`);
 		} catch (err) {
 			Log.error(err);
 			expect.fail();
@@ -439,7 +439,7 @@ describe("Facade C3", function () {
 				.post(ENDPOINT_URL)
 				.send(input as object);
 			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
-			Log.test(`Successful invalid POST request with err body: ${res.body.err}`);
+			Log.test(`Successful invalid POST request with err body: ${res.body.error}`);
 		} catch (err) {
 			Log.error(err);
 			expect.fail();
@@ -463,7 +463,7 @@ describe("Facade C3", function () {
 				.post(ENDPOINT_URL)
 				.send(input as object);
 			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
-			Log.test(`Successful invalid POST request with err body: ${res.body.err}`);
+			Log.test(`Successful invalid POST request with err body: ${res.body.error}`);
 		} catch (err) {
 			Log.error(err);
 			expect.fail();
@@ -487,7 +487,7 @@ describe("Facade C3", function () {
 				.post(ENDPOINT_URL)
 				.send(input as object);
 			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
-			Log.test(`Successful invalid POST request with err body: ${res.body.err}`);
+			Log.test(`Successful invalid POST request with err body: ${res.body.error}`);
 		} catch (err) {
 			Log.error(err);
 			expect.fail();
@@ -511,7 +511,7 @@ describe("Facade C3", function () {
 				.post(ENDPOINT_URL)
 				.send(input as object);
 			expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
-			Log.test(`Successful invalid POST request with err body: ${res.body.err}`);
+			Log.test(`Successful invalid POST request with err body: ${res.body.error}`);
 		} catch (err) {
 			Log.error(err);
 			expect.fail();
