@@ -59,6 +59,8 @@ label{
 
 .chartDiv{
     position: absolute;
-    width: 70%;
+    width: 60vw;
+    max-height: 50vh;
     top: 33%;
+    left: 12%;
 }
