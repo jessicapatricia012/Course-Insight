@@ -130,7 +130,7 @@ export default class Server {
 			const ret = await Server.facade.addDataset(id, content, kind);
 			res.status(StatusCodes.OK).send({ result: ret });
 		} catch (err) {
-			res.status(StatusCodes.BAD_REQUEST).send({ err: (err as Error).message });
+			res.status(StatusCodes.BAD_REQUEST).send({ error: (err as Error).message });
 		}
 	}
 
@@ -144,8 +144,11 @@ export default class Server {
 			const ret = await Server.facade.removeDataset(id);
 			res.status(StatusCodes.OK).send({ result: ret });
 		} catch (err) {
-			if (err instanceof InsightError) res.status(StatusCodes.BAD_REQUEST).send({ err: (err as Error).message });
-			else res.status(StatusCodes.NOT_FOUND).send({ err: (err as Error).message });
+			if (err instanceof InsightError) {
+				res.status(StatusCodes.BAD_REQUEST).send({ error: (err as Error).message });
+			} else {
+				res.status(StatusCodes.NOT_FOUND).send({ error: (err as Error).message });
+			}
 		}
 	}
 
@@ -159,7 +162,7 @@ export default class Server {
 			const ret = await Server.facade.performQuery(query);
 			res.status(StatusCodes.OK).send({ result: ret });
 		} catch (err) {
-			res.status(StatusCodes.BAD_REQUEST).send({ err: (err as Error).message });
+			res.status(StatusCodes.BAD_REQUEST).send({ error: (err as Error).message });
 		}
 	}
 
