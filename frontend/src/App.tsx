@@ -5,6 +5,9 @@ import Graph2 from "./Graph2.tsx";
 import Graph3 from "./Graph3.tsx";
 import Home from "./Home.tsx";
 import "./style/App.css";
+import request from "supertest";
+import {expect} from "chai";
+import {StatusCodes} from "http-status-codes";
 
 const App: React.FC = () => {
     const [selectedDatasetId, setSelectedDatasetId] = useState("");
@@ -15,9 +18,9 @@ const App: React.FC = () => {
 
     const openSidePanel = () => {
         if (isSidePanelOpen)
-            setIsSidePanelOpen(false); 
+            setIsSidePanelOpen(false);
         else
-            setIsSidePanelOpen(true); 
+            setIsSidePanelOpen(true);
     };
 
     useEffect(() => {
@@ -32,15 +35,44 @@ const App: React.FC = () => {
         };
     }, []);
 
-    const handleAddDataset = (id: string, file: File) => {
+    const handleAddDataset = async (id: string, file: File) => {
         // TODO: add dataset with id and File
-        const newId = id;
-        setDatasetIds([...datasetIds, newId]);
+		const url = `/dataset/${id}/sections`;
+		try {
+			const res = await fetch(url, {
+				headers: {"Content-Type": "application/x-zip-compressed"},
+				method: "PUT",
+				body: file
+			});
+
+			if(!res.ok){
+				const {error} = await res.json();
+				throw new Error (`${res.status}: ${error}`);
+			}
+			const {result} = await res.json();
+        	setDatasetIds(result);//result is an array of strings of dataset ids
+		} catch (err){
+			throw new Error(`Error adding dataset: ${err}`);
+		}
     };
 
-    const handleRemoveDataset = (id: string) => {
+    const handleRemoveDataset = async (id: string) => {
         // TODO: remove dataset with id
-        setDatasetIds((prev) => prev.filter((datasetId) => datasetId !== id));
+		const url = `/dataset/${id}`;
+		try {
+			const res = await fetch(url, {
+				method: "DELETE",
+			});
+
+			if(!res.ok){
+				const {error} = await res.json();
+				throw new Error (`${res.status}: ${error}`);
+			}
+			const {result} = await res.json();//result is a string id of removed dataset
+        setDatasetIds((prev: any) => prev.filter((datasetId: string) => datasetId !== result));
+		} catch (err){
+			throw new Error(`Error removing dataset: ${err}`);
+		}
     };
 
   return (

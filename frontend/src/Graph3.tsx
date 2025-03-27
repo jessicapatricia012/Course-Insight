@@ -12,7 +12,7 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     const [data, setData] = useState<any>(null)
 
     console.log(datasetId);
-    
+
     useEffect(() => {
         console.log("called");
         const fetchDepartmentOptions = async () => {
@@ -29,8 +29,20 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
             try {
                 // TODO: fetch department and set to departmentOptions
-                const results = [];
-                setDepartmentOptions(results);
+				const url = "http://localhost:4321/query";
+				const res = await fetch(url, {
+					headers:{ "Content-Type": "application/json"},
+					method: "POST",
+					body: JSON.stringify(query)
+				})
+
+				if(!res.ok){
+					const {error} = await res.json();
+					throw new Error (`${res.status}: ${error}`);
+				}
+
+				const {result} = await res.json();//result is an array of {datasetId_dept: val }
+				setDepartmentOptions(result);
             } catch (error) {
                 console.error("Error fetching departments:", error);
             }
@@ -59,15 +71,27 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
             try {
                 // TODO: fetch instructor and set to instructor
-                const results = [];
-                setInstructorOptions(results);
+				const url = "http://localhost:4321/query";
+				const res = await fetch(url, {
+					headers:{ "Content-Type": "application/json"},
+					method: "POST",
+					body: JSON.stringify(query)
+				})
+
+				if(!res.ok){
+					const {error} = await res.json();
+					throw new Error (`${res.status}: ${error}`);
+				}
+
+				const {result} = await res.json();//result is an array of {datasetId_instructor: val }
+                setInstructorOptions(result);
             } catch (error) {
                 console.error("Error fetching instructors:", error);
             }
         };
         fetchInstructorOptions();
     }, [selectedDepartment,datasetId]);
-    
+
     const handleSelectInstructors = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const options = event.target.options;
         const selectedValues: string[] = [];
@@ -116,17 +140,31 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
         };
         try {
             // TODO: fetch data set to result
-            const result = [
-                { instructor: "Instructor A", fail: 3, pass: 70 },
-                { instructor: "Instructor B", fail: 1, pass: 90 }
-            ];  
-                   
+			const url = "http://localhost:4321/query";
+			const res = await fetch(url, {
+				headers:{ "Content-Type": "application/json"},
+				method: "POST",
+				body: JSON.stringify(query)
+			})
+
+			if(!res.ok){
+				const {error} = await res.json();
+				throw new Error (`${res.status}: ${error}`);
+			}
+
+			const {result} = await res.json();//result is an array of {datasetId_dept: val }
+
+            // const result = [
+            //     { instructor: "Instructor A", fail: 3, pass: 70 },
+            //     { instructor: "Instructor B", fail: 1, pass: 90 }
+            // ];
+
             const data = {
-                labels: result.map(item => item.instructor),
+                labels: result.map(item => item['${datasetId}_instructor']),
                 datasets: [
                   {
                     label: 'Percentage Failure',
-                    data: result.map(item => (item.fail * 100) / (item.pass + item.fail)),
+                    data: result.map(item => (item["totalFail"] * 100) / (item["totalPass"] + item["totalFail"])),
                     backgroundColor: [
                         'rgba(255, 99, 132, 1)',
                         'rgba(54, 162, 235, 1)',
@@ -144,7 +182,7 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
         }
     }
 
-  
+
     return (
         <div>
             <div className="inputsWrapper">
@@ -182,8 +220,8 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                 </div>
             </div>
 
-            <button 
-                className={`generateGraphBtn ${selectedInstructors.length === 0 || !selectedDepartment? "disabledBtn" : "btn"}`} 
+            <button
+                className={`generateGraphBtn ${selectedInstructors.length === 0 || !selectedDepartment? "disabledBtn" : "btn"}`}
                 // Commented out to allow for generating graph with mock data
                 // disabled={selectedInstructors.length === 0 || !selectedDepartment}
                 onClick={getDataForGraph}>

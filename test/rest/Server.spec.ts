@@ -47,6 +47,70 @@ describe("Facade C3", function () {
 		// might want to add some process logging here to keep track of what is going on
 	});
 
+	it("should POST a fetch API requests", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/sections/sections";
+		const ENDPOINT_URL = "/query";
+
+		const url = SERVER_URL + ENDPOINT_URL;
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(sections)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["sections"]);
+
+			const { input, expected } = await loadTestQuery("[valid/simple.json]");
+			const res = await fetch(url, {
+				headers: { "Content-Type": "application/json" },
+				method: "POST",
+				body: JSON.stringify(input),
+			});
+
+			if (!res.ok) {
+				const { error } = await res.json();
+				throw new Error(`Error ${res.status}: ${error}`);
+			}
+			const data = await res.json();
+			expect(data.result).to.have.deep.members(expected);
+			Log.test(data.result);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
+	it("should POST an invalid fetch API requests", async function () {
+		const ENDPOINT_URL_SETUP = "/dataset/sections/sections";
+		const ENDPOINT_URL = "/query";
+
+		const url = SERVER_URL + ENDPOINT_URL;
+		try {
+			const setup = await request(SERVER_URL)
+				.put(ENDPOINT_URL_SETUP)
+				.send(sections)
+				.set("Content-Type", "application/x-zip-compressed");
+			expect(setup.status).to.be.equal(StatusCodes.OK);
+			expect(setup.body.result).to.have.members(["sections"]);
+
+			const { input } = await loadTestQuery("[invalid/invalid.json]");
+			const res = await fetch(url, {
+				headers: { "Content-Type": "application/json" },
+				method: "POST",
+				body: JSON.stringify(input),
+			});
+
+			if (res.ok) {
+				expect.fail();
+			}
+			const { error } = await res.json();
+			Log.info(`Error ${res.status}: ${error}`);
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+		}
+	});
+
 	//PUT
 	// Sample on how to format PUT requests
 	it("should PUT a single sections dataset", async function () {

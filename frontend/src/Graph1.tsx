@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./style/GraphPage.css";
 import GraphComponent from "./GraphComponent";
+import {expect} from "chai";
+import {Log} from "@ubccpsc310/project-support";
 
 
 const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
@@ -27,11 +29,23 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                        "APPLY": []
                    }
                };
-   
+
                try {
                    // TODO: fetch department and set to departmentOptions
-                   const results = [];
-                   setDepartmentOptions(results);
+				   const url = "http://localhost:4321/query";
+				   const res = await fetch(url, {
+					   headers:{ "Content-Type": "application/json"},
+					   method: "POST",
+					   body: JSON.stringify(query)
+				   })
+
+				   if(!res.ok){
+					   const {error} = await res.json();
+					   throw new Error (`${res.status}: ${error}`);
+				   }
+
+				   const {result} = await res.json();//result is an array of {datasetId_dept: val }
+                   setDepartmentOptions(result);
                } catch (error) {
                    console.error("Error fetching departments:", error);
                }
@@ -90,17 +104,25 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
           };
         try {
             // TODO: fetch data set to result
-            const result = [
-                { dept: "Dept A", avg: 80 },
-                { dept: "Dept B", avg: 90 }
-            ];  
+			const url = "http://localhost:4321/query";
+			const res = await fetch(url, {
+				headers:{ "Content-Type": "application/json"},
+				method: "POST",
+				body: JSON.stringify(query)
+			})
+
+			if(!res.ok){
+				const {error} = await res.json();
+				throw new Error (`${res.status}: ${error}`);
+			}
+			const {result} = await res.json();
 
             const data = {
-              labels: result.map(item => item.dept),
+              labels: result.map(item => item[`${datasetId}_dept`]),
               datasets: [
                 {
                   label: 'Department Average',
-                  data: result.map(item => item.avg),
+                  data: result.map(item => item["average"]),
                   backgroundColor: [
                       'rgba(255, 99, 132, 1)',
                       'rgba(54, 162, 235, 1)',
@@ -111,18 +133,17 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                   }
               ],
           };
-                   
             setData(data);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
     }
-  
+
     return (
         <div>
             <div className="inputsWrapper">
 
-                <div className="inputWrapper">        
+                <div className="inputWrapper">
                     <label htmlFor="departmentSelect">Department:</label>
                     <select className="dropdown departmentSelect" multiple value={selectedDepartments} onChange={handleSelectDepartments}>
                     <option value="" disabled>Select a department</option>
@@ -138,7 +159,7 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                     </select>
                 </div>
 
-                <div className="inputWrapper">        
+                <div className="inputWrapper">
                     <label htmlFor="yearSelect">Year:</label>
                     <select className="dropdown yearSelect" value={selectedYear} onChange={(e)=> setSelectedYear(e.target.value)}>
                         <option value="" disabled>Select a year</option>
@@ -149,16 +170,16 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                         ))}
                 </select>
                 </div>
-            
+
             </div>
-            <button 
-                className={`generateGraphBtn ${!selectedYear || selectedDepartments.length === 0? "disabledBtn" : "btn"}`} 
+            <button
+                className={`generateGraphBtn ${!selectedYear || selectedDepartments.length === 0? "disabledBtn" : "btn"}`}
                 // Commented out to allow for generating graph with mock data
-                // disabled={!selectedYear || selectedDepartments.length === 0} 
+                // disabled={!selectedYear || selectedDepartments.length === 0}
                 onClick={getDataForGraph}>
                     See Average
             </button>
-      
+
             <div className="chartDiv">
                   {data !== null && <GraphComponent data={data} isBar={true} />}
             </div>
