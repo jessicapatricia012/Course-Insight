@@ -13,7 +13,7 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     const [selectedYear2, setSelectedYear2] = useState<string>("");
 
     const [data, setData] = useState<any>(null);
-    
+
 
     const years1: string[] = [];
     for (let year = 1990; year <= 2023; year++) {
@@ -38,17 +38,28 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                            "APPLY": []
                        }
                    };
-       
+
                    try {
                        // TODO: fetch department and set to departmentOptions
-                       const results = [];
-                       setDepartmentOptions(results);
+					   const url = "http://localhost:4321/query";
+					   const res = await fetch(url, {
+						   headers:{ "Content-Type": "application/json"},
+						   method: "POST",
+						   body: JSON.stringify(query)
+					   })
+
+					   if(!res.ok){
+						   const {error} = await res.json();
+						   throw new Error (`${res.status}: ${error}`);
+					   }
+					   const {result} = await res.json();
+					   const depts =  result.map(item => item[`${datasetId}_dept`]);
+					   setDepartmentOptions(depts);
                    } catch (error) {
                        console.error("Error fetching departments:", error);
                    }
                };
                fetchDepartmentOptions();
-    
            }, [datasetId]);
 
 
@@ -77,21 +88,36 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
               };
             try {
                // TODO: FETCH COURSES
+				const url = "http://localhost:4321/query";
+				const res = await fetch(url, {
+					headers:{ "Content-Type": "application/json"},
+					method: "POST",
+					body: JSON.stringify(query)
+				})
+
+				if(!res.ok){
+					const {error} = await res.json();
+					throw new Error (`${res.status}: ${error}`);
+				}
+				const {result} = await res.json();
+				//Rename keys
+				result.forEach((section: any) => {
+					Object.defineProperty(section, "id",
+					Object.getOwnPropertyDescriptor(section, `${datasetId}_id`));
+					delete section[`${datasetId}_id`];
+
+					Object.defineProperty(section, "title",
+					Object.getOwnPropertyDescriptor(section, `${datasetId}_title`));
+					delete section[ `${datasetId}_title`];
+				})
+				setCourseOptions(result);
             } catch (error) {
                 console.error("Error fetching courses:", error);
             }
-            //TODO: SET COURSE LIST HERE
-            const results =  [
-                { id: "210", title: "a" },
-                { id: "310", title: "b" }
-            ];
-
-            setCourseOptions(results);
         };
 
         fetchCoursesOptions();
     }, [selectedDepartment,datasetId]);
-
 
 
     const getDataForGraph = async () => {
@@ -102,12 +128,12 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                   "AND": [
                     {
                       "GT": {
-                        [`${datasetId}_year`]: selectedYear1
+                        [`${datasetId}_year`]: parseInt(selectedYear1)-1
                       }
                     },
                     {
                       "LT": {
-                        [`${datasetId}_year`]: selectedYear2
+                        [`${datasetId}_year`]: parseInt(selectedYear2)+1
                       }
                     }
                   ]
@@ -146,24 +172,30 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
           };
         try {
             // TODO: fetch data set to result
-            const result = [
-                { year: 2000 , avg: 76 },
-                { year: 2001 , avg: 88 }
-            ];  
+			const url = "http://localhost:4321/query";
+			const res = await fetch(url, {
+				headers:{ "Content-Type": "application/json"},
+				method: "POST",
+				body: JSON.stringify(query)
+			})
 
+			if(!res.ok){
+				const {error} = await res.json();
+				throw new Error (`${res.status}: ${error}`);
+			}
+			const {result} = await res.json();
             const data = {
-              labels: result.map(item => item.year),
+              labels: result.map(item => item[`${datasetId}_year`]),
               datasets: [
                 {
                   label: 'Course Average',
-                  data: result.map(item => item.avg),
+                  data: result.map(item => item["average"]),
                   backgroundColor: 'rgba(255, 99, 132, 1)',
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1,
                   }
               ],
           };
-     
             setData(data);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -190,15 +222,15 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                     </select>
                 </div>
 
-                <div className="inputWrapper">   
-                    <label htmlFor="instructorSelect">Course:</label>      
+                <div className="inputWrapper">
+                    <label htmlFor="instructorSelect">Course:</label>
                     <select className="dropdown instructorSelect" value={selectedCourse} onChange={(e)=> setSelectedCourse(e.target.value)}>
                     <option value="" disabled>Select a course</option>
                     {courseOptions.length > 0 ? (
-                            courseOptions.map((course) => (
-                                <option key={course.id} value={course.id}>
-                                    {course.id}-{course.title}
-                                </option>
+                      courseOptions.map((course) => (
+                        <option key={`${course.id}-${course.title}`} value={course.id}>
+                          {course.id}-{course.title}
+                        </option>
                             ))
                         ) : (
                             <option disabled>Loading...</option>
@@ -206,9 +238,9 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                     </select>
                 </div>
 
-                <div className="inputWrapper">    
-                    <label htmlFor="yearSelect">Year:</label>      
-                    <div className="years">   
+                <div className="inputWrapper">
+                    <label htmlFor="yearSelect">Year:</label>
+                    <div className="years">
                     <select className="dropdown yearselect" value={selectedYear1} onChange={(e)=> setSelectedYear1(e.target.value)}>
                         <option value="" disabled>Start year</option>
                         {years1.map((year) => (
@@ -226,14 +258,13 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                         </option>
                         ))}
                     </select>
-                    </div>  
+                    </div>
                 </div>
             </div>
 
-            <button 
-                className={`generateGraphBtn ${!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2? "disabledBtn" : "btn"}`} 
-                // Commented out to allow for generating graph with mock data
-                // disabled={!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2}  
+            <button
+                className={`generateGraphBtn ${!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2? "disabledBtn" : "btn"}`}
+                disabled={!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2}
                 onClick={getDataForGraph}>
                     See Average
             </button>

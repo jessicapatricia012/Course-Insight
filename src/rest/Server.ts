@@ -68,7 +68,8 @@ export default class Server {
 				Log.error("Server::stop() - ERROR: server not started");
 				reject();
 			} else {
-				this.server.close(() => {
+				this.server.close(async () => {
+					//await clearDisk();// to clear disk after each session
 					Log.info("Server::stop() - server closed");
 					resolve();
 				});
