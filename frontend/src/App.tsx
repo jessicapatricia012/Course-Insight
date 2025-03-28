@@ -130,7 +130,7 @@ const App: React.FC = () => {
               {activePage === "Graph1" && (
                 <div className="page graph1Page">
                   <div id="header">
-                    <h1>Graph 1</h1>
+                    <h1>Average by Department</h1>
                   </div>
                   <hr /><br></br>
                   <Graph1 datasetId={selectedDatasetId}></Graph1>
@@ -140,7 +140,7 @@ const App: React.FC = () => {
               {activePage === "Graph2" && (
                 <div className="page graph2Page">
                   <div id="header">
-                    <h1>Graph 2</h1>
+                    <h1>Course Average throughout the Year</h1>
                   </div>
                   <hr /><br></br>
                   <Graph2 datasetId={selectedDatasetId}></Graph2>
@@ -150,7 +150,7 @@ const App: React.FC = () => {
               {activePage === "Graph3" && (
                 <div className="page graph3Page">
                   <div id="header">
-                    <h1>Graph 3</h1>
+                    <h1>Percentage Failing by Instructor</h1>
                   </div>
                   <hr /><br></br>
                   <Graph3 datasetId={selectedDatasetId}></Graph3>
