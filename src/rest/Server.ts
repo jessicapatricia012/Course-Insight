@@ -5,7 +5,6 @@ import { IInsightFacade, InsightError } from "../controller/IInsightFacade";
 import * as http from "http";
 import cors from "cors";
 import InsightFacade from "../controller/InsightFacade";
-import { clearDisk } from "../../test/TestUtil";
 
 export default class Server {
 	private readonly port: number;
