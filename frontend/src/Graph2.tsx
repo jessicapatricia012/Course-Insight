@@ -264,8 +264,7 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
             <button
                 className={`generateGraphBtn ${!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2? "disabledBtn" : "btn"}`}
-                // Commented out to allow for generating graph with mock data
-                // disabled={!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2}
+                disabled={!selectedDepartment ||!selectedCourse ||!selectedYear1 || !selectedYear2}
                 onClick={getDataForGraph}>
                     See Average
             </button>

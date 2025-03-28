@@ -57,15 +57,22 @@ html, body {
   font-weight: bold;
   cursor: pointer;
   height: 30px;
+  width: 170px;
   right: 280px;
   top:30px;
-  background: #fff36a;
-  color: #e6aaff;
+  background: #27293b;
+  color: #d3d5e9;
   border-radius: 5px;
-  border: none;
+  border: solid #e6aaff 2px;
   font-weight: bold;
 }
 
+.selectedDatasetDropdown:hover{
+  background: #fff36a;
+  color: #e6aaff;
+  border: solid #fff36a 2px;
+
+}
 
 
 

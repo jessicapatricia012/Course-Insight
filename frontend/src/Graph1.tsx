@@ -45,12 +45,11 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                     throw new Error (`${res.status}: ${error}`);
                   }
 
-                  const {result} = await res.json();//result is an array of {datasetId_dept: val }
+                  const {result} = await res.json();
                   const depts = result.map((item) => item[`${datasetId}_dept`]);
                   setDepartmentOptions(depts.map((dept) => ({ label: dept, value: dept })));
                } catch (error) {
-				   throw error; //display this error somehow
-                   //console.error("Error fetching departments:", error);
+				          throw error; 
                }
            };
            fetchDepartmentOptions();
@@ -58,7 +57,6 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
        }, [datasetId]);
 
        const handleDepartmentChange = (newValue: MultiValue<{ label: string; value: string }>) => {
-        // Convert selected items back to an array of strings
         setSelectedDepartments(newValue.map((item) => item.value));
       };
 
@@ -100,35 +98,34 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             }
           };
         try {
-            // TODO: fetch data set to result
-			const url = "http://localhost:4321/query";
-			const res = await fetch(url, {
-				headers:{ "Content-Type": "application/json"},
-				method: "POST",
-				body: JSON.stringify(query)
-			})
+          const url = "http://localhost:4321/query";
+          const res = await fetch(url, {
+            headers:{ "Content-Type": "application/json"},
+            method: "POST",
+            body: JSON.stringify(query)
+          })
 
-			if(!res.ok){
-				const {error} = await res.json();
-				throw new Error (`${res.status}: ${error}`);
-			}
-			const {result} = await res.json();
+          if(!res.ok){
+            const {error} = await res.json();
+            throw new Error (`${res.status}: ${error}`);
+          }
+          const {result} = await res.json();
 
-            const data = {
-              labels: result.map(item => item[`${datasetId}_dept`]),
-              datasets: [
-                {
-                  label: 'Department Average',
-                  data: result.map(item => item["average"]),
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 1)',
-                    ],
-                  }
-              ],
+          const data = {
+            labels: result.map(item => item[`${datasetId}_dept`]),
+            datasets: [
+              {
+                label: 'Department Average',
+                data: result.map(item => item["average"]),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 1)',
+                  ],
+                }
+            ],
           };
-            setData(data);
+          setData(data);
         } catch (error) {
-            console.error("Error fetching data:", error);
+          console.error("Error fetching data:", error);
         }
     }
     const selectStyles = {
@@ -145,9 +142,9 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
       }),
       multiValue: (provided: any) => ({
         ...provided,
-        backgroundColor: "#67eaf1", 
-        color: "white",
-        borderRadius: "16px",
+        backgroundColor: "#b6b6b6", 
+        color: "#ffff",
+        borderRadius: "5px",
         margin: "2px",
       }),
       multiValueLabel: (provided: any) => ({
@@ -201,8 +198,7 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             </div>
             <button
                 className={`generateGraphBtn ${!selectedYear || selectedDepartments.length === 0? "disabledBtn" : "btn"}`}
-                // Commented out to allow for generating graph with mock data
-                // disabled={!selectedYear || selectedDepartments.length === 0}
+                disabled={!selectedYear || selectedDepartments.length === 0}
                 onClick={getDataForGraph}>
                     See Average
             </button>

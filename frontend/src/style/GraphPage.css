@@ -13,7 +13,7 @@
 }
 
 .dropdown {
-    width: 300px;
+    width: 250px;
     height: 40px;
     border-radius: 5px;
     font-size: 16px;
@@ -27,14 +27,13 @@
 
 
 .generateGraphBtn {
-    margin-top: 11px;
-    width: 200px;
+    margin-top: 13px;
     height: 40px;
     border-radius: 100px;
     font-size: 16px;
     position: absolute;
-    top: 21%;
-    left: 12%;
+    top: 23%;
+    margin-left: 12px;
 }
 
 label{
@@ -63,6 +62,6 @@ label{
     width: 60vw;
     max-height: 50vh;
     top: 33%;
-    left: 12%;
+    margin-left: 12px;
 }
 

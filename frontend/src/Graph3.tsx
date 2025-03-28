@@ -83,9 +83,9 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 					throw new Error (`${res.status}: ${error}`);
 				}
 
-				const {result} = await res.json();//result is an array of {datasetId_instructor: val }
-				const instructors =  result.map(item => item[`${datasetId}_instructor`]);
-                setInstructorOptions(instructors);
+				const {result} = await res.json();
+                const instructors = result.map((item) => item[`${datasetId}_instructor`]);
+                setInstructorOptions(instructors.map((instructor) => ({ label: instructor, value: instructor })));
             } catch (error) {
                 console.error("Error fetching instructors:", error);
             }
@@ -94,7 +94,6 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     }, [selectedDepartment,datasetId]);
 
    const handleInstructorChange = (newValue: MultiValue<{ label: string; value: string }>) => {
-           // Convert selected items back to an array of strings
            setSelectedInstructors(newValue.map((item) => item.value));
          };
 
@@ -168,7 +167,7 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
     const selectStyles = {
         container: (provided: any) => ({
           ...provided,
-          width: "400px", 
+          width: "545px", 
           height: "40px",
         }),
         option: (provided: any, state: any) => ({
@@ -178,12 +177,12 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
           color: state.isSelected ? "white" : "black",
         }),
         multiValue: (provided: any) => ({
-          ...provided,
-          backgroundColor: "#67eaf1", 
-          color: "white",
-          borderRadius: "16px",
-          margin: "2px",
-        }),
+            ...provided,
+            backgroundColor: "#b6b6b6", 
+            color: "#ffff",
+            borderRadius: "5px",
+            margin: "2px",
+          }),
         multiValueLabel: (provided: any) => ({
           ...provided,
           fontSize: "14px", 
@@ -226,9 +225,9 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                       id="instructorSelect"
                       options={instructorOptions}
                       isMulti
-                      value={selectedInstructors.map((dept) => ({
-                        label: dept,
-                        value: dept
+                      value={selectedInstructors.map((instructor) => ({
+                        label: instructor,
+                        value: instructor
                       }))}
                       onChange={handleInstructorChange}
                       placeholder="Select instructors"
@@ -239,8 +238,7 @@ const Graph3: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
             <button
                 className={`generateGraphBtn ${selectedInstructors.length === 0 || !selectedDepartment? "disabledBtn" : "btn"}`}
-                // Commented out to allow for generating graph with mock data
-                // disabled={selectedInstructors.length === 0 || !selectedDepartment}
+                disabled={selectedInstructors.length === 0 || !selectedDepartment}
                 onClick={getDataForGraph}>
                     See Failing
             </button>
