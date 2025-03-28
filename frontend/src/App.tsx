@@ -37,12 +37,13 @@ const App: React.FC = () => {
 
     const handleAddDataset = async (id: string, file: File) => {
         // TODO: add dataset with id and File
-		const url = `/dataset/${id}/sections`;
+		const url = `http://localhost:4321/dataset/${id}/sections`;
+		const buffer = await file.arrayBuffer()
 		try {
 			const res = await fetch(url, {
 				headers: {"Content-Type": "application/x-zip-compressed"},
 				method: "PUT",
-				body: file
+				body: buffer
 			});
 
 			if(!res.ok){
@@ -52,13 +53,14 @@ const App: React.FC = () => {
 			const {result} = await res.json();
         	setDatasetIds(result);//result is an array of strings of dataset ids
 		} catch (err){
-			throw new Error(`Error adding dataset: ${err}`);
+			throw err;//display this error somehow
+			//console.log(`Error adding dataset: ${err}`);
 		}
     };
 
     const handleRemoveDataset = async (id: string) => {
         // TODO: remove dataset with id
-		const url = `/dataset/${id}`;
+		const url = `http://localhost:4321/dataset/${id}`;
 		try {
 			const res = await fetch(url, {
 				method: "DELETE",
@@ -71,7 +73,8 @@ const App: React.FC = () => {
 			const {result} = await res.json();//result is a string id of removed dataset
         setDatasetIds((prev: any) => prev.filter((datasetId: string) => datasetId !== result));
 		} catch (err){
-			throw new Error(`Error removing dataset: ${err}`);
+			throw err;//display this error somehow
+			//throw new Error(`Error removing dataset: ${err}`);
 		}
     };
 

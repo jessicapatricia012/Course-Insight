@@ -5,6 +5,7 @@ import { IInsightFacade, InsightError } from "../controller/IInsightFacade";
 import * as http from "http";
 import cors from "cors";
 import InsightFacade from "../controller/InsightFacade";
+import { clearDisk } from "../../test/TestUtil";
 
 export default class Server {
 	private readonly port: number;
@@ -68,7 +69,8 @@ export default class Server {
 				Log.error("Server::stop() - ERROR: server not started");
 				reject();
 			} else {
-				this.server.close(() => {
+				this.server.close(async () => {
+					//await clearDisk();// to clear disk after each session
 					Log.info("Server::stop() - server closed");
 					resolve();
 				});

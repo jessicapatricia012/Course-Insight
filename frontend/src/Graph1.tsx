@@ -48,7 +48,8 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 				   const depts =  result.map(item => item[`${datasetId}_dept`]);
                    setDepartmentOptions(depts);
                } catch (error) {
-                   console.error("Error fetching departments:", error);
+				   throw error; //display this error somehow
+                   //console.error("Error fetching departments:", error);
                }
            };
            fetchDepartmentOptions();
