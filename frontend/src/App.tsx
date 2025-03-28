@@ -24,6 +24,27 @@ const App: React.FC = () => {
     };
 
     useEffect(() => {
+        const fetchDataOnLoad = async () => {
+          const url = `http://localhost:4321/datasets`;
+          try {
+              const res = await fetch(url, {
+                  method: "GET"
+              });
+  
+              if(!res.ok){
+                  const {error} = await res.json();
+                  throw new Error (`${res.status}: ${error}`);
+              }
+              const {result} = await res.json();
+              const ids = result.map((dataset: any) => dataset.id); 
+              setDatasetIds(ids);
+          } catch (err){
+              throw err;//display this error somehow
+              //console.log(`Error adding dataset: ${err}`);
+          }        
+        }
+        fetchDataOnLoad();
+
         const handleClickOutside = (event) => {
           if (sidePanelRef.current && !sidePanelRef.current.contains(event.target)) {
             setIsSidePanelOpen(false);

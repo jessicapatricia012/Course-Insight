@@ -7,14 +7,14 @@ const Home: React.FC<{ datasetIds: string[]; onAddDataset: (id: string, file: Fi
     const [file, setFile] = useState<File | null>(null);
     const [feedback, setFeedback] = useState<string>("");
 
-    const handleAdd = () => {
+    const handleAdd = async () => {
         if (!datasetId || !file) {
             setFeedback("Please provide an ID and select a file.");
             return;
         }
 
         try {
-            onAddDataset(datasetId, file);
+             await onAddDataset(datasetId, file);
             setFeedback("Dataset added successfully!");
         } catch (error){
             setFeedback("Fail adding dataset: " + error);
