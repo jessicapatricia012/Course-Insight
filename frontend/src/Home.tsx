@@ -17,7 +17,7 @@ const Home: React.FC<{ datasetIds: string[]; onAddDataset: (id: string, file: Fi
              await onAddDataset(datasetId, file);
             setFeedback("Dataset added successfully!");
         } catch (error){
-            setFeedback("Fail adding dataset: " + error);
+            setFeedback(error);
         }
 
         setDatasetId("");
