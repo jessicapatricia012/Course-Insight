@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "chart.js": "^4.4.8",
+    "chosen-js": "^1.8.7",
+    "jquery": "^3.7.1",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-select": "^5.10.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

@@ -128,12 +128,12 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                   "AND": [
                     {
                       "GT": {
-                        [`${datasetId}_year`]: selectedYear1
+                        [`${datasetId}_year`]: parseInt(selectedYear1)-1
                       }
                     },
                     {
                       "LT": {
-                        [`${datasetId}_year`]: selectedYear2
+                        [`${datasetId}_year`]: parseInt(selectedYear2)+1
                       }
                     }
                   ]
@@ -227,10 +227,10 @@ const Graph2: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                     <select className="dropdown instructorSelect" value={selectedCourse} onChange={(e)=> setSelectedCourse(e.target.value)}>
                     <option value="" disabled>Select a course</option>
                     {courseOptions.length > 0 ? (
-                            courseOptions.map((course) => (
-                                <option key={course.id} value={course.id}>
-                                    {course.id}-{course.title}
-                                </option>
+                      courseOptions.map((course) => (
+                        <option key={`${course.id}-${course.title}`} value={course.id}>
+                          {course.id}-{course.title}
+                        </option>
                             ))
                         ) : (
                             <option disabled>Loading...</option>

@@ -3,10 +3,11 @@ import "./style/GraphPage.css";
 import GraphComponent from "./GraphComponent";
 import {expect} from "chai";
 import {Log} from "@ubccpsc310/project-support";
+import Select, { MultiValue } from "react-select"; // Import MultiValue here
 
 
 const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
-    const [departmentOptions, setDepartmentOptions] = useState<string[]>([]);
+    const [departmentOptions, setDepartmentOptions] = useState<{ label: string, value: string }[]>([]);
     const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
     const [selectedYear, setSelectedYear] = useState<string>("");
 
@@ -32,21 +33,21 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
                try {
                    // TODO: fetch department and set to departmentOptions
-				   const url = "http://localhost:4321/query";
-				   const res = await fetch(url, {
-					   headers:{ "Content-Type": "application/json"},
-					   method: "POST",
-					   body: JSON.stringify(query)
-				   })
+                  const url = "http://localhost:4321/query";
+                  const res = await fetch(url, {
+                    headers:{ "Content-Type": "application/json"},
+                    method: "POST",
+                    body: JSON.stringify(query)
+                  })
 
-				   if(!res.ok){
-					   const {error} = await res.json();
-					   throw new Error (`${res.status}: ${error}`);
-				   }
+                  if(!res.ok){
+                    const {error} = await res.json();
+                    throw new Error (`${res.status}: ${error}`);
+                  }
 
-				   const {result} = await res.json();//result is an array of {datasetId_dept: val }
-				   const depts =  result.map(item => item[`${datasetId}_dept`]);
-                   setDepartmentOptions(depts);
+                  const {result} = await res.json();//result is an array of {datasetId_dept: val }
+                  const depts = result.map((item) => item[`${datasetId}_dept`]);
+                  setDepartmentOptions(depts.map((dept) => ({ label: dept, value: dept })));
                } catch (error) {
 				   throw error; //display this error somehow
                    //console.error("Error fetching departments:", error);
@@ -56,16 +57,10 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
        }, [datasetId]);
 
-    const handleSelectDepartments = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const options = event.target.options;
-        const selectedValues: string[] = [];
-        for (let i = 0; i < options.length; i++) {
-        if (options[i].selected) {
-            selectedValues.push(options[i].value);
-        }
-        }
-        setSelectedDepartments(selectedValues);
-    };
+       const handleDepartmentChange = (newValue: MultiValue<{ label: string; value: string }>) => {
+        // Convert selected items back to an array of strings
+        setSelectedDepartments(newValue.map((item) => item.value));
+      };
 
     const getDataForGraph = async () => {
         const query = {
@@ -80,7 +75,7 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                 },
                 {
                   "EQ": {
-                    [`${datasetId}_year`]: selectedYear
+                    [`${datasetId}_year`]: parseInt(selectedYear)
                   }
                 }
               ]
@@ -117,7 +112,7 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 				const {error} = await res.json();
 				throw new Error (`${res.status}: ${error}`);
 			}
-			const {result} = await res.json();// check COLUMNS in the query above to see key names
+			const {result} = await res.json();
 
             const data = {
               labels: result.map(item => item[`${datasetId}_dept`]),
@@ -127,10 +122,6 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
                   data: result.map(item => item["average"]),
                   backgroundColor: [
                       'rgba(255, 99, 132, 1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
                     ],
                   }
               ],
@@ -140,6 +131,40 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
             console.error("Error fetching data:", error);
         }
     }
+    const selectStyles = {
+      container: (provided: any) => ({
+        ...provided,
+        width: "400px", 
+        height: "40px",
+      }),
+      option: (provided: any, state: any) => ({
+        ...provided,
+        fontSize: "16px",
+        backgroundColor: state.isSelected ? "#67eaf1" : state.isFocused ? "#f0f0f0" : "transparent",
+        color: state.isSelected ? "white" : "black",
+      }),
+      multiValue: (provided: any) => ({
+        ...provided,
+        backgroundColor: "#67eaf1", 
+        color: "white",
+        borderRadius: "16px",
+        margin: "2px",
+      }),
+      multiValueLabel: (provided: any) => ({
+        ...provided,
+        fontSize: "14px", 
+        color: "white",
+      }),
+      multiValueRemove: (provided: any) => ({
+        ...provided,
+        color: "white", 
+        cursor: "pointer",
+      }),
+      multiValueRemoveHover: (provided: any) => ({
+        ...provided,
+        backgroundColor: "red", 
+      }),
+    };
 
     return (
         <div>
@@ -147,18 +172,18 @@ const Graph1: React.FC<{ datasetId: string }> = ({ datasetId }) => {
 
                 <div className="inputWrapper">
                     <label htmlFor="departmentSelect">Department:</label>
-                    <select className="dropdown departmentSelect" multiple value={selectedDepartments} onChange={handleSelectDepartments}>
-                    <option value="" disabled>Select a department</option>
-                        {departmentOptions.length > 0 ? (
-                            departmentOptions.map((dept, index) => (
-                                <option key={index} value={dept}>
-                                    {dept}
-                                </option>
-                            ))
-                        ) : (
-                            <option disabled>Loading...</option>
-                        )}
-                    </select>
+                    <Select
+                      id="departmentSelect"
+                      options={departmentOptions}
+                      isMulti
+                      value={selectedDepartments.map((dept) => ({
+                        label: dept,
+                        value: dept
+                      }))}
+                      onChange={handleDepartmentChange}
+                      placeholder="Select departments"
+                      styles={selectStyles}
+                    />
                 </div>
 
                 <div className="inputWrapper">
